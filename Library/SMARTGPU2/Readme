@@ -1,0 +1,50 @@
+
+/**************************************************************/
+  SMARTGPU2 ARDUINO UNO-MEGA-DUE LIBRARY V6.0 VIZIC TECHNOLOGIES 2019
+
+This library help the user to communicate any SMARTGPU2 board with an arduino via the SmartSHIELD board.
+
+*be sure to check pinout while mounting the SMARTSHIELD or the SMARTGPU2 LCD320x240 2.4" directly as shield.
+
+Where to place this entire folder(SMARTGPU2)?
+
+place it in the arduino C:/ installation folder path:
+
+\arduino\libraries\SMARTGPU2
+
+restart arduino IDE to recognize the library and enjoy!
+
+---------------------IMPORTANT------------------------
+Before using your smartGPU2 board, go to smartGPU2.h file and uncomment the proper line under "user modifable" section:
+
+//If using smartGPU2 2.4" LCD320x240 mounted directly as arduino shield, please uncomment the next:
+//#define SMARTGPU2ASSHIELD
+
+//If using Arduino DUE please uncomment the next line - Remember to re-wire smartGPU2 TX and RX pins to the defined Serial port of Arduino
+//#define ARDUINO_DUE
+
+//-SmartGPU2-Arduino RESET PIN definition 
+//-SmartSHIELD uses default Arduino pin p4 for Reset, if another pin is soldered in the SmartSHIELD(pin 7, 8 or 13), please modify here:
+#define RESET 4        //Define for the RESET pin connected on the SmartSHIELD board(pin 7, 8 or 13) 
+
+//-Arduino serial port and AREF configuration using smartSHIELD
+#ifdef ARDUINO_DUE                  //If arduino DUE is defined
+#define SERIALPORT        (Serial3) //(Serial2,Serial3), connect the smartGPU2 TX and RX pins to the defined serial port of Arduino
+#define ARDUINOREFERENCE   AR_DEFAULT
+#else                               //Arduino UNO. MEGA or similar
+#define SERIALPORT        (Serial)
+#define ARDUINOREFERENCE  DEFAULT   //Define the AREF pin - Internal Analog reference as DEFAULT
+#endif
+
+
+/**************************************************************/
+Finally be sure to download all the SMARTGPU2 Arduino examples 100% ready to compile and load from our website
+
+/**************************************************************/
+SMARTGPU2 boards:
+https://www.vizictechnologies.com/products
+
+VIZIC TECHNOLOGIES Copyright 2019
+
+www.vizictechnologies.com
+/**************************************************************/
