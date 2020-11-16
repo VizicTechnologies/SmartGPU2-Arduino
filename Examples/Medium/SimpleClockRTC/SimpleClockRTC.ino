@@ -1,5 +1,5 @@
 /*********************************************************
-VIZIC TECHNOLOGIES. COPYRIGHT 2019.
+VIZIC TECHNOLOGIES. COPYRIGHT 2020.
 THE DATASHEETS, SOFTWARE AND LIBRARIES ARE PROVIDED "AS IS." 
 VIZIC EXPRESSLY DISCLAIM ANY WARRANTY OF ANY KIND, WHETHER 
 EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO, THE IMPLIED 
@@ -26,15 +26,15 @@ OR OTHER SIMILAR COSTS.
 
 SMARTGPU2 lcd;              //create our object called LCD
 
-AXIS LCD_WIDTH, LCD_HEIGHT; //Variables to handle the screen resolution
+SG_AXIS LCD_WIDTH, LCD_HEIGHT; //Variables to handle the screen resolution
 
-#define CLOCKBODYCOLOUR  BLACK        //colour for the body clock
-#define CLOCKEDGECOLOUR  GREEN        //colour for the edge of the clock
-#define SECCOL           YELLOW       //seconds hand colour
-#define MINCOL           MAGENTA      //minutes hand colour
-#define HOURCOL          RED          //hours hand colour
-#define HALFX            LCD_WIDTH/2  //this point represent the x center of the clock where math is done
-#define HALFY            LCD_HEIGHT/2 //this point represent the y center of the clock where math is done
+#define CLOCKBODYCOLOUR  SG_BLACK        //colour for the body clock
+#define CLOCKEDGECOLOUR  SG_GREEN        //colour for the edge of the clock
+#define SECCOL           SG_YELLOW       //seconds hand colour
+#define MINCOL           SG_MAGENTA      //minutes hand colour
+#define HOURCOL          SG_RED          //hours hand colour
+#define HALFX            LCD_WIDTH/2     //this point represent the x center of the clock where math is done
+#define HALFY            LCD_HEIGHT/2    //this point represent the y center of the clock where math is done
 
 /*********************************************************/
 /*********************************************************/
@@ -53,30 +53,30 @@ void setup() { //initial setup
 /*********************************************************/
 /*********************************************************/
 void loop() { //main loop
-  POINT secP,minsP,hourP;
-  STATE state;
-  TIME currentTime;        //struct that holds the seconds,minutes, and hours
+  SG_POINT secP,minsP,hourP;
+  SG_STATE state;
+  SG_TIME currentTime;        //struct that holds the seconds,minutes, and hours
   int angleH,angleM,angleS;
   unsigned int handHour=LCD_WIDTH/6;//hand size
   unsigned int handMin=LCD_WIDTH/5; //hand size
   unsigned int handSec=LCD_WIDTH/4; //hand size  
   unsigned char currentSecond=0;
 
-  lcd.baudChange(BAUD4);                               //set high baud for fast drawing  
+  lcd.baudChange(SG_BAUD4);                            //set high baud for fast drawing  
   lcd.setupRTC(&state);                                //try to setup and enable RTC
-  if(state!=ENABLE) while(1);                          //if clock wasn't successfully enabled, means that no 32Khz crystal is mounted
+  if(state!=SG_ENABLE) while(1);                       //if clock wasn't successfully enabled, means that no 32Khz crystal is mounted
   //up to here clock is setup and running...
   lcd.getRTCTimeDate(&currentTime);                    //obtain time from RTC clock
   currentSecond=currentTime.second;                    //get in currentSecond the currentTime.second value
   
   //draw clock
-  lcd.drawCircle(LCD_WIDTH/2,LCD_HEIGHT/2,(LCD_HEIGHT/2)-15,CLOCKBODYCOLOUR,FILL);    //draw clock body
-  lcd.drawCircle(LCD_WIDTH/2,LCD_HEIGHT/2,(LCD_HEIGHT/2)-15,CLOCKEDGECOLOUR,UNFILL);  //draw clock edge
+  lcd.drawCircle(LCD_WIDTH/2,LCD_HEIGHT/2,(LCD_HEIGHT/2)-15,CLOCKBODYCOLOUR,SG_FILL);    //draw clock body
+  lcd.drawCircle(LCD_WIDTH/2,LCD_HEIGHT/2,(LCD_HEIGHT/2)-15,CLOCKEDGECOLOUR,SG_UNFILL);  //draw clock edge
   
   //config strings
   lcd.setTextColour(CLOCKEDGECOLOUR);
-  lcd.setTextSize(FONT5);
-  lcd.setTextBackFill(TRANS);
+  lcd.setTextSize(SG_FONT5);
+  lcd.setTextBackFill(SG_TRANS);
   
  while(1){
   //Do some Math to get the second point of the clock hands. (first point is always the center of the clock)  
@@ -97,7 +97,7 @@ void loop() { //main loop
   lcd.drawLine(HALFX,HALFY,HALFX+minsP.x,HALFY-minsP.y,MINCOL);  // Draw the minutes hand, first point is the center of the clock, and the second is the point obtained by doing math
   lcd.drawLine(HALFX,HALFY,HALFX+hourP.x,HALFY-hourP.y,HOURCOL); // Draw the hours hand, first point is the center of the clock, and the second is the point obtained by doing math
   lcd.drawLine(HALFX,HALFY,HALFX+secP.x,HALFY-secP.y,SECCOL);    // Draw the seconds hand, first point is the center of the clock, and the second is the point obtained by doing math
-  lcd.drawCircle(HALFX,HALFY,5,SECCOL,FILL);                     // Draw the center of the second's hand
+  lcd.drawCircle(HALFX,HALFY,5,SECCOL,SG_FILL);                  // Draw the center of the second's hand
   
   //wait for a second by comparing the currentSecond variable with the new currentTime.second
   do{

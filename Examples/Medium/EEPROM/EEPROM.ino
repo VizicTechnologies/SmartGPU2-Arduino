@@ -1,5 +1,5 @@
 /*********************************************************
-VIZIC TECHNOLOGIES. COPYRIGHT 2019.
+VIZIC TECHNOLOGIES. COPYRIGHT 2020.
 THE DATASHEETS, SOFTWARE AND LIBRARIES ARE PROVIDED "AS IS." 
 VIZIC EXPRESSLY DISCLAIM ANY WARRANTY OF ANY KIND, WHETHER 
 EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO, THE IMPLIED 
@@ -35,7 +35,7 @@ OR OTHER SIMILAR COSTS.
 
 SMARTGPU2 lcd;              //create our object called lcd
 
-AXIS LCD_WIDTH, LCD_HEIGHT; //Variables to handle the screen resolution
+SG_AXIS LCD_WIDTH, LCD_HEIGHT; //Variables to handle the screen resolution
 
 unsigned int row=10;
 
@@ -60,10 +60,10 @@ void loop() { //main loop
     unsigned int i=0;        
     unsigned char result=0;
     
-    lcd.baudChange(BAUD4);
+    lcd.baudChange(SG_BAUD4);
     
     //strings config
-    lcd.setTextColour(GREEN);  
+    lcd.setTextColour(SG_GREEN);  
     lcd.string(10,row,LCD_WIDTH-1,LCD_HEIGHT-1,"EEPROM page open, read, write demo!",0);   row+=30;
     lcd.string(10,row,LCD_WIDTH-1,LCD_HEIGHT-1,"Performing procedure...",0);               row+=30;
 
@@ -77,17 +77,17 @@ void loop() { //main loop
     }
     
     //verify contents - EEPROM buffer contents vs EEPROM PAGE0
-    lcd.compBuffToEEPROMPage(PAGE0, &result);  //compare EEPROM buffer contents with EEPROM PAGE0
+    lcd.compBuffToEEPROMPage(SG_PAGE0, &result);  //compare EEPROM buffer contents with EEPROM PAGE0
     
     if(result == 1){  //if contents are equal - means that data was already written and its equal
         lcd.string(10,row,LCD_WIDTH-1,LCD_HEIGHT-1,"EEPROM PAGE0 Contents were already equal...END",0);
     }else{            //if contents are different - erase PAGE0 and write EEPROM buffer into PAGE0 - This procedure will be executed only the veryfirst time
-      //erase EEPROM PAGE0
-      lcd.eraseEEPROMPage(PAGE0);
-      //save current EEPROM buffer contents(100 x "0123456789") to EEPROM PAGE0
-      lcd.saveBuffToEEPROMPage(PAGE0);            
-      //verify contents again - EEPROM buffer contents vs EEPROM PAGE0
-      lcd.compBuffToEEPROMPage(PAGE0, &result);  //compare EEPROM buffer contents with EEPROM PAGE0          
+      //erase EEPROM SG_PAGE0
+      lcd.eraseEEPROMPage(SG_PAGE0);
+      //save current EEPROM buffer contents(100 x "0123456789") to EEPROM SG_PAGE0
+      lcd.saveBuffToEEPROMPage(SG_PAGE0);            
+      //verify contents again - EEPROM buffer contents vs EEPROM SG_PAGE0
+      lcd.compBuffToEEPROMPage(SG_PAGE0, &result);  //compare EEPROM buffer contents with EEPROM PAGE0          
 
       if(result == 1){ //if contents are equal
         lcd.string(10,row,LCD_WIDTH-1,LCD_HEIGHT-1,"New EEPROM PAGE0 Contents are equal...END",0);

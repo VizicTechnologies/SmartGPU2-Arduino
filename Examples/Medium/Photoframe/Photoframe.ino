@@ -1,5 +1,5 @@
 /*********************************************************
-VIZIC TECHNOLOGIES. COPYRIGHT 2019.
+VIZIC TECHNOLOGIES. COPYRIGHT 2020.
 THE DATASHEETS, SOFTWARE AND LIBRARIES ARE PROVIDED "AS IS." 
 VIZIC EXPRESSLY DISCLAIM ANY WARRANTY OF ANY KIND, WHETHER 
 EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO, THE IMPLIED 
@@ -21,7 +21,7 @@ OR OTHER SIMILAR COSTS.
 
 SMARTGPU2 lcd;              //create our object called LCD
 
-AXIS LCD_WIDTH, LCD_HEIGHT; //Variables to handle the screen resolution
+SG_AXIS LCD_WIDTH, LCD_HEIGHT; //Variables to handle the screen resolution
 
 char imagesOnSDCard[8][30]={"Penguins","Koala","Hydrangeas","Light House","Jellyfish","Tulips","Desert","Flower"}; //array containing the names of the different called images
 
@@ -43,30 +43,44 @@ void setup() { //initial setup
 /************************************************/
 /************************************************/
 void loop() { //main loop
-  POINT point;
+  SG_POINT point;
   char pic;
+  SG_REPLY reply;
+  SG_FILERESULT res;
+
+  lcd.string(10,10,LCD_WIDTH-10,LCD_HEIGHT-10,"PHOTOFRAME DEMO\nBe sure to insert uSD with loaded .bmp images",0);
   
-  lcd.baudChange(BAUD6);                     // Set a fast baud!, always that we use touch functions is recommended to use fast baud rates
+  delay(3000);
   
-  lcd.SDFopenDir("BMP Images");              // Open the BMP Images that contains the images
-  
+  res=lcd.SDFopenDir("BMP Images");             //Open the BMP Images that contains the images
+
+  //Throw error message if could't read microSD card
+  if(res != SG_F_OK){
+    lcd.string(10,50,LCD_WIDTH-10,LCD_HEIGHT-10,"Not inserted uSD card!",0);
+    while(1);
+  }
+    
   while(1){   //Loop forever in the slide show!
-    lcd.imageBMPSD(0,0,imagesOnSDCard[pic]); //Load image from SD card, all images are 320x240(full screen) so we load them from top left corner X:0,Y:0
+    reply=lcd.imageBMPSD(0,0,imagesOnSDCard[pic]);     //Load image from SD card, all images are 320x240(full screen) so we load them from top left corner X:0,Y:0
     lcd.imageBMPSD(3,LCD_HEIGHT-20,"previous");        //Load the previous icon        
     lcd.imageBMPSD(LCD_WIDTH-20,LCD_HEIGHT-20,"next"); //Load the next icon
-       
-    delay(100);                              //A little delay to avoid fast image changing
-    while(lcd.touchScreen(&point)==INVALID); //Wait for a touch on the screen to show next or previous picture
+
+    //Throw error message if could't found image or no microSD card
+    if(reply != SG_OK){
+      lcd.string(10,10,LCD_WIDTH,LCD_HEIGHT,"NO .bmp image found...",0);
+    }
+    delay(100);                                 //A little delay to avoid fast image changing
+    while(lcd.touchScreen(&point)==SG_INVALID); //Wait for a touch on the screen to show next or previous picture
     
     //check if we go to the next image, or to the previous one
-    if(point.x>(LCD_WIDTH/2)){               //if the received touch was on the right middle of the screen we advance the image, else we decrease and go to previous image
-      pic++;                                 //decrease image selector
-      if(pic>7){                             //if we reach the position of the last image, we restart to image 0
+    if(point.x>(LCD_WIDTH/2)){                  //if the received touch was on the right middle of the screen we advance the image, else we decrease and go to previous image
+      pic++;                                    //decrease image selector
+      if(pic>7){                                //if we reach the position of the last image, we restart to image 0
         pic=0;                 
       }        
     }else{
       pic--;    
-      if(pic<0){                             //if we reach the position of the first image, we move to image 7
+      if(pic<0){                                //if we reach the position of the first image, we move to image 7
         pic=7;  
       }    
     }   

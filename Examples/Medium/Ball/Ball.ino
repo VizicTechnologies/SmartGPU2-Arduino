@@ -1,5 +1,5 @@
 /*********************************************************
-VIZIC TECHNOLOGIES. COPYRIGHT 2019.
+VIZIC TECHNOLOGIES. COPYRIGHT 2020.
 THE DATASHEETS, SOFTWARE AND LIBRARIES ARE PROVIDED "AS IS." 
 VIZIC EXPRESSLY DISCLAIM ANY WARRANTY OF ANY KIND, WHETHER 
 EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO, THE IMPLIED 
@@ -21,7 +21,7 @@ OR OTHER SIMILAR COSTS.
 
 SMARTGPU2 lcd;              //create our object called LCD
 
-AXIS LCD_WIDTH, LCD_HEIGHT; //Variables to handle the screen resolution
+SG_AXIS LCD_WIDTH, LCD_HEIGHT; //Variables to handle the screen resolution
 
 typedef struct BALL{
   int ballX;           //X position of the ball
@@ -31,7 +31,7 @@ typedef struct BALL{
   int radius;          //Ball Radius
   unsigned int colour; //Ball Colour
   int speedBall;       //Moving speed of the ball
-  FILLGEOM fill;       //FILL or UNFILL ball
+  SG_FILLGEOM fill;    //SG_FILL or SG_UNFILL ball
 };                     //Balls Struct
 
 //declare a ball variable type BALL
@@ -40,7 +40,7 @@ struct BALL ball;
 /***************************************************/
 //Function that updates the current position of the balls
 int moveBall(struct BALL *ball){
-   lcd.drawCircle(ball->ballX,ball->ballY,ball->radius,BLACK,ball->fill);        // Erase previous ball position
+   lcd.drawCircle(ball->ballX,ball->ballY,ball->radius,SG_BLACK,ball->fill);     // Erase previous ball position
    ball->ballX +=((ball->dirX)*(ball->speedBall));                               // Calculate new x coordinate for ball 
    ball->ballY +=((ball->dirY)*(ball->speedBall));                               // Calculate new y coordinate for ball  
    lcd.drawCircle(ball->ballX,ball->ballY,ball->radius,ball->colour,ball->fill); // Draw new ball position
@@ -75,12 +75,12 @@ void loop() { //main loop
   ball.dirX=1;
   ball.dirY=1;
   ball.radius=15;
-  ball.colour=GREEN;  
+  ball.colour=SG_GREEN;  
   ball.speedBall=2;
-  ball.fill=FILL;
+  ball.fill=SG_FILL;
   
-  lcd.baudChange(BAUD6); //set a fast baud! for fast drawing
-  lcd.drawRectangle(0,0,LCD_WIDTH-1,LCD_HEIGHT-1,MAGENTA,UNFILL); //draw corners
+  lcd.baudChange(SG_BAUD6); //set a fast baud! for fast drawing
+  lcd.drawRectangle(0,0,LCD_WIDTH-1,LCD_HEIGHT-1,SG_MAGENTA,SG_UNFILL); //draw corners
   
   while(1){              // Loop forever
     moveBall(&ball);     // move ball1

@@ -1,5 +1,5 @@
 /*********************************************************
-VIZIC TECHNOLOGIES. COPYRIGHT 2014.
+VIZIC TECHNOLOGIES. COPYRIGHT 2020.
 THE DATASHEETS, SOFTWARE AND LIBRARIES ARE PROVIDED "AS IS." 
 VIZIC EXPRESSLY DISCLAIM ANY WARRANTY OF ANY KIND, WHETHER 
 EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO, THE IMPLIED 
@@ -38,16 +38,16 @@ OR OTHER SIMILAR COSTS.
 
 SMARTGPU2 lcd;              //create our object called lcd
 
-AXIS LCD_WIDTH, LCD_HEIGHT; //Variables to handle the screen resolution
+SG_AXIS LCD_WIDTH, LCD_HEIGHT; //Variables to handle the screen resolution
 
-FILERESULT res;             //create the variable that will store all SMARTGPU2 commands responses
+SG_FILERESULT res;             //create the variable that will store all SMARTGPU2 commands responses
 
 char message[41]="Data Written by the SmartGPU 2 Processor";
 unsigned int row=10;
 
 //function that loops forever on error
-void die(FILERESULT response){ //if the response is different than OK, print and loop forever
-  if(response!=F_OK){
+void error(SG_FILERESULT response){ //if the response is different than OK, print and loop forever
+  if(response != SG_F_OK){
     lcd.string(10,row,LCD_WIDTH-1,LCD_HEIGHT-1,"Error... forever loop @",0);
     while(1);  
   }
@@ -74,47 +74,47 @@ void loop() { //main loop
     unsigned int writtenBytes=0, readbytes=0, i=0;        
     
     //strings config
-    lcd.setTextColour(GREEN);  
+    lcd.setTextColour(SG_GREEN);  
     
     lcd.string(10,row,LCD_WIDTH-1,LCD_HEIGHT-1,"FAT file open, read, write demo!",0);        row+=15;
     lcd.string(10,row,LCD_WIDTH-1,LCD_HEIGHT-1,"Open File <test file.txt> in WRITE mode...",0); row+=15;
     
     //try to open the file
-    res=lcd.SDFopenFile("test file.txt", WRITEONLY, WORKSPACE0);  //Try to open a file called "testFile.txt" in write only mode in the workspace block 0    
-    if(res!=F_OK){                       //If the file doesn't Open is because it doesn't exist      
+    res=lcd.SDFopenFile("test file.txt", SG_WRITEONLY, SG_WORKSPACE0);  //Try to open a file called "testFile.txt" in write only mode in the workspace block 0    
+    if(res!=SG_F_OK){                                                   //If the file doesn't Open is because it doesn't exist      
       lcd.string(10,row,LCD_WIDTH-1,LCD_HEIGHT-1,"File doesn't exist, creating file...",0); row+=15;    
-      res=lcd.SDFnewFile("test file.txt");  //Try to create the file 
-      die(res);                        //If any error loop forever
-      res=lcd.SDFopenFile("test file.txt", WRITEONLY, WORKSPACE0);  //Try to open the created file      
-      die(res);                        //If any error loop forever
+      res=lcd.SDFnewFile("test file.txt");                              //Try to create the file 
+      error(res);                                                       //If any error loop forever
+      res=lcd.SDFopenFile("test file.txt", SG_WRITEONLY, SG_WORKSPACE0);//Try to open the created file      
+      error(res);                                                       //If any error loop forever
     }
     
     //Up to here the file exist and is open    
     lcd.string(10,row,LCD_WIDTH-1,LCD_HEIGHT-1,"File Successfully Open in WRITE mode...",0); row+=15;    
     lcd.string(10,row,LCD_WIDTH-1,LCD_HEIGHT-1,"Write <Data Written by the SmartGPU 2 Processor>",0); row+=15;    
-    res=lcd.SDFwriteFile(message, sizeof(message), &writtenBytes, WORKSPACE0); //write to the open file in WORKSPACE0 size of message in bytes and store the successfully written Bytes on writtenBytes variable
-    die(res);                         //If any error loop forever    
-    lcd.SDFsaveFile(WORKSPACE0);          //Save changes in the file contained in WORKSPACE0
+    res=lcd.SDFwriteFile(message, sizeof(message), &writtenBytes, SG_WORKSPACE0); //write to the open file in SG_WORKSPACE0 size of message in bytes and store the successfully written Bytes on writtenBytes variable
+    error(res);                                                                   //If any error loop forever    
+    lcd.SDFsaveFile(SG_WORKSPACE0);                                               //Save changes in the file contained in SG_WORKSPACE0
     lcd.string(10,row,LCD_WIDTH-1,LCD_HEIGHT-1,"Closing File...",0); row+=15;    
-    lcd.SDFcloseFile(WORKSPACE0);         //Close the file --------------------
+    lcd.SDFcloseFile(SG_WORKSPACE0);                                              //Close the file --------------------
     
     //Now lets verify contents
     //open again the file in read only mode
     lcd.string(10,row,LCD_WIDTH-1,LCD_HEIGHT-1,"Open File <test file.txt> in READ mode...",0); row+=15;    
-    res=lcd.SDFopenFile("test file.txt", READONLY, WORKSPACE0);  //Try to open again the file read only mode in the workspace block 0
-    die(res);                         //If any error loop forever
+    res=lcd.SDFopenFile("test file.txt", SG_READONLY, SG_WORKSPACE0);          //Try to open again the file read only mode in the workspace block 0
+    error(res);                                                                //If any error loop forever
     //read the file  
     lcd.string(10,row,LCD_WIDTH-1,LCD_HEIGHT-1,"File Successfully Open in READ mode...",0); row+=15;    
     lcd.string(10,row,LCD_WIDTH-1,LCD_HEIGHT-1,"Read bytes from file to buffer...",0); row+=15;    
-    res=lcd.SDFreadFile(buffer, sizeof(message), &readbytes, WORKSPACE0); //read size of message in bytes from the open file in WORKSPACE0 and store the successfully read Bytes on readbytes variable
-    die(res);                         //If any error loop forever        
+    res=lcd.SDFreadFile(buffer, sizeof(message), &readbytes, SG_WORKSPACE0);   //read size of message in bytes from the open file in SG_WORKSPACE0 and store the successfully read Bytes on readbytes variable
+    error(res);                                                                //If any error loop forever        
     lcd.string(10,row,LCD_WIDTH-1,LCD_HEIGHT-1,"Closing File...",0); row+=15;        
-    lcd.SDFcloseFile(WORKSPACE0);         //Close the file --------------------
+    lcd.SDFcloseFile(SG_WORKSPACE0);                                           //Close the file --------------------
     
     //check contents
     lcd.string(10,row,LCD_WIDTH-1,LCD_HEIGHT-1,"Verify/Compare contents...",0); row+=15;            
     for(i=0;i<sizeof(message);i++){      
-      if(message[i]!=buffer[i]){ //if contents are different
+      if(message[i]!=buffer[i]){                                               //if contents are different
         lcd.string(10,row,LCD_WIDTH-1,LCD_HEIGHT-1,"Contents differ, erasing the created file...END",0); row+=10;                  
         lcd.SDFeraseDirFile("test file.txt"); //erase the File
         while(1);

@@ -1,5 +1,5 @@
 /*********************************************************
-VIZIC TECHNOLOGIES. COPYRIGHT 2019.
+VIZIC TECHNOLOGIES. COPYRIGHT 2020.
 THE DATASHEETS, SOFTWARE AND LIBRARIES ARE PROVIDED "AS IS." 
 VIZIC EXPRESSLY DISCLAIM ANY WARRANTY OF ANY KIND, WHETHER 
 EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO, THE IMPLIED 
@@ -21,7 +21,7 @@ OR OTHER SIMILAR COSTS.
 
 SMARTGPU2 lcd;              //create our object called LCD
 
-AXIS LCD_WIDTH, LCD_HEIGHT; //Variables to handle the screen resolution
+SG_AXIS LCD_WIDTH, LCD_HEIGHT; //Variables to handle the screen resolution
 
 char pixelArray[3];                     //Array to store the RGB888 pixel obtained with memoryRead()
 
@@ -66,47 +66,47 @@ void setup() { //initial setup
 /************************************************/
 /************************************************/
 void loop() { //main loop
-    POINT point;
+    SG_POINT point;
     unsigned char penSize=1;
-    COLOUR colour = BLACK;
+    SG_COLOUR colour = SG_BLACK;
     char pen[4]={'x','0','1',0x00};         //Array that show the current penSize
     
-    lcd.baudChange(BAUD6);   // Set a fast baud!, always that we use touch functions is recommended to use fast baud rates
+    lcd.baudChange(SG_BAUD6);   // Set a fast baud!, always that we use touch functions is recommended to use fast baud rates
     
     //Load paint design
     lcd.imageBMPSD(0,0,"paint");    
     //strings config
-    lcd.setTextColour(GREEN);
-    lcd.setTextSize(FONT0);
-    lcd.setTextBackFill(FILLED);     
+    lcd.setTextColour(SG_GREEN);
+    lcd.setTextSize(SG_FONT0);
+    lcd.setTextBackFill(SG_FILLED);     
     lcd.string(7,54,48,65,"Erase",0);    //draw Erase word
     lcd.string(77,54,110,65,pen,0);      //draw penSize 
   
     while(1){   //Start the Paint application    
-      while(!lcd.touchScreen(&point));                  //Wait for a touch on the screen to do something      
+      while(!lcd.touchScreen(&point));                      //Wait for a touch on the screen to do something      
       //Once we get a touch somewhere on the screen:
-      if((point.y-penSize)<67){                         //the touch was on the menu
-        if(point.x<45){                                 //touch on erase circle
-          lcd.drawRectangle(0,67,319,239,WHITE,FILL);   //Draw a white rectangle on drawing area
-        }else if(point.x<75){                           //touch to select the eraser
-          colour=WHITE;
-          lcd.drawCircle(25,34,14,colour,FILL);         //draw WHITE colour circle on top left corner           
-        }else if(point.x<108){                          //touch to change pen Size 
-          penSize=penSize*2;                            //double the penSize
-          if(penSize==16){                              //maximum pen size = 8, if we reach 16 we set to 1.
+      if((point.y-penSize)<67){                             //the touch was on the menu
+        if(point.x<45){                                     //touch on erase circle
+          lcd.drawRectangle(0,67,319,239,SG_WHITE,SG_FILL); //Draw a white rectangle on drawing area
+        }else if(point.x<75){                               //touch to select the eraser
+          colour=SG_WHITE;
+          lcd.drawCircle(25,34,14,colour,SG_FILL);          //draw WHITE colour circle on top left corner           
+        }else if(point.x<108){                              //touch to change pen Size 
+          penSize=penSize*2;                                //double the penSize
+          if(penSize==16){                                  //maximum pen size = 8, if we reach 16 we set to 1.
             penSize=1;
           }          
-          pen[1]=(penSize/10)+0x30;                     //get the tens of penSize and convert them to ascii
-          pen[2]=(penSize%10)+0x30;                     //get the ones of penSize and convert them to ascii
-          lcd.string(77,54,110,65,pen,0);//draw penSize 
-          delay(500);                                   //delay to avoid fast penSize changing            
+          pen[1]=(penSize/10)+0x30;                         //get the tens of penSize and convert them to ascii
+          pen[2]=(penSize%10)+0x30;                         //get the ones of penSize and convert them to ascii
+          lcd.string(77,54,110,65,pen,0);                   //draw penSize 
+          delay(500);                                       //delay to avoid fast penSize changing            
         }else if(point.x<312 & point.y>20 & point.y<59){//touch on the colours bar                  
           lcd.getImageFromMemory(point.x,point.y,point.x,point.y,pixelArray);  //assign new colour based on touch coordinates and memory read, this function return a 24 bit pixel array, 
           colour=RGB888ToRGB565(pixelArray);
-          lcd.drawCircle(25,34,14,colour,FILL);         //draw new selected colour on top left corner           
+          lcd.drawCircle(25,34,14,colour,SG_FILL);          //draw new selected colour on top left corner           
         }                
-      }else{                                            //Touch on drawing area
-        lcd.drawCircle(point.x,point.y,penSize,colour,FILL);                    //Draw
+      }else{                                                //Touch on drawing area
+        lcd.drawCircle(point.x,point.y,penSize,colour,SG_FILL);                    //Draw
       }
     }
 }

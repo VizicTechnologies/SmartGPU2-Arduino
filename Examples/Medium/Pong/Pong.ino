@@ -1,5 +1,5 @@
 /*********************************************************
-VIZIC TECHNOLOGIES. COPYRIGHT 2019.
+VIZIC TECHNOLOGIES. COPYRIGHT 2020.
 THE DATASHEETS, SOFTWARE AND LIBRARIES ARE PROVIDED "AS IS." 
 VIZIC EXPRESSLY DISCLAIM ANY WARRANTY OF ANY KIND, WHETHER 
 EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO, THE IMPLIED 
@@ -21,16 +21,16 @@ OR OTHER SIMILAR COSTS.
 
 SMARTGPU2 lcd;              //create our object called LCD
 
-AXIS LCD_WIDTH, LCD_HEIGHT; //Variables to handle the screen resolution
-AXIS MAX_X, MAX_Y;
+SG_AXIS LCD_WIDTH, LCD_HEIGHT; //Variables to handle the screen resolution
+SG_AXIS MAX_X, MAX_Y;
 
 // defines for balls - user modifable
 #define radiusBall1 15     //ball1 size
-#define colourBall1 GREEN  //ball1 colour
+#define colourBall1 SG_GREEN  //ball1 colour
 #define radiusBall2 8      //ball2 size
-#define colourBall2 YELLOW //ball2 colour
+#define colourBall2 SG_YELLOW //ball2 colour
 
-POINT point;
+SG_POINT point;
 
 //variables used by move ball methods
 int speedBall1=2; //ball1 moving speed - amount of pixels that ball move each time
@@ -58,30 +58,30 @@ int barCenter;             //we need to know the center of the bar
 /***************************************************/
 //function that move or update the actual position of the ball1
 void moveBall1(){
-   lcd.drawCircle(xBall1,yBall1,radiusBall1,BLACK,UNFILL);       // Erase previous ball position
-   xBall1+=(dirx1*speedBall1);                                   // Calculate new x coordinate for ball1 
-   yBall1+=(diry1*speedBall1);                                   // Calculate new y coordinate for ball1  
-   lcd.drawCircle(xBall1,yBall1,radiusBall1,colourBall1,UNFILL); // Draw new ball position
+   lcd.drawCircle(xBall1,yBall1,radiusBall1,SG_BLACK,SG_UNFILL);    // Erase previous ball position
+   xBall1+=(dirx1*speedBall1);                                      // Calculate new x coordinate for ball1 
+   yBall1+=(diry1*speedBall1);                                      // Calculate new y coordinate for ball1  
+   lcd.drawCircle(xBall1,yBall1,radiusBall1,colourBall1,SG_UNFILL); // Draw new ball position
    if(((xBall1+speedBall1+radiusBall1)>(LCD_WIDTH-2)) || ((xBall1-speedBall1-radiusBall1)<=1)){       // if ball reaches the left or right corner, we invert moving direction 
     dirx1= dirx1*(-1);
    }
    if(((yBall1+speedBall1+radiusBall1)>(LCD_HEIGHT-10)) || ((yBall1-speedBall1-radiusBall1)<=20)){      // if ball reaches the top or bottom corner, we invert moving direction 
-    if((yBall1-speedBall1-radiusBall1)<=20){                    // Bounce on top, only invert moving direction
-      diry1= diry1*(-1);                                        // We invert the moving direction by multiplying by -1
-    }else{                                                      // Bounce on bottom, check if inside the bar       
+    if((yBall1-speedBall1-radiusBall1)<=20){                        // Bounce on top, only invert moving direction
+      diry1= diry1*(-1);                                            // We invert the moving direction by multiplying by -1
+    }else{                                                          // Bounce on bottom, check if inside the bar       
       if(((xBall1+speedBall1+radiusBall1)>bar) && ((xBall1-speedBall1-radiusBall1)<(bar+barSize))){  //if bounce inside the bar
-        diry1= diry1*(-1);                                      // We invert the moving direction by multiplying by -1
-        points++;                                               // Increase player current points
-        speedCounter++;                                         // Increase the speed counter
-        if(speedCounter>9){                                     // If we reach 10 counts we increase the ball1 bouncing speed
+        diry1= diry1*(-1);                                          // We invert the moving direction by multiplying by -1
+        points++;                                                   // Increase player current points
+        speedCounter++;                                             // Increase the speed counter
+        if(speedCounter>9){                                         // If we reach 10 counts we increase the ball1 bouncing speed
           speedBall1++;          
-          speedCounter=0;                                       // Reset the counter
+          speedCounter=0;                                           // Reset the counter
         }                           
-      }else{                                                   // Bounce outside the bar
-        ball1Active=0;                                         // Clear ball1 active flag
-        lcd.drawCircle(xBall1,yBall1,radiusBall1,BLACK,UNFILL);// Delete this ball because bounce outside of the bar        
-        if(ball1Active==0 & ball2Active==0){                   // if we have lost both balls     
-          gameOver=1;                                          // Set game over flag
+      }else{                                                        // Bounce outside the bar
+        ball1Active=0;                                              // Clear ball1 active flag
+        lcd.drawCircle(xBall1,yBall1,radiusBall1,SG_BLACK,SG_UNFILL);// Delete this ball because bounce outside of the bar        
+        if(ball1Active==0 & ball2Active==0){                        // if we have lost both balls     
+          gameOver=1;                                               // Set game over flag
         }         
       }
     }
@@ -91,30 +91,30 @@ void moveBall1(){
 /***************************************************/
 //function that move or update the actual position of the ball2
 void moveBall2(){
-   lcd.drawCircle(xBall2,yBall2,radiusBall2,BLACK,FILL);       // Erase previous ball position
-   xBall2+=(dirx2*speedBall2);                                 // Calculate new x coordinate for ball2 
-   yBall2+=(diry2*speedBall2);                                 // Calculate new y coordinate for ball2
-   lcd.drawCircle(xBall2,yBall2,radiusBall2,colourBall2,FILL); // Draw new ball position
+   lcd.drawCircle(xBall2,yBall2,radiusBall2,SG_BLACK,SG_FILL);       // Erase previous ball position
+   xBall2+=(dirx2*speedBall2);                                       // Calculate new x coordinate for ball2 
+   yBall2+=(diry2*speedBall2);                                       // Calculate new y coordinate for ball2
+   lcd.drawCircle(xBall2,yBall2,radiusBall2,colourBall2,SG_FILL);    // Draw new ball position
    if(((xBall2+speedBall2+radiusBall2)>(LCD_WIDTH-2)) || ((xBall2-speedBall2-radiusBall2)<=1)){       // if ball reaches the left or right corner, we invert moving direction 
     dirx2= dirx2*(-1);
    }
    if(((yBall2+speedBall2+radiusBall2)>(LCD_HEIGHT-10)) || ((yBall2-speedBall2-radiusBall2)<=20)){      // if ball reaches the top or bottom corner, we invert moving direction 
-    if((yBall2-speedBall2-radiusBall2)<=20){                    // Bounce on top, only invert moving direction
+    if((yBall2-speedBall2-radiusBall2)<=20){                          // Bounce on top, only invert moving direction
       diry2= diry2*(-1);        
-    }else{                                                      // Bounce on bottom, check if inside the bar       
+    }else{                                                            // Bounce on bottom, check if inside the bar       
       if(((xBall2+speedBall2+radiusBall2)>bar) && ((xBall2-speedBall2-radiusBall2)<(bar+barSize))){  //if bounce inside the bar
-        diry2= diry2*(-1);                                      // We invert the moving direction by multiplying by -1
-        points++;                                               // Increase player current points
-        speedCounter++;                                         // Increase the speed counter
-        if(speedCounter>9){                                     // If we reach 10 counts we increase the ball1 bouncing speed
-          speedBall2++;          
-          speedCounter=0;                                       // Reset the counter
-        }                           
-      }else{                                                   // Bounce outside the bar
-        ball2Active=0;                                         // Clear ball1 active flag
-        lcd.drawCircle(xBall2,yBall2,radiusBall2,BLACK,FILL);  // Delete this ball because bounce outside of the bar        
-        if(ball1Active==0 & ball2Active==0){                   // if we have lost both balls     
-          gameOver=1;                                          // Set game over flag
+        diry2= diry2*(-1);                                            // We invert the moving direction by multiplying by -1
+        points++;                                                     // Increase player current points
+        speedCounter++;                                               // Increase the speed counter
+        if(speedCounter>9){                                           // If we reach 10 counts we increase the ball1 bouncing speed
+          speedBall2++;                
+          speedCounter=0;                                             // Reset the counter
+        }                            
+      }else{                                                         // Bounce outside the bar
+        ball2Active=0;                                               // Clear ball1 active flag
+        lcd.drawCircle(xBall2,yBall2,radiusBall2,SG_BLACK,SG_FILL);  // Delete this ball because bounce outside of the bar        
+        if(ball1Active==0 & ball2Active==0){                         // if we have lost both balls     
+          gameOver=1;                                                // Set game over flag
         }         
       }
     }
@@ -138,18 +138,18 @@ void pong(){
   yBall1=25+radiusBall1; //y initial position of ball1 
   yBall2=25+radiusBall2; //y initial position of ball2
   
-  lcd.drawRectangle(0,20,MAX_X,MAX_Y,MAGENTA,UNFILL);  //draw corners
-  lcd.drawLine(bar,MAX_Y-8,bar+barSize,MAX_Y-8,WHITE); //draw Bar 
+  lcd.drawRectangle(0,20,MAX_X,MAX_Y,SG_MAGENTA,SG_UNFILL);                //draw corners
+  lcd.drawLine(bar,MAX_Y-8,bar+barSize,MAX_Y-8,SG_WHITE);                  //draw Bar 
   
   while(gameOver==0){                                                      //while game over flag is zero                          
     buffer[0]=(points/10)+0x30, buffer[1]=(points%10)+0x30;                //fill buffer that counts
-    lcd.setTextColour(RED);
-    lcd.setTextSize(FONT1);
-    lcd.setTextBackFill(FILLED);      
+    lcd.setTextColour(SG_RED);
+    lcd.setTextSize(SG_FONT1);
+    lcd.setTextBackFill(SG_FILLED);      
     lcd.string(2,2,30,35,buffer,0);                                        //display current points
       for(i=0;i<10;i++){                                                   //check 30 times if the player touches the screen
         if(lcd.touchScreen(&point)){                                       //if we receive a touch then we move the bar to touched side
-          lcd.drawLine(bar,MAX_Y-8,bar+barSize,MAX_Y-8,BLACK);     //erase previous Bar    
+          lcd.drawLine(bar,MAX_Y-8,bar+barSize,MAX_Y-8,SG_BLACK);          //erase previous Bar    
           if(point.x>barCenter){                                           //if we need to move the bar to the right           
             bar+=8;                                                        //move the bar to the right  8 pixels
             if((bar+barSize)>(LCD_WIDTH-2)){                               //if the bar reach the right corner
@@ -163,7 +163,7 @@ void pong(){
             }              
             barCenter=bar+(barSize/2);                                     //set new center position of the bar
           }
-          lcd.drawLine(bar,MAX_Y-8,bar+barSize,MAX_Y-8,WHITE);                   //draw the new bar at the new position
+          lcd.drawLine(bar,MAX_Y-8,bar+barSize,MAX_Y-8,SG_WHITE);          //draw the new bar at the new position
         }else{
           delay(1); 
         }
@@ -177,17 +177,17 @@ void pong(){
       }
   }
   //game over - proceed to show final score
-  lcd.setTextColour(RED);
-  lcd.setTextSize(FONT4);
-  lcd.setTextBackFill(TRANS);    
+  lcd.setTextColour(SG_RED);
+  lcd.setTextSize(SG_FONT4);
+  lcd.setTextBackFill(SG_TRANS);    
   lcd.string((LCD_WIDTH/5),(LCD_HEIGHT/4),MAX_X,MAX_Y,"Game Over",0);
   score[0]=(points/10)+0x30;                                            //convert points to ascii format and store them on the score buffer
   score[1]=(points%10)+0x30;                                            //convert points to ascii format and store them on the score buffer
-  lcd.setTextColour(YELLOW);
-  lcd.setTextSize(FONT4);
+  lcd.setTextColour(SG_YELLOW);
+  lcd.setTextSize(SG_FONT4);
   lcd.string((LCD_WIDTH/3),(LCD_HEIGHT/2),MAX_X,MAX_Y,score,0);
-  lcd.setTextColour(GREEN);
-  lcd.setTextSize(FONT2);  
+  lcd.setTextColour(SG_GREEN);
+  lcd.setTextSize(SG_FONT2);  
   lcd.string((LCD_WIDTH/4),(LCD_HEIGHT/3)*2,MAX_X,MAX_Y,"Touch to Exit",0);          
   delay(1000);
   while(lcd.touchScreen(&point)==0);                                    //wait for a touch to exit
@@ -212,25 +212,25 @@ void setup() { //initial setup
 }
 
 void loop() { //main loop
-  lcd.baudChange(BAUD6);   //set a fast baud!, always that we use touch functions is recommended to use fast baud rates
+  lcd.baudChange(SG_BAUD6);   //set a fast baud!, always that we use touch functions is recommended to use fast baud rates
 
-  while(1){                // Loop forever
+  while(1){                   // Loop forever
     //Draw a cover
-    lcd.drawTriangle(20,20,70,40,40,80,YELLOW,FILL);
-    lcd.drawCircle(50,MAX_Y-50,28,CYAN,FILL);
-    lcd.drawRectangle(MAX_X-70,30,MAX_X-20,80,MAGENTA,FILL);
-    lcd.drawTriangle(MAX_X-60,MAX_Y-10,MAX_X-80,MAX_Y-40,MAX_X-20,MAX_Y-70,RED,FILL);
-    lcd.setTextColour(WHITE);
-    lcd.setTextSize(FONT5);    
-    lcd.setTextBackFill(TRANS); 
+    lcd.drawTriangle(20,20,70,40,40,80,SG_YELLOW,SG_FILL);
+    lcd.drawCircle(50,MAX_Y-50,28,SG_CYAN,SG_FILL);
+    lcd.drawRectangle(MAX_X-70,30,MAX_X-20,80,SG_MAGENTA,SG_FILL);
+    lcd.drawTriangle(MAX_X-60,MAX_Y-10,MAX_X-80,MAX_Y-40,MAX_X-20,MAX_Y-70,SG_RED,SG_FILL);
+    lcd.setTextColour(SG_WHITE);
+    lcd.setTextSize(SG_FONT5);    
+    lcd.setTextBackFill(SG_TRANS); 
     lcd.string(LCD_WIDTH/3,LCD_HEIGHT/3,MAX_X,MAX_Y,"PONG",0);
-    lcd.setTextColour(GREEN);
-    lcd.setTextSize(FONT2);        
+    lcd.setTextColour(SG_GREEN);
+    lcd.setTextSize(SG_FONT2);        
     lcd.string(LCD_WIDTH/8,LCD_HEIGHT/2,MAX_X,MAX_Y,"Touch screen to begin",0);
     delay(1000);
-    while(lcd.touchScreen(&point)==INVALID); //wait for a touch to begin
+    while(lcd.touchScreen(&point)==SG_INVALID); //wait for a touch to begin
     lcd.erase();
     //start the game
-    pong();               // Play until game over
+    pong();                   // Play until game over
   }
 }

@@ -1,5 +1,5 @@
 /*********************************************************
-VIZIC TECHNOLOGIES. COPYRIGHT 2019.
+VIZIC TECHNOLOGIES. COPYRIGHT 2020.
 THE DATASHEETS, SOFTWARE AND LIBRARIES ARE PROVIDED "AS IS." 
 VIZIC EXPRESSLY DISCLAIM ANY WARRANTY OF ANY KIND, WHETHER 
 EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO, THE IMPLIED 
@@ -21,7 +21,7 @@ OR OTHER SIMILAR COSTS.
 
 SMARTGPU2 lcd;              //create our object called LCD
 
-AXIS LCD_WIDTH, LCD_HEIGHT; //Variables to handle the screen resolution
+SG_AXIS LCD_WIDTH, LCD_HEIGHT; //Variables to handle the screen resolution
 
 //KEYBOARD DEFINITIONS
 #define LETTERSLOWER     0
@@ -49,7 +49,7 @@ const char spc []= {"[]{}#%^*+=:|~<>$-/\\_.,?!'*"};//10-9-7
 const char* keyboards[4]={lettL, lettU, num, spc};
   
 /*********************************************************/
-void drawSingleKey(char key, char keyboardType, ACTIVE state){ //draws the received key as "state"(SELECTED or DESELECTED)
+void drawSingleKey(char key, char keyboardType, SG_ACTIVE state){ //draws the received key as "state"(SELECTED or DESELECTED)
   unsigned int i=0;
   char *data = (char*)keyboards[keyboardType];
   char letter[2]={key,0};
@@ -98,22 +98,22 @@ void drawAllKeyboard(char keyboardType){
   char *data = (char*)keyboards[keyboardType];
   
   for(i=0;i<26;i++){ //go through all keyboard data
-    drawSingleKey(*data++, keyboardType, DESELECTED);
+    drawSingleKey(*data++, keyboardType, SG_DESELECTED);
   }
   //draw special keys
-  drawSingleKey(TYPE, keyboardType, DESELECTED);
-  drawSingleKey(DEL, keyboardType, DESELECTED);  
-  drawSingleKey(KEYCASE, keyboardType, DESELECTED);    
-  drawSingleKey(SPACE, keyboardType, DESELECTED);
-  drawSingleKey(OK, keyboardType, DESELECTED);  
+  drawSingleKey(TYPE, keyboardType, SG_DESELECTED);
+  drawSingleKey(DEL, keyboardType, SG_DESELECTED);  
+  drawSingleKey(KEYCASE, keyboardType, SG_DESELECTED);    
+  drawSingleKey(SPACE, keyboardType, SG_DESELECTED);
+  drawSingleKey(OK, keyboardType, SG_DESELECTED);  
 }
 
 /*********************************************************/
 char getKeyTouch(char keyboardType){ //ask for a touch and if VALID inside the keyboard returns the touched key
   char *data = (char*)keyboards[keyboardType];
-  POINT p;
+  SG_POINT p;
   
-  if(lcd.touchScreen(&p) == VALID){ //ask for touch, if VALID
+  if(lcd.touchScreen(&p) == SG_VALID){ //ask for touch, if VALID
     if(p.y > KEY_Y_TOP && p.y< (KEY_Y_TOP+KEYBOARD_Y_SIZE)){ //if touch inside keyboard
       p.y -= KEY_Y_TOP;                                      //substract
       p.y /= (KEYBOARD_Y_SIZE/4);                            //obtain row
@@ -171,15 +171,15 @@ void loop() { //main loop draw random colour, size and fill Arcs
   unsigned int currentX=5, lastX=5, currentY=5;
   char key = 0, currentKeyboard = LETTERSLOWER;
   
-  lcd.baudChange(BAUD6);           //for fast drawing we need a big baudRate
+  lcd.baudChange(SG_BAUD6);           //for fast drawing we need a big baudRate
 
-  lcd.drawGradientRect(0, 0, LCD_WIDTH-1, LCD_HEIGHT-1, MAGENTA, BLACK, VERTICAL); //draw a background
+  lcd.drawGradientRect(0, 0, LCD_WIDTH-1, LCD_HEIGHT-1, SG_MAGENTA, SG_BLACK, SG_VERTICAL); //draw a background
   
-  lcd.drawRectangle(5, 5, LCD_WIDTH-1-5, KEY_Y_TOP-5, WHITE, FILL); //draw text background
-  lcd.setTextColour(BLACK);                                             //set text colour as black
-  lcd.setTextSize(FONT2);                                               //set text size FONT2
-  
-  drawAllKeyboard(currentKeyboard);                                     //draw all keyboard
+  lcd.drawRectangle(5, 5, LCD_WIDTH-1-5, KEY_Y_TOP-5, SG_WHITE, SG_FILL); //draw text background
+  lcd.setTextColour(SG_BLACK);                                            //set text colour as black
+  lcd.setTextSize(SG_FONT2);                                              //set text size FONT2
+       
+  drawAllKeyboard(currentKeyboard);                                       //draw all keyboard
   
    while(1){
      while((key = getKeyTouch(currentKeyboard)) == 0x00);               //loop until get a valid key
@@ -190,7 +190,7 @@ void loop() { //main loop draw random colour, size and fill Arcs
          currentY += 20;                                                //jump 1 row in Y axis
          if(currentY >= (KEY_Y_TOP-5)){                                 //if we reach the start of the keyboard
            currentY=5;
-           lcd.drawRectangle(5, 5, LCD_WIDTH-1-5, KEY_Y_TOP-5, WHITE, FILL); //draw text background
+           lcd.drawRectangle(5, 5, LCD_WIDTH-1-5, KEY_Y_TOP-5, SG_WHITE, SG_FILL); //draw text background
          }
          lastX=5;                                                       //reset lastX       
          lcd.putLetter(lastX, currentY, key, &currentX);                //print key on new lastX and currentY            
@@ -205,7 +205,7 @@ void loop() { //main loop draw random colour, size and fill Arcs
           drawAllKeyboard(currentKeyboard);                             //update all keyboard
         break; 
         case DEL:
-          lcd.drawRectangle(5, 5, LCD_WIDTH-1-5, KEY_Y_TOP-5, WHITE, FILL); //draw text background
+          lcd.drawRectangle(5, 5, LCD_WIDTH-1-5, KEY_Y_TOP-5, SG_WHITE, SG_FILL); //draw text background
           lastX=5;                                                      //reset lastX           
           currentY=5;                                                   //reset currentY          
         break;
@@ -220,8 +220,8 @@ void loop() { //main loop draw random colour, size and fill Arcs
        }
      } 
      //draw the animated key
-     drawSingleKey(key, currentKeyboard, SELECTED);                     //draw the obtained key button as SELECTED
-     delay(200);                                                        //wait 200ms with key as SELECTED
-     drawSingleKey(key, currentKeyboard, DESELECTED);                   //draw the obtained key button as DESELECTED     
+     drawSingleKey(key, currentKeyboard, SG_SELECTED);                     //draw the obtained key button as SELECTED
+     delay(200);                                                           //wait 200ms with key as SELECTED
+     drawSingleKey(key, currentKeyboard, SG_DESELECTED);                   //draw the obtained key button as DESELECTED     
    }
 }

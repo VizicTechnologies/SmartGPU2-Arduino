@@ -1,5 +1,5 @@
 /*********************************************************
-VIZIC TECHNOLOGIES. COPYRIGHT 2014.
+VIZIC TECHNOLOGIES. COPYRIGHT 2020.
 THE DATASHEETS, SOFTWARE AND LIBRARIES ARE PROVIDED "AS IS." 
 VIZIC EXPRESSLY DISCLAIM ANY WARRANTY OF ANY KIND, WHETHER 
 EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO, THE IMPLIED 
@@ -28,15 +28,15 @@ OR OTHER SIMILAR COSTS.
 
 SMARTGPU2 lcd;              //create our object called lcd
 
-AXIS LCD_WIDTH, LCD_HEIGHT; //Variables to handle the screen resolution
+SG_AXIS LCD_WIDTH, LCD_HEIGHT; //Variables to handle the screen resolution
 
-FILERESULT res;             //create the variable that will store all SMARTGPU2 commands responses
+SG_FILERESULT res;             //create the variable that will store all SMARTGPU2 commands responses
 
 unsigned int row=10;
 
 //function that loops forever on error
-void die(unsigned char response){ //if the response is different than OK, print and loop forever
-  if(response!=F_OK){
+void error(unsigned char response){ //if the response is different than OK, print and loop forever
+  if(response!=SG_F_OK){
     lcd.string(10,row,LCD_WIDTH-1,LCD_HEIGHT-1,"Error on microSD... forever loop@",0);
     while(1);  
   }
@@ -63,14 +63,14 @@ void loop() { //main loop
     unsigned int dirs=0, files=0, i=0;        
     
     //strings config
-    lcd.setTextColour(GREEN);  
-    lcd.setTextSize(FONT1);    
+    lcd.setTextColour(SG_GREEN);  
+    lcd.setTextSize(SG_FONT1);    
     
     lcd.string(10,row,LCD_WIDTH-1,LCD_HEIGHT-1,"List dirs, files + print names demo!",0); row+=20;
-    lcd.setTextSize(FONT0);        
+    lcd.setTextSize(SG_FONT0);        
     lcd.string(10,row,LCD_WIDTH-1,LCD_HEIGHT-1,"List Dirs and Files...",0);             row+=15;
     res=lcd.SDFgetList(&dirs,&files);    //obtain dirs and files
-    die(res);
+    error(res);
     lcd.string(10,row,LCD_WIDTH-1,LCD_HEIGHT-1,"Dirs:",0);
     lcd.printNumber(40,row,dirs); //print the obtained directories
     lcd.string(70,row,LCD_WIDTH-1,LCD_HEIGHT-1,"Files:",0);    
@@ -81,7 +81,7 @@ void loop() { //main loop
     lcd.string(10,row,LCD_WIDTH-1,LCD_HEIGHT-1,"Dir Names--------------------",0);             row+=12;
     for(i=0;i<dirs;i++){
       res=lcd.SDFgetDirName(i,buffer); //get Dir number i name in buffer
-      die(res);
+      error(res);
       lcd.string(10,row,LCD_WIDTH-1,LCD_HEIGHT-1,buffer,0); row+=12;      //print the name if fit
     }
     
@@ -90,7 +90,7 @@ void loop() { //main loop
     lcd.string(10,row,LCD_WIDTH-1,LCD_HEIGHT-1,"File Names--------------------",0);             row+=12;
     for(i=0;i<files;i++){
       res=lcd.SDFgetFileName(i,buffer); //get Dir number i name in buffer
-      die(res);
+      error(res);
       lcd.string(10,row,LCD_WIDTH-1,LCD_HEIGHT-1,buffer,0); row+=12;      //print the name if fit
     }    
     
