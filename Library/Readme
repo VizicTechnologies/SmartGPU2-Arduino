@@ -1,7 +1,0 @@
-Where to place this entire folder(SMARTGPU2)?
-
-place it in the arduino C:/ installation folder path:
-
-\arduino\libraries\SMARTGPU2
-
-restart arduino IDE to recognize the library and enjoy!
