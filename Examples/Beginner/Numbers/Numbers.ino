@@ -1,5 +1,5 @@
 /*********************************************************
-VIZIC TECHNOLOGIES. COPYRIGHT 2014.
+VIZIC TECHNOLOGIES. COPYRIGHT 2020.
 THE DATASHEETS, SOFTWARE AND LIBRARIES ARE PROVIDED "AS IS." 
 VIZIC EXPRESSLY DISCLAIM ANY WARRANTY OF ANY KIND, WHETHER 
 EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO, THE IMPLIED 
@@ -37,12 +37,12 @@ void loop() { //main loop
   float floatNumber=0;
   int intNumber=0;
   
-  lcd.baudChange(BAUD6); //set high baudrate
+  lcd.baudChange(SG_BAUD6); //set high baudrate
   
   //config strings
-  lcd.setTextColour(YELLOW);    
-  lcd.setTextSize(FONT3); 
-  lcd.setTextBackFill(FILLED);
+  lcd.setTextColour(SG_YELLOW);    
+  lcd.setTextSize(SG_FONT3); 
+  lcd.setTextBackFill(SG_FILLED);
 
   //print numbers
   lcd.printNumber(0,   0, 514.65);   

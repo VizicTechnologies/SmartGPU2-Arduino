@@ -1,5 +1,5 @@
 /*********************************************************
-VIZIC TECHNOLOGIES. COPYRIGHT 2019.
+VIZIC TECHNOLOGIES. COPYRIGHT 2020.
 THE DATASHEETS, SOFTWARE AND LIBRARIES ARE PROVIDED "AS IS." 
 VIZIC EXPRESSLY DISCLAIM ANY WARRANTY OF ANY KIND, WHETHER 
 EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO, THE IMPLIED 
@@ -21,7 +21,7 @@ OR OTHER SIMILAR COSTS.
 
 SMARTGPU2 lcd;              //create our object called LCD
 
-AXIS LCD_WIDTH, LCD_HEIGHT; //Variables to handle the screen resolution
+SG_AXIS LCD_WIDTH, LCD_HEIGHT; //Variables to handle the screen resolution
 
 #define orange   0xFC0F
 #define brown    0xBBCA
@@ -45,36 +45,36 @@ void setup() { //initial setup
 /*********************************************************/
 void loop() { //main loop
  
-    lcd.baudChange(BAUD6);         //for fast drawing we need a big baudRate
+    lcd.baudChange(SG_BAUD6);         //for fast drawing we need a big baudRate
      
     //draw a background
-    lcd.drawGradientRect(0,0,LCD_WIDTH-1,LCD_HEIGHT-1,BLUE,BLACK,VERTICAL);                            //draw a gradient rectangle
+    lcd.drawGradientRect(0,0,LCD_WIDTH-1,LCD_HEIGHT-1,SG_BLUE,SG_BLACK,SG_VERTICAL);                   //draw a gradient rectangle
     
     //draw the house
-    lcd.drawRectangle(78,134,212,217,orange,FILL);                                                     //draw a rectangle
-    lcd.drawRectangle(78,134,212,217,BLACK,UNFILL);                                                    //draw a rectangle   
-    lcd.drawTriangle(75,133,216,133,146,63,RED,FILL);                                                  //draw a triangle     
-    lcd.drawTriangle(75,133,216,133,146,63,BLACK,UNFILL);                                              //draw a triangle     
-    lcd.drawRectangle(136,167,170,217,brown,FILL);                                                     //draw a rectangle
-    lcd.drawRectangle(136,167,170,217,BLACK,UNFILL);                                                   //draw a rectangle
-    lcd.drawCircle(106,160,15,ligBlue,FILL);                                                           //draw a circle
-    lcd.drawCircle(106,160,15,BLACK,UNFILL);                                                           //draw a circle    
-    lcd.drawEllipse(195,177,10,15,ligBlue,FILL);                                                       //draw an ellipse
-    lcd.drawEllipse(195,177,10,15,BLACK,UNFILL);                                                       //draw an ellipse
+    lcd.drawRectangle(78,134,212,217,orange,SG_FILL);                                                  //draw a rectangle
+    lcd.drawRectangle(78,134,212,217,SG_BLACK,SG_UNFILL);                                              //draw a rectangle   
+    lcd.drawTriangle(75,133,216,133,146,63,SG_RED,SG_FILL);                                            //draw a triangle     
+    lcd.drawTriangle(75,133,216,133,146,63,SG_BLACK,SG_UNFILL);                                        //draw a triangle     
+    lcd.drawRectangle(136,167,170,217,brown,SG_FILL);                                                  //draw a rectangle
+    lcd.drawRectangle(136,167,170,217,SG_BLACK,SG_UNFILL);                                             //draw a rectangle
+    lcd.drawCircle(106,160,15,ligBlue,SG_FILL);                                                        //draw a circle
+    lcd.drawCircle(106,160,15,SG_BLACK,SG_UNFILL);                                                     //draw a circle    
+    lcd.drawEllipse(195,177,10,15,ligBlue,SG_FILL);                                                    //draw an ellipse
+    lcd.drawEllipse(195,177,10,15,SG_BLACK,SG_UNFILL);                                                 //draw an ellipse
     
     //draw left tree
-    lcd.drawRectangle(25,157,45,218,brown,FILL);                                                       //draw a rectangle
-    lcd.drawRectangle(25,157,45,218,BLACK,UNFILL);                                                     //draw a rectangle       
-    lcd.drawEllipse(35,120,35,40,GREEN,FILL);                                                          //draw an ellipse
-    lcd.drawEllipse(35,120,35,40,BLACK,UNFILL);                                                        //draw an ellipse
+    lcd.drawRectangle(25,157,45,218,brown,SG_FILL);                                                    //draw a rectangle
+    lcd.drawRectangle(25,157,45,218,SG_BLACK,SG_UNFILL);                                               //draw a rectangle       
+    lcd.drawEllipse(35,120,35,40,SG_GREEN,SG_FILL);                                                    //draw an ellipse
+    lcd.drawEllipse(35,120,35,40,SG_BLACK,SG_UNFILL);                                                  //draw an ellipse
     //draw right tree
-    lcd.drawRectangle(270,167,283,218,brown,FILL);                                                     //draw a rectangle
-    lcd.drawRectangle(270,167,283,218,BLACK,UNFILL);                                                   //draw a rectangle       
-    lcd.drawCircle(277,134,35,GREEN,FILL);                                                             //draw a circle
-    lcd.drawCircle(277,134,35,BLACK,UNFILL);                                                           //draw a circle  
+    lcd.drawRectangle(270,167,283,218,brown,SG_FILL);                                                  //draw a rectangle
+    lcd.drawRectangle(270,167,283,218,SG_BLACK,SG_UNFILL);                                             //draw a rectangle       
+    lcd.drawCircle(277,134,35,SG_GREEN,SG_FILL);                                                       //draw a circle
+    lcd.drawCircle(277,134,35,SG_BLACK,SG_UNFILL);                                                     //draw a circle  
     
     //draw grass
-    lcd.drawLine(5,218,314,218,GREEN);                                                                 //draw a line    
+    lcd.drawLine(5,218,314,218,SG_GREEN);                                                              //draw a line    
     
     //loop forever
     while(1);

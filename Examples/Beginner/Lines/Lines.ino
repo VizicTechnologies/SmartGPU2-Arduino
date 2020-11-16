@@ -1,5 +1,5 @@
 /*********************************************************
-VIZIC TECHNOLOGIES. COPYRIGHT 2019.
+VIZIC TECHNOLOGIES. COPYRIGHT 2020.
 THE DATASHEETS, SOFTWARE AND LIBRARIES ARE PROVIDED "AS IS." 
 VIZIC EXPRESSLY DISCLAIM ANY WARRANTY OF ANY KIND, WHETHER 
 EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO, THE IMPLIED 
@@ -21,7 +21,7 @@ OR OTHER SIMILAR COSTS.
 
 SMARTGPU2 lcd;              //create our object called LCD
 
-AXIS LCD_WIDTH, LCD_HEIGHT; //Variables to handle the screen resolution
+SG_AXIS LCD_WIDTH, LCD_HEIGHT; //Variables to handle the screen resolution
 
 /*********************************************************/
 /*********************************************************/
@@ -40,10 +40,10 @@ void setup() { //initial setup
 /*********************************************************/
 /*********************************************************/
 void loop() { //main loop draw random colour and size lines
-  POINT p1, p2;
-  COLOUR colour;
+  SG_POINT p1, p2;
+  SG_COLOUR colour;
 
-  lcd.baudChange(BAUD6);            //for fast drawing we need a big baudRate
+  lcd.baudChange(SG_BAUD6);         //for fast drawing we need a big baudRate
     
   while(1){//forever
     randomSeed(random(0,65536));    //set different seeds to obtain a good random number 
@@ -54,7 +54,7 @@ void loop() { //main loop draw random colour and size lines
     colour=random(0,65536);         //get a random number 0-65535
       
     //draw the line
-    if(lcd.drawLine(p1.x,p1.y,p2.x,p2.y,colour) != 'O'){ //draw a line
+    if(lcd.drawLine(p1.x,p1.y,p2.x,p2.y,colour) != SG_OK){ //draw a line
       while(1);                    //loop forever if different than 'O'--OK
     }
   }

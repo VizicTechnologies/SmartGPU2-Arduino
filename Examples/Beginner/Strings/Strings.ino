@@ -1,5 +1,5 @@
 /*********************************************************
-VIZIC TECHNOLOGIES. COPYRIGHT 2019.
+VIZIC TECHNOLOGIES. COPYRIGHT 2020.
 THE DATASHEETS, SOFTWARE AND LIBRARIES ARE PROVIDED "AS IS." 
 VIZIC EXPRESSLY DISCLAIM ANY WARRANTY OF ANY KIND, WHETHER 
 EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO, THE IMPLIED 
@@ -21,7 +21,7 @@ OR OTHER SIMILAR COSTS.
 
 SMARTGPU2 lcd;              //create our object called LCD
 
-AXIS LCD_WIDTH, LCD_HEIGHT; //Variables to handle the screen resolution
+SG_AXIS LCD_WIDTH, LCD_HEIGHT; //Variables to handle the screen resolution
 
 /*********************************************************/
 /*********************************************************/
@@ -43,44 +43,44 @@ void loop() { //main loop
   
   while(1){    
     //config strings
-    lcd.setTextColour(YELLOW);    
-    lcd.setTextSize(FONT0);
+    lcd.setTextColour(SG_YELLOW);    
+    lcd.setTextSize(SG_FONT0);
     lcd.string(0,0,LCD_WIDTH-1,LCD_HEIGHT-1,"0123456789",0);                   //write a string on the screen
     delay(500);    
-    lcd.setTextSize(FONT1);
+    lcd.setTextSize(SG_FONT1);
     lcd.string(0,15,LCD_WIDTH-1,LCD_HEIGHT-1,"0123456789",0);                  //write a string on the screen
     delay(500);    
-    lcd.setTextSize(FONT2);
+    lcd.setTextSize(SG_FONT2);
     lcd.string(0,34,LCD_WIDTH-1,LCD_HEIGHT-1,"0123456789",0);                  //write a string on the screen
     delay(500);    
-    lcd.setTextSize(FONT3);
+    lcd.setTextSize(SG_FONT3);
     lcd.string(0,58,LCD_WIDTH-1,LCD_HEIGHT-1,"0123456789",0);                  //write a string on the screen
     delay(500);    
-    lcd.setTextSize(FONT4);
+    lcd.setTextSize(SG_FONT4);
     lcd.string(0,85,LCD_WIDTH-1,LCD_HEIGHT-1,"0123456789",0);                  //write a string on the screen
     delay(500);        
-    lcd.setTextSize(FONT5);
+    lcd.setTextSize(SG_FONT5);
     lcd.string(0,120,LCD_WIDTH-1,LCD_HEIGHT-1,"0123456789",0);                 //write a string on the screen
     delay(500);   
-    lcd.setTextSize(FONT6);
+    lcd.setTextSize(SG_FONT6);
     lcd.string(0,160,LCD_WIDTH-1,LCD_HEIGHT-1,"0123456789",0);                 //write a string on the screen
     delay(3000);       
     lcd.erase();                                              //erase screen      
     
-    lcd.setTextColour(GREEN);        
-    lcd.setTextSize(FONT7);
+    lcd.setTextColour(SG_GREEN);        
+    lcd.setTextSize(SG_FONT7);
     lcd.string(0,0,LCD_WIDTH-1,LCD_HEIGHT-1,"01234567",0);                     //write a string on the screen
     delay(500);    
-    lcd.setTextSize(FONT8);
+    lcd.setTextSize(SG_FONT8);
     lcd.string(0,65,LCD_WIDTH-1,LCD_HEIGHT-1,"0123456",0);                     //write a string on the screen
     delay(500);    
-    lcd.setTextSize(FONT9);
+    lcd.setTextSize(SG_FONT9);
     lcd.string(0,133,LCD_WIDTH-1,LCD_HEIGHT-1,"012345",0);                     //write a string on the screen
     delay(3000);       
     lcd.erase();                                              //erase screen 
     
-    lcd.setTextColour(BLUE);      
-    lcd.setTextSize(FONT10);
+    lcd.setTextColour(SG_BLUE);      
+    lcd.setTextSize(SG_FONT10);
     lcd.string(0,0,LCD_WIDTH-1,LCD_HEIGHT-1,"01234",0);                        //write a string on the screen
     delay(2000);       
     lcd.erase();                                              //erase screen  

@@ -1,5 +1,5 @@
 /*********************************************************
-VIZIC TECHNOLOGIES. COPYRIGHT 2019.
+VIZIC TECHNOLOGIES. COPYRIGHT 2020.
 THE DATASHEETS, SOFTWARE AND LIBRARIES ARE PROVIDED "AS IS." 
 VIZIC EXPRESSLY DISCLAIM ANY WARRANTY OF ANY KIND, WHETHER 
 EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO, THE IMPLIED 
@@ -21,7 +21,7 @@ OR OTHER SIMILAR COSTS.
 
 SMARTGPU2 lcd;              //create our object called LCD
 
-AXIS LCD_WIDTH, LCD_HEIGHT; //Variables to handle the screen resolution
+SG_AXIS LCD_WIDTH, LCD_HEIGHT; //Variables to handle the screen resolution
 
 /*********************************************************/
 /*********************************************************/
@@ -40,13 +40,13 @@ void setup() { //initial setup
 /*********************************************************/
 /*********************************************************/
 void loop() { //main loop draw random colour, size and fill Arcs
-    POINT point;
-    RADIUS radiusx, radiusy;
-    COLOUR colour;
-    FILLGEOM fill;
+    SG_POINT point;
+    SG_RADIUS radiusx, radiusy;
+    SG_COLOUR colour;
+    SG_FILLGEOM fill;
     unsigned int quadrant;
     
-    lcd.baudChange(BAUD6);           //for fast drawing we need a big baudRate
+    lcd.baudChange(SG_BAUD6);        //for fast drawing we need a big baudRate
     
     while(1){//forever
       randomSeed(random(0,65536));   //set different seeds to obtain a good random number 
@@ -56,10 +56,10 @@ void loop() { //main loop draw random colour, size and fill Arcs
       radiusy=random(5,101);         //get a random number 5-100
       quadrant=random(1,5);          //get a random number 1-4
       colour=random(0,65536);        //get a random number 0-65535
-      fill=(FILLGEOM)random(0,2);    //get a random number 0-1
+      fill=(SG_FILLGEOM)random(0,2); //get a random number 0-1
       
       //draw the Arc
-      if(lcd.drawArc(point.x, point.y, radiusx, radiusy, (ARCQUADRANT)quadrant, colour, fill) != 'O'){  //draw an Arc
+      if(lcd.drawArc(point.x, point.y, radiusx, radiusy, (SG_ARCQUADRANT)quadrant, colour, fill) != SG_OK){  //draw an Arc
         while(1);                    //loop forever if different than 'O'--OK
       }      
     }
