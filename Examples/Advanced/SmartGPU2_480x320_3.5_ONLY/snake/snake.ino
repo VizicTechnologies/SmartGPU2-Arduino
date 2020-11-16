@@ -102,17 +102,17 @@ int inputZ = 0;
 
 char momentumX = 1, momentumY = 0;
 
-FILLGEOM solidFill = (FILLGEOM)1;
-FILLGEOM hollowFill = (FILLGEOM)0;
+SG_FILLGEOM solidFill = (SG_FILLGEOM)1;
+SG_FILLGEOM hollowFill = (SG_FILLGEOM)0;
 
 #ifdef USE_TOUCHSCREEN
-POINT point;
+SG_POINT point;
 int SCREEN_X_THIRD =  ((MAX_X_LANDSCAPE + 1) / 3);
 int SCREEN_Y_THIRD =  ((MAX_Y_LANDSCAPE + 1) / 3);
 #endif
 
 #ifdef USE_ACCELEROMETER
-POINT point;
+SG_POINT point;
 ADXL345 adxl;
 #endif
 
@@ -120,7 +120,7 @@ void setup() {
     
   lcd.init();  
   lcd.start(); 
-  lcd.baudChange(BAUD4); 
+  lcd.baudChange(SG_BAUD4); 
     
   pinMode(r1, OUTPUT);
   pinMode(r2, OUTPUT);
@@ -462,9 +462,9 @@ void moveSnake(int coords) {
   snake[head] = coords;
   tail++;  if (tail == length) { tail = 0; }
   
-  lcd.drawRectangle(getCoordX(snake[head]) * CELL_WIDTH, getCoordY(snake[head]) * CELL_HEIGHT, (getCoordX(snake[head]) * CELL_WIDTH) + (CELL_WIDTH - 1), (getCoordY(snake[head]) * CELL_HEIGHT) + (CELL_HEIGHT - 1), BLACK, solidFill);
-  lcd.drawCircle((getCoordX(snake[head]) * CELL_WIDTH) + CELL_WIDTH_HALF - 1, (getCoordY(snake[head]) * CELL_HEIGHT) + CELL_HEIGHT_HALF - 1, CELL_RADIUS, GREEN, solidFill);
-  lcd.drawRectangle(getCoordX(oldTail) * CELL_WIDTH, getCoordY(oldTail) * CELL_HEIGHT, (getCoordX(oldTail) * CELL_WIDTH) + (CELL_WIDTH - 1), (getCoordY(oldTail) * CELL_HEIGHT) + (CELL_HEIGHT - 1), BLACK, solidFill);
+  lcd.drawRectangle(getCoordX(snake[head]) * CELL_WIDTH, getCoordY(snake[head]) * CELL_HEIGHT, (getCoordX(snake[head]) * CELL_WIDTH) + (CELL_WIDTH - 1), (getCoordY(snake[head]) * CELL_HEIGHT) + (CELL_HEIGHT - 1), SG_BLACK, solidFill);
+  lcd.drawCircle((getCoordX(snake[head]) * CELL_WIDTH) + CELL_WIDTH_HALF - 1, (getCoordY(snake[head]) * CELL_HEIGHT) + CELL_HEIGHT_HALF - 1, CELL_RADIUS, SG_GREEN, solidFill);
+  lcd.drawRectangle(getCoordX(oldTail) * CELL_WIDTH, getCoordY(oldTail) * CELL_HEIGHT, (getCoordX(oldTail) * CELL_WIDTH) + (CELL_WIDTH - 1), (getCoordY(oldTail) * CELL_HEIGHT) + (CELL_HEIGHT - 1), SG_BLACK, solidFill);
   
 }
 
@@ -481,8 +481,8 @@ void moveSnakeAndGrow(int coords) {
   tail++;  
   snake[head] = coords; 
 
-  lcd.drawRectangle(getCoordX(snake[head]) * CELL_WIDTH, getCoordY(snake[head]) * CELL_HEIGHT, (getCoordX(snake[head]) * CELL_WIDTH) + (CELL_WIDTH - 1), (getCoordY(snake[head]) * CELL_HEIGHT) + (CELL_HEIGHT - 1), BLACK, solidFill);
-  lcd.drawCircle((getCoordX(snake[head]) * CELL_WIDTH) + CELL_WIDTH_HALF - 1, (getCoordY(snake[head]) * CELL_HEIGHT) + CELL_HEIGHT_HALF - 1, CELL_RADIUS, GREEN, solidFill);
+  lcd.drawRectangle(getCoordX(snake[head]) * CELL_WIDTH, getCoordY(snake[head]) * CELL_HEIGHT, (getCoordX(snake[head]) * CELL_WIDTH) + (CELL_WIDTH - 1), (getCoordY(snake[head]) * CELL_HEIGHT) + (CELL_HEIGHT - 1), SG_BLACK, solidFill);
+  lcd.drawCircle((getCoordX(snake[head]) * CELL_WIDTH) + CELL_WIDTH_HALF - 1, (getCoordY(snake[head]) * CELL_HEIGHT) + CELL_HEIGHT_HALF - 1, CELL_RADIUS, SG_GREEN, solidFill);
   
 }
 
@@ -1010,7 +1010,7 @@ void populateScreen_Frame() {
 
 void drawScreen() {
   
-  lcd.setEraseBackColour(BLACK);
+  lcd.setEraseBackColour(SG_BLACK);
   lcd.erase();
  
   for (byte y=0; y < CELL_MAXIMUM_Y; y++) {
@@ -1049,11 +1049,11 @@ void drawScreen() {
 void drawScoreBoard() {
 
   lcd.setTextColour(GREY2);
-  lcd.setTextSize(FONT0);
+  lcd.setTextSize(SG_FONT0);
   lcd.string(0, (CELL_MAXIMUM_Y * CELL_HEIGHT) + 3, MAX_X_LANDSCAPE, MAX_Y_LANDSCAPE, "Level ", 0);
   itoa(level + 1, buf, 10);
   lcd.setTextColour(GREY4);
-  lcd.drawRectangle(39, (CELL_MAXIMUM_Y * CELL_HEIGHT) + 3, 50, MAX_Y_LANDSCAPE, BLACK, solidFill);
+  lcd.drawRectangle(39, (CELL_MAXIMUM_Y * CELL_HEIGHT) + 3, 50, MAX_Y_LANDSCAPE, SG_BLACK, solidFill);
   lcd.string(39, (CELL_MAXIMUM_Y * CELL_HEIGHT) + 3, MAX_X_LANDSCAPE, MAX_Y_LANDSCAPE, buf, 0);
 
   itoa(fruit, buf, 10);
@@ -1064,7 +1064,7 @@ void drawScoreBoard() {
   buf[index] =' '; index++;
   buf[index] ='2'; index++;
   buf[index] ='5'; index++;
-  lcd.drawRectangle(73, (CELL_MAXIMUM_Y * CELL_HEIGHT) + 3, MAX_X_LANDSCAPE, MAX_Y_LANDSCAPE, BLACK, solidFill);
+  lcd.drawRectangle(73, (CELL_MAXIMUM_Y * CELL_HEIGHT) + 3, MAX_X_LANDSCAPE, MAX_Y_LANDSCAPE, SG_BLACK, solidFill);
   lcd.string(73, (CELL_MAXIMUM_Y * CELL_HEIGHT) + 3, MAX_X_LANDSCAPE, MAX_Y_LANDSCAPE, buf, 0);
   
 }
@@ -1074,7 +1074,7 @@ void drawSnake() {
   
   for (byte x=0; x < length; x++) {
 
-      lcd.drawCircle((getCoordX(snake[x]) * CELL_WIDTH) + CELL_WIDTH_HALF - 1,  (getCoordY(snake[x]) * CELL_HEIGHT) + CELL_HEIGHT_HALF - 1, CELL_RADIUS, GREEN, solidFill); 
+      lcd.drawCircle((getCoordX(snake[x]) * CELL_WIDTH) + CELL_WIDTH_HALF - 1,  (getCoordY(snake[x]) * CELL_HEIGHT) + CELL_HEIGHT_HALF - 1, CELL_RADIUS, SG_GREEN, solidFill); 
     
   }
   
@@ -1086,20 +1086,20 @@ void drawCountDown() {
   // Draw label ..
     
   lcd.setTextColour(GREY5);    
-  lcd.setTextSize(FONT1);
+  lcd.setTextSize(SG_FONT1);
   lcd.drawRectangle(COUNTDOWN_LEVEL_LEFT, COUNTDOWN_TOP, COUNTDOWN_LEVEL_LEFT + COUNTDOWN_LEVEL_WIDTH, COUNTDOWN_TOP + COUNTDOWN_HEIGHT, GREY1, solidFill);  
-  lcd.orientation(PORTRAIT_LOW);
+  lcd.orientation(SG_PORTRAIT_LOW);
   lcd.string(COUNTDOWN_LABEL_X, COUNTDOWN_LABEL_Y, MAX_X_PORTRAIT, MAX_Y_PORTRAIT, "Level", 0);
   itoa((level + 1), buf, 10);
   lcd.string(COUNTDOWN_COUNTL_X, COUNTDOWN_LABEL_Y, MAX_X_PORTRAIT, MAX_Y_PORTRAIT, buf, 0);
-  lcd.orientation(LANDSCAPE_LEFT);
+  lcd.orientation(SG_LANDSCAPE_LEFT);
 
-  lcd.setTextColour(WHITE);
-  lcd.setTextSize(FONT7);
+  lcd.setTextColour(SG_WHITE);
+  lcd.setTextSize(SG_FONT7);
 
   for (byte x=3; x>=1; x--) {
   
-    lcd.drawRectangle(COUNTDOWN_MAIN_LEFT, COUNTDOWN_TOP, COUNTDOWN_MAIN_LEFT + COUNTDOWN_MAIN_WIDTH, COUNTDOWN_TOP + COUNTDOWN_HEIGHT, GREY3, FILL);
+    lcd.drawRectangle(COUNTDOWN_MAIN_LEFT, COUNTDOWN_TOP, COUNTDOWN_MAIN_LEFT + COUNTDOWN_MAIN_WIDTH, COUNTDOWN_TOP + COUNTDOWN_HEIGHT, GREY3, SG_FILL);
     itoa(x, buf, 10);
     lcd.string(COUNTDOWN_MAIN_LEFT + 67, COUNTDOWN_TOP + 40, MAX_X_LANDSCAPE, MAX_Y_LANDSCAPE, buf, 0);
    
@@ -1107,7 +1107,7 @@ void drawCountDown() {
     
   }
 
-  lcd.drawRectangle(COUNTDOWN_MAIN_LEFT, COUNTDOWN_TOP, COUNTDOWN_MAIN_LEFT + COUNTDOWN_MAIN_WIDTH, COUNTDOWN_TOP + COUNTDOWN_HEIGHT, GREY3, FILL);
+  lcd.drawRectangle(COUNTDOWN_MAIN_LEFT, COUNTDOWN_TOP, COUNTDOWN_MAIN_LEFT + COUNTDOWN_MAIN_WIDTH, COUNTDOWN_TOP + COUNTDOWN_HEIGHT, GREY3, SG_FILL);
   lcd.string(COUNTDOWN_MAIN_LEFT + 25, COUNTDOWN_TOP + 40, MAX_X_LANDSCAPE, MAX_Y_LANDSCAPE, "GO !", 0);
   delay(500);
   
@@ -1168,7 +1168,7 @@ void drawItem(byte cellX, byte cellY, byte itemType) {
   switch (itemType) {
     
     case BOARD_BLANK:
-      lcd.drawRectangle(x, y, x + CELL_WIDTH - 1, y + CELL_HEIGHT - 1, BLACK, solidFill);
+      lcd.drawRectangle(x, y, x + CELL_WIDTH - 1, y + CELL_HEIGHT - 1, SG_BLACK, solidFill);
       break;
         
     case BOARD_APPLE:
@@ -1177,75 +1177,75 @@ void drawItem(byte cellX, byte cellY, byte itemType) {
         
         case MODE_10:
         
-          lcd.drawLine(x + 6, y, x + 9, y, GREEN);
-          lcd.drawLine(x + 5, y + 1, x + 8, y + 1, GREEN);
-          lcd.putPixel(x + 5, y + 2, GREEN);
-          lcd.drawLine(x + 2, y + 1, x + 3, y + 1, RED);
-          lcd.drawLine(x + 1, y + 2, x + 4, y + 2, RED);
-          lcd.drawLine(x + 6, y + 2, x + 7, y + 2, RED);
-          lcd.drawLine(x, y + 3, x + 8, y + 3, RED);
-          lcd.drawLine(x, y + 4, x + 8, y + 4, RED);
-          lcd.drawLine(x, y + 5, x + 8, y + 5, RED);
-          lcd.drawLine(x, y + 6, x + 8, y + 6, RED);
-          lcd.drawLine(x, y + 7, x + 8, y + 7, RED);
-          lcd.drawLine(x + 1, y + 8, x + 7, y + 8, RED);
-          lcd.drawLine(x + 2, y + 9, x + 3, y + 9, RED);
-          lcd.drawLine(x + 5, y + 9, x + 6, y + 9, RED);
+          lcd.drawLine(x + 6, y, x + 9, y, SG_GREEN);
+          lcd.drawLine(x + 5, y + 1, x + 8, y + 1, SG_GREEN);
+          lcd.putPixel(x + 5, y + 2, SG_GREEN);
+          lcd.drawLine(x + 2, y + 1, x + 3, y + 1, SG_RED);
+          lcd.drawLine(x + 1, y + 2, x + 4, y + 2, SG_RED);
+          lcd.drawLine(x + 6, y + 2, x + 7, y + 2, SG_RED);
+          lcd.drawLine(x, y + 3, x + 8, y + 3, SG_RED);
+          lcd.drawLine(x, y + 4, x + 8, y + 4, SG_RED);
+          lcd.drawLine(x, y + 5, x + 8, y + 5, SG_RED);
+          lcd.drawLine(x, y + 6, x + 8, y + 6, SG_RED);
+          lcd.drawLine(x, y + 7, x + 8, y + 7, SG_RED);
+          lcd.drawLine(x + 1, y + 8, x + 7, y + 8, SG_RED);
+          lcd.drawLine(x + 2, y + 9, x + 3, y + 9, SG_RED);
+          lcd.drawLine(x + 5, y + 9, x + 6, y + 9, SG_RED);
           break;
   
         case MODE_16:
         
-          lcd.drawLine(x + 10, y, x + 13, y, GREEN);       
-          lcd.drawLine(x + 9, y + 1, x + 15, y + 1, GREEN);       
-          lcd.drawLine(x + 8, y + 2, x + 14, y + 2, GREEN);       
-          lcd.drawLine(x + 8, y + 3, x + 9, y + 3, GREEN);       
-          lcd.drawLine(x + 4, y + 1, x + 4, y + 1, RED);
-          lcd.drawLine(x + 2, y + 2, x + 7, y + 2, RED);
-          lcd.drawLine(x + 1, y + 3, x + 7, y + 3, RED);
-          lcd.drawLine(x + 10, y + 3, x + 13, y + 3, RED);
-          lcd.drawLine(x + 1, y + 4, x + 13, y + 4, RED);
-          lcd.drawLine(x, y + 5, x + 14, y + 5, RED);
-          lcd.drawLine(x, y + 6, x + 14, y + 6, RED);
-          lcd.drawLine(x, y + 7, x + 14, y + 7, RED);
-          lcd.drawLine(x, y + 8, x + 14, y + 8, RED);
-          lcd.drawLine(x, y + 9, x + 14, y + 9, RED);
-          lcd.drawLine(x, y + 10, x + 14, y + 10, RED);
-          lcd.drawLine(x, y + 11, x + 14, y + 11, RED);
-          lcd.drawLine(x, y + 12, x + 14, y + 12, RED);
-          lcd.drawLine(x + 1, y + 13, x + 13, y + 13, RED);
-          lcd.drawLine(x + 2, y + 14, x + 12, y + 14, RED);
-          lcd.drawLine(x + 4, y + 15, x + 6, y + 15, RED);
-          lcd.drawLine(x + 8, y + 15, x + 10, y + 15, RED);
+          lcd.drawLine(x + 10, y, x + 13, y, SG_GREEN);       
+          lcd.drawLine(x + 9, y + 1, x + 15, y + 1, SG_GREEN);       
+          lcd.drawLine(x + 8, y + 2, x + 14, y + 2, SG_GREEN);       
+          lcd.drawLine(x + 8, y + 3, x + 9, y + 3, SG_GREEN);       
+          lcd.drawLine(x + 4, y + 1, x + 4, y + 1, SG_RED);
+          lcd.drawLine(x + 2, y + 2, x + 7, y + 2, SG_RED);
+          lcd.drawLine(x + 1, y + 3, x + 7, y + 3, SG_RED);
+          lcd.drawLine(x + 10, y + 3, x + 13, y + 3, SG_RED);
+          lcd.drawLine(x + 1, y + 4, x + 13, y + 4, SG_RED);
+          lcd.drawLine(x, y + 5, x + 14, y + 5, SG_RED);
+          lcd.drawLine(x, y + 6, x + 14, y + 6, SG_RED);
+          lcd.drawLine(x, y + 7, x + 14, y + 7, SG_RED);
+          lcd.drawLine(x, y + 8, x + 14, y + 8, SG_RED);
+          lcd.drawLine(x, y + 9, x + 14, y + 9, SG_RED);
+          lcd.drawLine(x, y + 10, x + 14, y + 10, SG_RED);
+          lcd.drawLine(x, y + 11, x + 14, y + 11, SG_RED);
+          lcd.drawLine(x, y + 12, x + 14, y + 12, SG_RED);
+          lcd.drawLine(x + 1, y + 13, x + 13, y + 13, SG_RED);
+          lcd.drawLine(x + 2, y + 14, x + 12, y + 14, SG_RED);
+          lcd.drawLine(x + 4, y + 15, x + 6, y + 15, SG_RED);
+          lcd.drawLine(x + 8, y + 15, x + 10, y + 15, SG_RED);
           break;
          
         case MODE_20:
         
-          lcd.drawLine(x + 12, y, x + 16, y, GREEN);       
-          lcd.drawLine(x + 10, y + 1, x + 19, y + 1, GREEN);       
-          lcd.drawLine(x + 9, y + 2, x + 18, y + 2, GREEN);       
-          lcd.drawLine(x + 9, y + 3, x + 9, y + 3, GREEN);       
-          lcd.drawLine(x + 11, y + 3, x + 16, y + 3, GREEN);       
-          lcd.drawLine(x + 12, y + 4, x + 14, y + 4, GREEN);       
-          lcd.drawLine(x + 3, y + 3, x + 7, y + 3, RED);
-          lcd.drawLine(x + 10, y + 3, x + 10, y + 3, RED);
-          lcd.drawLine(x + 2, y + 4, x + 11, y + 4, RED);
-          lcd.drawLine(x + 15, y + 4, x + 16, y + 4, RED);
-          lcd.drawLine(x + 1, y + 5, x + 17, y + 5, RED);
-          lcd.drawLine(x, y + 6, x + 18, y + 6, RED);
-          lcd.drawLine(x, y + 7, x + 18, y + 7, RED);
-          lcd.drawLine(x, y + 8, x + 18, y + 8, RED);
-          lcd.drawLine(x, y + 9, x + 18, y + 9, RED);
-          lcd.drawLine(x, y + 10, x + 18, y + 10, RED);
-          lcd.drawLine(x, y + 11, x + 18, y + 11, RED);
-          lcd.drawLine(x, y + 12, x + 18, y + 12, RED);
-          lcd.drawLine(x, y + 13, x + 18, y + 13, RED);
-          lcd.drawLine(x, y + 14, x + 18, y + 14, RED);
-          lcd.drawLine(x + 1, y + 15, x + 17, y + 15, RED);
-          lcd.drawLine(x + 1, y + 16, x + 17, y + 16, RED);
-          lcd.drawLine(x + 2, y + 17, x + 16, y + 17, RED);
-          lcd.drawLine(x + 3, y + 18, x + 15, y + 18, RED);
-          lcd.drawLine(x + 4, y + 19, x + 8, y + 19, RED);
-          lcd.drawLine(x + 11, y + 19, x + 14, y + 19, RED);
+          lcd.drawLine(x + 12, y, x + 16, y, SG_GREEN);       
+          lcd.drawLine(x + 10, y + 1, x + 19, y + 1, SG_GREEN);       
+          lcd.drawLine(x + 9, y + 2, x + 18, y + 2, SG_GREEN);       
+          lcd.drawLine(x + 9, y + 3, x + 9, y + 3, SG_GREEN);       
+          lcd.drawLine(x + 11, y + 3, x + 16, y + 3, SG_GREEN);       
+          lcd.drawLine(x + 12, y + 4, x + 14, y + 4, SG_GREEN);       
+          lcd.drawLine(x + 3, y + 3, x + 7, y + 3, SG_RED);
+          lcd.drawLine(x + 10, y + 3, x + 10, y + 3, SG_RED);
+          lcd.drawLine(x + 2, y + 4, x + 11, y + 4, SG_RED);
+          lcd.drawLine(x + 15, y + 4, x + 16, y + 4, SG_RED);
+          lcd.drawLine(x + 1, y + 5, x + 17, y + 5, SG_RED);
+          lcd.drawLine(x, y + 6, x + 18, y + 6, SG_RED);
+          lcd.drawLine(x, y + 7, x + 18, y + 7, SG_RED);
+          lcd.drawLine(x, y + 8, x + 18, y + 8, SG_RED);
+          lcd.drawLine(x, y + 9, x + 18, y + 9, SG_RED);
+          lcd.drawLine(x, y + 10, x + 18, y + 10, SG_RED);
+          lcd.drawLine(x, y + 11, x + 18, y + 11, SG_RED);
+          lcd.drawLine(x, y + 12, x + 18, y + 12, SG_RED);
+          lcd.drawLine(x, y + 13, x + 18, y + 13, SG_RED);
+          lcd.drawLine(x, y + 14, x + 18, y + 14, SG_RED);
+          lcd.drawLine(x + 1, y + 15, x + 17, y + 15, SG_RED);
+          lcd.drawLine(x + 1, y + 16, x + 17, y + 16, SG_RED);
+          lcd.drawLine(x + 2, y + 17, x + 16, y + 17, SG_RED);
+          lcd.drawLine(x + 3, y + 18, x + 15, y + 18, SG_RED);
+          lcd.drawLine(x + 4, y + 19, x + 8, y + 19, SG_RED);
+          lcd.drawLine(x + 11, y + 19, x + 14, y + 19, SG_RED);
           break;
         
       }
@@ -1257,18 +1257,18 @@ void drawItem(byte cellX, byte cellY, byte itemType) {
         
         case MODE_10:
  
-          lcd.drawLine(x + 9, y, x + 7, y + 2, RED);
-          lcd.drawLine(x + 7, y, x + 7, y + 1, YELLOW);
-          lcd.drawLine(x + 8, y + 2, x + 9, y + 2, YELLOW);
+          lcd.drawLine(x + 9, y, x + 7, y + 2, SG_RED);
+          lcd.drawLine(x + 7, y, x + 7, y + 1, SG_YELLOW);
+          lcd.drawLine(x + 8, y + 2, x + 9, y + 2, SG_YELLOW);
           lcd.drawRectangle(x + 2, y + 2, x + 5, y + 9, 0x528a, solidFill);
           lcd.drawRectangle(x, y + 4, x + 7, y + 7, 0x528a, solidFill);
           lcd.drawRectangle(x + 1, y + 3, x + 6, y + 8, 0x528a, solidFill);
           break;
           
         case MODE_16:
-          lcd.drawLine(x + 13, y + 2, x + 15, y, RED);
-          lcd.drawLine(x + 12, y, x + 12, y + 1, YELLOW);
-          lcd.drawLine(x + 14, y + 3, x + 15, y + 3, YELLOW);
+          lcd.drawLine(x + 13, y + 2, x + 15, y, SG_RED);
+          lcd.drawLine(x + 12, y, x + 12, y + 1, SG_YELLOW);
+          lcd.drawLine(x + 14, y + 3, x + 15, y + 3, SG_YELLOW);
           lcd.drawRectangle(x + 5, y + 2, x + 8, y + 15, 0x528a, solidFill);
           lcd.drawRectangle(x + 3, y + 3, x + 10, y + 14, 0x528a, solidFill);
           lcd.drawRectangle(x + 2, y + 4, x + 11, y + 13, 0x528a, solidFill);
@@ -1279,9 +1279,9 @@ void drawItem(byte cellX, byte cellY, byte itemType) {
           break;
           
         case MODE_20:
-          lcd.drawLine(x + 17, y + 2, x + 19, y, RED);
-          lcd.drawLine(x + 16, y, x + 16, y + 1, YELLOW);
-          lcd.drawLine(x + 18, y + 3, x + 19, y + 3, YELLOW);
+          lcd.drawLine(x + 17, y + 2, x + 19, y, SG_RED);
+          lcd.drawLine(x + 16, y, x + 16, y + 1, SG_YELLOW);
+          lcd.drawLine(x + 18, y + 3, x + 19, y + 3, SG_YELLOW);
           lcd.drawRectangle(x + 5, y + 3, x + 11, y + 19, 0x528a, solidFill);
           lcd.drawRectangle(x + 3, y + 4, x + 13, y + 18, 0x528a, solidFill);
           lcd.drawRectangle(x + 2, y + 5, x + 14, y + 17, 0x528a, solidFill);
@@ -1338,20 +1338,20 @@ void drawItem(byte cellX, byte cellY, byte itemType) {
 void drawMessage(byte icon) {
   
   byte index = 0;
-  lcd.setTextSize(FONT2);
+  lcd.setTextSize(SG_FONT2);
   lcd.SDFopenDir("snake");
-  RADIUS radius6 = 6;
-  RADIUS radius5 = 5;
+  SG_RADIUS radius6 = 6;
+  SG_RADIUS radius5 = 5;
   
-  lcd.drawRoundRect(MESSAGE_BOX_LEFT, MESSAGE_BOX_TOP, MESSAGE_BOX_LEFT + MESSAGE_BOX_WIDTH, MESSAGE_BOX_TOP + MESSAGE_BOX_HEIGHT, radius6, WHITE, solidFill);
+  lcd.drawRoundRect(MESSAGE_BOX_LEFT, MESSAGE_BOX_TOP, MESSAGE_BOX_LEFT + MESSAGE_BOX_WIDTH, MESSAGE_BOX_TOP + MESSAGE_BOX_HEIGHT, radius6, SG_WHITE, solidFill);
   lcd.drawRoundRect(MESSAGE_BOX_LEFT, MESSAGE_BOX_TOP, MESSAGE_BOX_LEFT + MESSAGE_BOX_WIDTH, MESSAGE_BOX_TOP + MESSAGE_BOX_HEIGHT, radius6, GREY6, hollowFill);
   lcd.drawRoundRect(MESSAGE_BOX_LEFT + 1, MESSAGE_BOX_TOP + 1, MESSAGE_BOX_LEFT + MESSAGE_BOX_WIDTH - 1, MESSAGE_BOX_TOP + MESSAGE_BOX_HEIGHT - 1, radius5, GREY5, hollowFill);
   
   switch (icon) {
     
     case BOARD_APPLE:
-      lcd.imageJPGSD(MESSAGE_BOX_LEFT + 10, MESSAGE_BOX_TOP + 10, SCALE1_1, "apple");
-      lcd.setTextSize(FONT3);
+      lcd.imageJPGSD(MESSAGE_BOX_LEFT + 10, MESSAGE_BOX_TOP + 10, SG_SCALE1_1, "apple");
+      lcd.setTextSize(SG_FONT3);
       lcd.setTextColour(DARK_RED);
       lcd.string(MESSAGE_BOX_LEFT + 85, MESSAGE_BOX_TOP + 20, MAX_X_LANDSCAPE, MAX_Y_LANDSCAPE, "N", 0);
       lcd.string(MESSAGE_BOX_LEFT + 105, MESSAGE_BOX_TOP + 25, MAX_X_LANDSCAPE, MAX_Y_LANDSCAPE, "I", 0);
@@ -1363,24 +1363,24 @@ void drawMessage(byte icon) {
       lcd.string(MESSAGE_BOX_LEFT + 198, MESSAGE_BOX_TOP + 18, MAX_X_LANDSCAPE, MAX_Y_LANDSCAPE, "R", 0);
       lcd.string(MESSAGE_BOX_LEFT + 216, MESSAGE_BOX_TOP + 26, MAX_X_LANDSCAPE, MAX_Y_LANDSCAPE, "K", 0);
       lcd.string(MESSAGE_BOX_LEFT + 233, MESSAGE_BOX_TOP + 22, MAX_X_LANDSCAPE, MAX_Y_LANDSCAPE, "!", 0);
-      lcd.setTextSize(FONT2);
+      lcd.setTextSize(SG_FONT2);
       lcd.setTextColour(GREY3);
       lcd.string(MESSAGE_BOX_LEFT + 85, MESSAGE_BOX_TOP + 59, MESSAGE_BOX_LEFT + MESSAGE_BOX_WIDTH - 10, MAX_Y_LANDSCAPE, "You have cleared this level .. the next level is going to be even harder!", 0);
       break;
     
     case BOARD_BOMB:
-      lcd.imageJPGSD(MESSAGE_BOX_LEFT + 10, MESSAGE_BOX_TOP + 10, SCALE1_1, "bomb");
-      lcd.setTextSize(FONT4);
+      lcd.imageJPGSD(MESSAGE_BOX_LEFT + 10, MESSAGE_BOX_TOP + 10, SG_SCALE1_1, "bomb");
+      lcd.setTextSize(SG_FONT4);
       lcd.setTextColour(DARK_RED);
       lcd.string(MESSAGE_BOX_LEFT + 85, MESSAGE_BOX_TOP + 16, MAX_X_LANDSCAPE, MAX_Y_LANDSCAPE, "B", 0);
       lcd.string(MESSAGE_BOX_LEFT + 104, MESSAGE_BOX_TOP + 20, MAX_X_LANDSCAPE, MAX_Y_LANDSCAPE, "O", 0);
       lcd.string(MESSAGE_BOX_LEFT + 127, MESSAGE_BOX_TOP + 14, MAX_X_LANDSCAPE, MAX_Y_LANDSCAPE, "O", 0);
       lcd.string(MESSAGE_BOX_LEFT + 151, MESSAGE_BOX_TOP + 21, MAX_X_LANDSCAPE, MAX_Y_LANDSCAPE, "M", 0);
       lcd.string(MESSAGE_BOX_LEFT + 176, MESSAGE_BOX_TOP + 16, MAX_X_LANDSCAPE, MAX_Y_LANDSCAPE, "!", 0);
-      lcd.setTextSize(FONT2);
+      lcd.setTextSize(SG_FONT2);
       lcd.setTextColour(GREY3);
       lcd.string(MESSAGE_BOX_LEFT + 85, MESSAGE_BOX_TOP + 55, MESSAGE_BOX_LEFT + MESSAGE_BOX_WIDTH - 10, MAX_Y_LANDSCAPE, "You stepped on a bomb .. game over. Try again to see if you can do better.", 0);
-      lcd.imageJPGSD(MESSAGE_BOX_LEFT + 82, MESSAGE_BOX_TOP + 144, SCALE1_2, "apple");
+      lcd.imageJPGSD(MESSAGE_BOX_LEFT + 82, MESSAGE_BOX_TOP + 144, SG_SCALE1_2, "apple");
       itoa(fruit, buf, 10);
       
       index = (fruit < 10 ? 1 : 2);
@@ -1396,17 +1396,17 @@ void drawMessage(byte icon) {
       break;
     
     case BOARD_WALL:
-      lcd.imageJPGSD(MESSAGE_BOX_LEFT + 10, MESSAGE_BOX_TOP + 10, SCALE1_1, "wall");
-      lcd.setTextSize(FONT4);
+      lcd.imageJPGSD(MESSAGE_BOX_LEFT + 10, MESSAGE_BOX_TOP + 10, SG_SCALE1_1, "wall");
+      lcd.setTextSize(SG_FONT4);
       lcd.setTextColour(DARK_RED);
       lcd.string(MESSAGE_BOX_LEFT + 85, MESSAGE_BOX_TOP + 16, MAX_X_LANDSCAPE, MAX_Y_LANDSCAPE, "B", 0);
       lcd.string(MESSAGE_BOX_LEFT + 104, MESSAGE_BOX_TOP + 20, MAX_X_LANDSCAPE, MAX_Y_LANDSCAPE, "A", 0);
       lcd.string(MESSAGE_BOX_LEFT + 127, MESSAGE_BOX_TOP + 14, MAX_X_LANDSCAPE, MAX_Y_LANDSCAPE, "M", 0);
       lcd.string(MESSAGE_BOX_LEFT + 153, MESSAGE_BOX_TOP + 19, MAX_X_LANDSCAPE, MAX_Y_LANDSCAPE, "!", 0);
-      lcd.setTextSize(FONT2);
+      lcd.setTextSize(SG_FONT2);
       lcd.setTextColour(GREY3);
       lcd.string(MESSAGE_BOX_LEFT + 85, MESSAGE_BOX_TOP + 55, MESSAGE_BOX_LEFT + MESSAGE_BOX_WIDTH - 10, MAX_Y_LANDSCAPE, "You hit the wall .. game over. Try again to see if you can do better.", 0);
-      lcd.imageJPGSD(MESSAGE_BOX_LEFT + 82, MESSAGE_BOX_TOP + 144, SCALE1_2, "apple");
+      lcd.imageJPGSD(MESSAGE_BOX_LEFT + 82, MESSAGE_BOX_TOP + 144, SG_SCALE1_2, "apple");
       itoa(fruit, buf, 10);
       
       index = (fruit < 10 ? 1 : 2);
@@ -1422,18 +1422,18 @@ void drawMessage(byte icon) {
       break;
    
     case BOARD_SNAKE:
-      lcd.imageJPGSD(MESSAGE_BOX_LEFT + 10, MESSAGE_BOX_TOP + 10, SCALE1_1, "snake");
-      lcd.setTextSize(FONT4);
+      lcd.imageJPGSD(MESSAGE_BOX_LEFT + 10, MESSAGE_BOX_TOP + 10, SG_SCALE1_1, "snake");
+      lcd.setTextSize(SG_FONT4);
       lcd.setTextColour(DARK_RED);
       lcd.string(MESSAGE_BOX_LEFT + 85, MESSAGE_BOX_TOP + 16, MAX_X_LANDSCAPE, MAX_Y_LANDSCAPE, "O", 0);
       lcd.string(MESSAGE_BOX_LEFT + 110, MESSAGE_BOX_TOP + 20, MAX_X_LANDSCAPE, MAX_Y_LANDSCAPE, "U", 0);
       lcd.string(MESSAGE_BOX_LEFT + 131, MESSAGE_BOX_TOP + 14, MAX_X_LANDSCAPE, MAX_Y_LANDSCAPE, "C", 0);
       lcd.string(MESSAGE_BOX_LEFT + 156, MESSAGE_BOX_TOP + 19, MAX_X_LANDSCAPE, MAX_Y_LANDSCAPE, "H", 0);
       lcd.string(MESSAGE_BOX_LEFT + 180, MESSAGE_BOX_TOP + 15, MAX_X_LANDSCAPE, MAX_Y_LANDSCAPE, "!", 0);
-      lcd.setTextSize(FONT2);
+      lcd.setTextSize(SG_FONT2);
       lcd.setTextColour(GREY3);
       lcd.string(MESSAGE_BOX_LEFT + 85, MESSAGE_BOX_TOP + 55, MESSAGE_BOX_LEFT + MESSAGE_BOX_WIDTH - 10, MAX_Y_LANDSCAPE, "You bit yourself .. game over. Try again to see if you can do better.", 0);
-      lcd.imageJPGSD(MESSAGE_BOX_LEFT + 82, MESSAGE_BOX_TOP + 144, SCALE1_2, "apple");
+      lcd.imageJPGSD(MESSAGE_BOX_LEFT + 82, MESSAGE_BOX_TOP + 144, SG_SCALE1_2, "apple");
       itoa(fruit, buf, 10);
       
       index = (fruit < 10 ? 1 : 2);

@@ -1,5 +1,5 @@
 /*********************************************************
-VIZIC TECHNOLOGIES. COPYRIGHT 2019.
+VIZIC TECHNOLOGIES. COPYRIGHT 2020.
 THE DATASHEETS, SOFTWARE AND LIBRARIES ARE PROVIDED "AS IS." 
 VIZIC EXPRESSLY DISCLAIM ANY WARRANTY OF ANY KIND, WHETHER 
 EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO, THE IMPLIED 
@@ -21,12 +21,16 @@ OR OTHER SIMILAR COSTS.
 
 SMARTGPU2 lcd;             //create our object called LCD
 
-AXIS LCD_WIDTH, LCD_HEIGHT; //Variables to handle the screen resolution
-AXIS MAX_X_PORTRAIT, MAX_Y_PORTRAIT, MAX_X_LANDSCAPE, MAX_Y_LANDSCAPE;
+SG_AXIS LCD_WIDTH, LCD_HEIGHT; //Variables to handle the screen resolution
+SG_AXIS MAX_X_PORTRAIT, MAX_Y_PORTRAIT, MAX_X_LANDSCAPE, MAX_Y_LANDSCAPE;
 
 //declare our structures POINT and ICON
-POINT point;
-ICON icon;
+SG_POINT point;
+SG_ICON icon;
+
+//Global variables
+//Start time: hours = 2, minutes = 19, seconds = 33;
+int clockTime= (2*(60*60)) + (19*60) + (33); //In seconds
 
 //Array to store the RGB888 pixel obtained with memoryRead()
 char pixelArray[3];                    
@@ -34,16 +38,52 @@ char pixelArray[3];
 //symbols in the calculator panel
 const char panelSymbols[5][4]={{'E','I',0x2F,'*'},{'7','8','9','-'},{'4','5','6','+'},{'1','2','3','='},{'0','0','.','='}}; //0x2F eq /  
 
+/**************************************************/
+//draws initial screen image, upper bar and battery icon, adds a delay to avoid unwanted touchs
+void drawWindowBattery(char image[]){ 
+    lcd.imageBMPSD(0,0,image);                    //draw image
+    lcd.drawRectangle(0,0,MAX_X_LANDSCAPE,14,0x9CB2,SG_FILL); //draw upper bar
+    lcd.imageBMPSD(10,2,"battery");               //draw battery 
+  if(image != "Ipod Menu"){
+    //Draw exit button
+    lcd.objButton(MAX_X_LANDSCAPE-30,0,MAX_X_LANDSCAPE,25,SG_DESELECTED,"Exit"); 
+    }
+  delay(350);                                //A little delay to avoid fast image changing   
+}
+
+//The next function is for pixel format conversion
+/**************************************************/
+//Funcion to convert a 3 byte array to an int RGB565
+unsigned int RGB888ToRGB565(char pixBuffer[]){   //get an array of 3 bytes( red, green, blue), and convert them to RGB565 returned in an int
+  unsigned char R,G,B;
+  unsigned int col;
+  unsigned long colour;
+  
+  R=pixBuffer[0];
+  G=pixBuffer[1];
+  B=pixBuffer[2]; 
+  ((unsigned char *) &colour)[1]=(R & 0xF8);
+  R=G;
+  G=G>>5;
+  ((unsigned char *) &colour)[1]|=G;
+  G=(R<<3)& 0xE0;
+  ((unsigned char *) &colour)[0]=B;
+  ((unsigned char *) &colour)[0]=((unsigned char *) &colour)[0]>>3;  
+  ((unsigned char *) &colour)[0]|=G;
+  col=colour;
+  return col;
+}
+
 //Main applications, the next applications are called by the main loop menu
 /**************************************************/
 /**************************************************/
 /**************************************************/
 /**************************************************/
 //clock application
-void clock(){
+void clocks(){
   unsigned int hours=4,mins=48,secs=0;
   unsigned int halfx=(LCD_WIDTH/2),halfy=(LCD_HEIGHT/2)+15;//add 15 because of the size of the upper bar
-  unsigned int xs,ys,xm,ym,xh,yh,n;
+  unsigned int xs,ys,xm,ym,xh,yh,i;
   int angleH,angleM,angleS;
   unsigned int handHour=LCD_WIDTH/8;//hand size
   unsigned int handMin=LCD_WIDTH/7;//hand size
@@ -55,21 +95,21 @@ void clock(){
     switch(carClk){
       case 1:                      
         drawWindowBattery("old clk"); //load the clock face
-        colHour=BLACK;              //change the colour of the clock hands
-        colMin=BLACK;
-        colSec=RED;
+        colHour=SG_BLACK;              //change the colour of the clock hands
+        colMin=SG_BLACK;
+        colSec=SG_RED;
       break;
       case 2:
         drawWindowBattery("cool clk"); //load the clock face
-        colHour=RED;               //change the colour of the clock hands
-        colMin=BLUE;
-        colSec=YELLOW;    
+        colHour=SG_RED;               //change the colour of the clock hands
+        colMin=SG_BLUE;
+        colSec=SG_YELLOW;    
       break;
       case 3:
         drawWindowBattery("purple clk"); //load the clock face
-        colHour=WHITE;             //change the colour of the clock hands
-        colMin=WHITE;
-        colSec=WHITE;
+        colHour=SG_WHITE;             //change the colour of the clock hands
+        colMin=SG_WHITE;
+        colSec=SG_WHITE;
       break;
       default:
       break;        
@@ -79,6 +119,12 @@ void clock(){
     colBackClk=RGB888ToRGB565(pixelArray);              //we get the back colour of the clock to erase the hands with the same colour   
     clockNextFlag=0;                                    //turn off next clock flag          
     while(clockNextFlag==0){
+      //time update managing
+      hours= ((clockTime+(millis()/1000))/(60*60));
+      while(hours >= 12){ hours = hours-12; }  // correct if more than 12 hrs
+      mins = (((clockTime+(millis()/1000))%(60*60))/60);
+      secs = (((clockTime+(millis()/1000))%(60*60))%60);
+           
       //Do some Math to get the second point of the clock hands. (first point is always the center of the clock)
       angleS=secs*6;                           //get the current seconds in angle form, a circle have 360 degrees divided by 60 seconds = 6, then we multiply the 6 by the current seconds to get current angle
       xs=(sin((angleS*3.14)/180)) * handSec;   //get X component of the second's hand
@@ -94,10 +140,10 @@ void clock(){
       lcd.drawLine(halfx,halfy,halfx+xm,halfy-ym,colMin);  // Draw the minutes hand, first point is the center of the clock, and the second is the point obtained by doing math
       lcd.drawLine(halfx,halfy,halfx+xh,halfy-yh,colHour); // Draw the hours hand, first point is the center of the clock, and the second is the point obtained by doing math
       lcd.drawLine(halfx,halfy,halfx+xs,halfy-ys,colSec);  // Draw the seconds hand, first point is the center of the clock, and the second is the point obtained by doing math
-      lcd.drawCircle(halfx,halfy,3,colSec,FILL);           // Draw the center of the second's hand
+      lcd.drawCircle(halfx,halfy,3,colSec,SG_FILL);        // Draw the center of the second's hand
      
-      for(n=0;n<10000;n++){                                 // loop for about one second delay (we dont need to explain why we're waiting one second, right?)
-        if(lcd.touchScreen(&point)==VALID){
+      for(i=0;i<100;i++){                                 // loop for about one second delay (we dont need to explain why we're waiting one second, right?)
+        if(lcd.touchScreen(&point)==SG_VALID){
           carClk++;                                        // increase clock Counter to select and load next clock
           if(carClk==4){
             carClk=1;
@@ -105,26 +151,13 @@ void clock(){
           clockNextFlag=1;                                 // turn on flag to change clock
           break;
         }
-    if((point.x > (MAX_X_LANDSCAPE-30)) && (point.y < 25)){
-      lcd.objButton(MAX_X_LANDSCAPE-30,0,MAX_X_LANDSCAPE,25,SELECTED,"Exit");
-      delay(100);
-      return; //if the received touch was on exit button
-    }
-      }
-      
-      //time managing
-      secs++;                                         // increase seconds
-      if(secs==60){                                   // if we reach 60 seconds
-        mins++;                                       // increase the minutes
-        if(mins==60){                                 // if we reach 60 minutes
-          hours++;                                    // increase the minutes
-          if(hours==12){                              // if we reach 12 hours
-            hours=0;                                  // clear hours
-          } 
-          mins=0;                                     // clear minutes
-        }            
-        secs=0;                                       // clear seconds
-      }                      
+        if((point.x > (MAX_X_LANDSCAPE-30)) && (point.y < 25)){
+          lcd.objButton(MAX_X_LANDSCAPE-30,0,MAX_X_LANDSCAPE,25,SG_SELECTED,"Exit");
+          delay(100);
+          return; //if the received touch was on exit button
+        }
+        delay(10);
+      }                    
  
       //Erase all hands         
       lcd.drawLine(halfx,halfy,halfx+xs,halfy-ys,colBackClk); // Erase Second's hand
@@ -145,20 +178,20 @@ void calculator(){
 //notes application
 void notes(){
   lcd.imageBMPSD(0,0,"notes");
-  lcd.drawRectangle(0,0,MAX_X_LANDSCAPE,14,0x9CB2,FILL);
+  lcd.drawRectangle(0,0,MAX_X_LANDSCAPE,14,0x9CB2,SG_FILL);
   lcd.imageBMPSD(10,2,"battery"); 
   delay(300);
   
   while(1){          
-    while(lcd.touchScreen(&point)==INVALID); //wait for a touch to do something
+    while(lcd.touchScreen(&point)==SG_INVALID); //wait for a touch to do something
     if(point.y>95){ 
-      lcd.drawCircle(point.x,point.y,2,BLACK,FILL);
+      lcd.drawCircle(point.x,point.y,2,SG_BLACK,SG_FILL);
     }else{
       if(point.x<100){ //touch on NOTES(exit)
         break;
       }else if(point.x>(LCD_WIDTH-100)){            //reload all
         lcd.imageBMPSD(0,0,"notes");
-        lcd.drawRectangle(0,0,MAX_X_LANDSCAPE,14,0x9CB2,FILL);
+        lcd.drawRectangle(0,0,MAX_X_LANDSCAPE,14,0x9CB2,SG_FILL);
         lcd.imageBMPSD(10,2,"battery"); 
       }
     }                                 
@@ -213,25 +246,25 @@ void pong(){
     
   drawWindowBattery("pong");                                             //load pong design
   //strings config
-  lcd.setTextColour(GREEN);
-  lcd.setTextSize(FONT0);
-  lcd.setTextBackFill(FILLED);
+  lcd.setTextColour(SG_GREEN);
+  lcd.setTextSize(SG_FONT0);
+  lcd.setTextBackFill(SG_FILLED);
   
-  while(lcd.touchScreen(&point)==INVALID);                                //wait a touch to begin
-  lcd.drawRectangle(25,25,MAX_X_LANDSCAPE-25,MAX_Y_LANDSCAPE-25,pongBack,FILL);                        //draw arena
-  lcd.drawRectangle(25,25,MAX_X_LANDSCAPE-25,MAX_Y_LANDSCAPE-25,GREEN,UNFILL);                         //corners
-  lcd.drawLine(bar,MAX_Y_LANDSCAPE-33,bar+barSize,MAX_Y_LANDSCAPE-33,WHITE);                           //draw Bar   
-  lcd.setTextBackFill(TRANS);     
-  lcd.setTextColour(RED);
-  lcd.setTextSize(FONT2);  
+  while(lcd.touchScreen(&point)==SG_INVALID);                                //wait a touch to begin
+  lcd.drawRectangle(25,25,MAX_X_LANDSCAPE-25,MAX_Y_LANDSCAPE-25,pongBack,SG_FILL);                        //draw arena
+  lcd.drawRectangle(25,25,MAX_X_LANDSCAPE-25,MAX_Y_LANDSCAPE-25,SG_GREEN,SG_UNFILL);                      //corners
+  lcd.drawLine(bar,MAX_Y_LANDSCAPE-33,bar+barSize,MAX_Y_LANDSCAPE-33,SG_WHITE);                           //draw Bar   
+  lcd.setTextBackFill(SG_TRANS);     
+  lcd.setTextColour(SG_RED);
+  lcd.setTextSize(SG_FONT2);  
   
   while(gameOver==0){                                                    //while game over flag is zero                          
     buffer[0]=(points/10)+0x30, buffer[1]=(points%10)+0x30, buffer[2]=0; //fill buffer that counts
-    lcd.drawRectangle(0,16,23,34,BLACK,FILL);                            //erase last points
+    lcd.drawRectangle(0,16,23,34,SG_BLACK,SG_FILL);                      //erase last points
      
-    lcd.string(1,16,30,35,buffer,0);                       //display current points
+    lcd.string(1,16,30,35,buffer,0);                                     //display current points
       for(i=0;i<10;i++){                                                 //check 10 times if the player touches the screen
-        if(lcd.touchScreen(&point)==VALID){                               //if we receive a touch then we move the bar to touched side
+        if(lcd.touchScreen(&point)==SG_VALID){                           //if we receive a touch then we move the bar to touched side
           lcd.drawLine(bar,MAX_Y_LANDSCAPE-33,bar+barSize,MAX_Y_LANDSCAPE-33,pongBack);                //erase previous Bar    
           if(point.x>barCenter){                                    //if we need to move the bar to the right           
             bar+=8;                                                      //move the bar to the right  8 pixels
@@ -246,7 +279,7 @@ void pong(){
             }              
             barCenter=bar+(barSize/2);                                   //set new center position of the bar
           }
-          lcd.drawLine(bar,MAX_Y_LANDSCAPE-33,bar+barSize,MAX_Y_LANDSCAPE-33,WHITE);                   //draw the new bar at the new position
+          lcd.drawLine(bar,MAX_Y_LANDSCAPE-33,bar+barSize,MAX_Y_LANDSCAPE-33,SG_WHITE);                   //draw the new bar at the new position
         }else{
           delay(1);  
         }
@@ -256,10 +289,10 @@ void pong(){
         /***************************************************/
         //This its similar as moveBall1() function of pong example
         //update the actual position of the ball1        
-        lcd.drawCircle(xBall1,yBall1,radiusBall1,pongBack,UNFILL);     // Erase previous ball position
+        lcd.drawCircle(xBall1,yBall1,radiusBall1,pongBack,SG_UNFILL);  // Erase previous ball position
         xBall1+=(dirx1*speedBall1);                                    // Calculate new x coordinate for ball1 
         yBall1+=(diry1*speedBall1);                                    // Calculate new y coordinate for ball1  
-        lcd.drawCircle(xBall1,yBall1,radiusBall1,GREEN,UNFILL);        // Draw new ball position
+        lcd.drawCircle(xBall1,yBall1,radiusBall1,SG_GREEN,SG_UNFILL);  // Draw new ball position
         if((xBall1+speedBall1)>topx1 | (xBall1-speedBall1)<=bottomx1){ // if ball reaches the left or right corner, we invert moving direction 
          dirx1= dirx1*(-1);
         }
@@ -277,7 +310,7 @@ void pong(){
              }                           
            }else{                                                      // Bounce outside the bar
              ball1Active=0;                                            // Clear ball1 active flag
-             lcd.drawCircle(xBall1,yBall1,radiusBall1,pongBack,UNFILL);// Delete this ball because bounce outside of the bar        
+             lcd.drawCircle(xBall1,yBall1,radiusBall1,pongBack,SG_UNFILL);// Delete this ball because bounce outside of the bar        
              if(ball1Active==0 & ball2Active==0){                      // if we have lost both balls     
               gameOver=1;                                              // Set game over flag
              }         
@@ -289,10 +322,10 @@ void pong(){
         /***************************************************/
         //This its similar as moveBall2() function of pong example
         //update the actual position of the ball2          
-        lcd.drawCircle(xBall2,yBall2,radiusBall2,pongBack,FILL);       // Erase previous ball position
+        lcd.drawCircle(xBall2,yBall2,radiusBall2,pongBack,SG_FILL);    // Erase previous ball position
         xBall2+=(dirx2*speedBall2);                                    // Calculate new x coordinate for ball2 
         yBall2+=(diry2*speedBall2);                                    // Calculate new y coordinate for ball2
-        lcd.drawCircle(xBall2,yBall2,radiusBall2,MAGENTA,FILL);        // Draw new ball position
+        lcd.drawCircle(xBall2,yBall2,radiusBall2,SG_MAGENTA,SG_FILL);  // Draw new ball position
         if((xBall2+speedBall2)>topx2 | (xBall2-speedBall2)<=bottomx2){ // if ball reaches the left or right corner, we invert moving direction 
          dirx2= dirx2*(-1);
         }
@@ -310,7 +343,7 @@ void pong(){
              }                            
            }else{                                                      // Bounce outside the bar
              ball2Active=0;                                            // Clear ball1 active flag
-             lcd.drawCircle(xBall2,yBall2,radiusBall2,pongBack,FILL);  // Delete this ball because bounce outside of the bar        
+             lcd.drawCircle(xBall2,yBall2,radiusBall2,pongBack,SG_FILL);  // Delete this ball because bounce outside of the bar        
              if(ball1Active==0 & ball2Active==0){                      // if we have lost both balls     
                gameOver=1;                                             // Set game over flag
              }         
@@ -320,18 +353,18 @@ void pong(){
      }
   }
   //game over - proceed to show final score
-  lcd.setTextSize(FONT4);  
+  lcd.setTextSize(SG_FONT4);  
   lcd.string(70,80,272,140,"Game Over",0);
   score[0]=(points/10)+0x30;                                            //convert points to ascii format and store them on the score buffer
   score[1]=(points%10)+0x30;                                            //convert points to ascii format and store them on the score buffer
-  lcd.setTextColour(YELLOW);
-  lcd.setTextSize(FONT3);  
+  lcd.setTextColour(SG_YELLOW);
+  lcd.setTextSize(SG_FONT3);  
   lcd.string(113,110,272,140,score,0);
-  lcd.setTextColour(GREEN);
-  lcd.setTextSize(FONT1);  
+  lcd.setTextColour(SG_GREEN);
+  lcd.setTextSize(SG_FONT1);  
   lcd.string(100,135,250,180,"Touch to Exit",0);          
   delay(1000);
-  while(lcd.touchScreen(&point)==INVALID);                               //wait for a touch to exit
+  while(lcd.touchScreen(&point)==SG_INVALID);                            //wait for a touch to exit
 }
 
 /**************************************************/
@@ -346,10 +379,10 @@ void slideShow(){
     lcd.imageBMPSD(3,MAX_Y_LANDSCAPE-20,"previous");             //Load the previous icon        
     lcd.imageBMPSD(MAX_X_LANDSCAPE-23,MAX_Y_LANDSCAPE-20,"next");               //Load the next icon
     
-    while(lcd.touchScreen(&point)==INVALID); //wait for a touch to do something
+    while(lcd.touchScreen(&point)==SG_INVALID); //wait for a touch to do something
   
   if((point.x > (MAX_X_LANDSCAPE-30)) && (point.y < 25)){
-    lcd.objButton(MAX_X_LANDSCAPE-30,0,MAX_X_LANDSCAPE,25,SELECTED,"Exit");
+    lcd.objButton(MAX_X_LANDSCAPE-30,0,MAX_X_LANDSCAPE,25,SG_SELECTED,"Exit");
     delay(100);
     return; //if the received touch was on exit button
     }
@@ -388,10 +421,10 @@ void googleMaps(){
       lcd.imageBMPSD(5,(LCD_HEIGHT-190)/2,"barmap");             //draw zoom bar
     }
     
-    while(lcd.touchScreen(&point)==INVALID); //wait for a touch to do something
+    while(lcd.touchScreen(&point)==SG_INVALID); //wait for a touch to do something
 
   if((point.x > (MAX_X_LANDSCAPE-30)) && (point.y < 25)){
-    lcd.objButton(MAX_X_LANDSCAPE-30,0,MAX_X_LANDSCAPE,25,SELECTED,"Exit");
+    lcd.objButton(MAX_X_LANDSCAPE-30,0,MAX_X_LANDSCAPE,25,SG_SELECTED,"Exit");
     delay(100);
     return; //if the received touch was on exit button
     }
@@ -420,32 +453,32 @@ void googleMaps(){
 //paint application   
 void paint(){
   unsigned char penSize=1;
-  unsigned int colPaint=BLACK;
+  unsigned int colPaint=SG_BLACK;
   char pen[4]={'x','0','1',0x00};                     //Array that show the current penSize
        
   //Load paint design
   drawWindowBattery("paint");                         //load paint image
-  lcd.setTextColour(GREEN);
-  lcd.setTextSize(FONT0);
-  lcd.setTextBackFill(FILLED);  
+  lcd.setTextColour(SG_GREEN);
+  lcd.setTextSize(SG_FONT0);
+  lcd.setTextBackFill(SG_FILLED);  
   lcd.string(10,83,48,110,"Erase",0);    //draw Erase word
   lcd.string(123,83,160,110,pen,0);      //draw penSize 
   
    while(1){   //Start the Paint application
-     while(lcd.touchScreen(&point)==INVALID); //wait for a touch to do something
+     while(lcd.touchScreen(&point)==SG_INVALID); //wait for a touch to do something
    if((point.x > (MAX_X_LANDSCAPE-30)) && (point.y < 25)){
-    lcd.objButton(MAX_X_LANDSCAPE-30,0,MAX_X_LANDSCAPE,25,SELECTED,"Exit");
+    lcd.objButton(MAX_X_LANDSCAPE-30,0,MAX_X_LANDSCAPE,25,SG_SELECTED,"Exit");
     delay(100);
     return; //if the received touch was on exit button
    }
    
-     if(point.y<100){                             //the touch was on the menu
-       if(point.x<75){                           //touch on erase circle
-         lcd.drawRectangle(0,100,MAX_X_LANDSCAPE,MAX_Y_LANDSCAPE,WHITE,FILL);      //Draw a white rectangle on drawing area
-       }else if(point.x<112){                     //touch to select the eraser
-         colPaint=WHITE;
-         lcd.drawCircle(37,50,21,colPaint,FILL);       //draw WHITE colour circle on top left corner           
-       }else if(point.x<160){                    //touch to change pen Size 
+     if(point.y<100){                                  //the touch was on the menu
+       if(point.x<75){                                 //touch on erase circle
+         lcd.drawRectangle(0,100,MAX_X_LANDSCAPE,MAX_Y_LANDSCAPE,SG_WHITE,SG_FILL);      //Draw a white rectangle on drawing area
+       }else if(point.x<112){                          //touch to select the eraser
+         colPaint=SG_WHITE;
+         lcd.drawCircle(37,50,21,colPaint,SG_FILL);    //draw WHITE colour circle on top left corner           
+       }else if(point.x<160){                          //touch to change pen Size 
          delay(300);                                   //delay to avoid fast penSize changing                   
          penSize=penSize*2;                            //double the penSize
          if(penSize==16){                              //maximum pen size = 8, if we reach 16 we set to 1.
@@ -454,57 +487,20 @@ void paint(){
          pen[1]=(penSize/10)+0x30;                     //get the tens of penSize and convert them to ascii
          pen[2]=(penSize%10)+0x30;                     //get the ones of penSize and convert them to ascii
          lcd.string(123,83,160,110,pen,0);//draw penSize 
-       }else if(point.x<(MAX_X_LANDSCAPE-10) & point.y>30 & point.y<90){                     //touch on the colours bar                  
+       }else if(point.x<(MAX_X_LANDSCAPE-10) & point.y>30 & point.y<90){      //touch on the colours bar                  
          lcd.getImageFromMemory(point.x,point.y,point.x,point.y,pixelArray);  //assign new colour based on touch coordinates and memory read, this function return a 24 bit pixel array, 
          colPaint=RGB888ToRGB565(pixelArray);
-         lcd.drawCircle(37,50,21,colPaint,FILL);                                              //draw new selected colour on top left corner           
+         lcd.drawCircle(37,50,21,colPaint,SG_FILL);                           //draw new selected colour on top left corner           
        }                
     }else{                                            //Touch on drawing area
-       if((point.y-penSize)<100){                 // If the touch was very close to the menu, we compensate the radius
+       if((point.y-penSize)<100){                     // If the touch was very close to the menu, we compensate the radius
          point.y=point.y+penSize;
        }
-       lcd.drawCircle(point.x,point.y,penSize,colPaint,FILL);                    //Draw
+       lcd.drawCircle(point.x,point.y,penSize,colPaint,SG_FILL);                    //Draw
     }
   }   
 }
 
-//End of applications, the next function is for pixel format conversion
-/**************************************************/
-/**************************************************/
-//Funcion to convert a 3 byte array to an int RGB565
-unsigned int RGB888ToRGB565(char pixBuffer[]){   //get an array of 3 bytes( red, green, blue), and convert them to RGB565 returned in an int
-  unsigned char R,G,B;
-  unsigned int col;
-  unsigned long colour;
-  
-  R=pixBuffer[0];
-  G=pixBuffer[1];
-  B=pixBuffer[2]; 
-  ((unsigned char *) &colour)[1]=(R & 0xF8);
-  R=G;
-  G=G>>5;
-  ((unsigned char *) &colour)[1]|=G;
-  G=(R<<3)& 0xE0;
-  ((unsigned char *) &colour)[0]=B;
-  ((unsigned char *) &colour)[0]=((unsigned char *) &colour)[0]>>3;  
-  ((unsigned char *) &colour)[0]|=G;
-  col=colour;
-  return col;
-}
-
-/**************************************************/
-/**************************************************/
-//draws initial screen image, upper bar and battery icon, adds a delay to avoid unwanted touchs
-void drawWindowBattery(char image[]){ 
-    lcd.imageBMPSD(0,0,image);                    //draw image
-    lcd.drawRectangle(0,0,MAX_X_LANDSCAPE,14,0x9CB2,FILL); //draw upper bar
-    lcd.imageBMPSD(10,2,"battery");               //draw battery 
-  if(image != "Ipod Menu"){
-    //Draw exit button
-    lcd.objButton(MAX_X_LANDSCAPE-30,0,MAX_X_LANDSCAPE,25,DESELECTED,"Exit"); 
-    }
-  delay(350);                                //A little delay to avoid fast image changing   
-}
 
 /**************************************************/
 /**************************************************/
@@ -531,7 +527,7 @@ void setup() { //initial setup
 void loop() { //main loop
   unsigned char ic;
   
-  lcd.baudChange(BAUD7);           //set high baud for advanced applications
+  lcd.baudChange(SG_BAUD5);        //set high baud for advanced applications
  
   lcd.SDFopenDir("Ipod");          //Open the Ipod folder that contains the images of the Application
     
@@ -540,7 +536,7 @@ void loop() { //main loop
    drawWindowBattery("Ipod Menu");
                    
     //wait for a touch on screen to do something
-    while(lcd.touchScreen(&point)==INVALID);   
+    while(lcd.touchScreen(&point)==SG_INVALID);   
     
     //obtain icon number x
     ic = (point.x/(LCD_WIDTH/4))+1; //divide the obtained x by 1/4 of the LCD WIDTH and add 1
@@ -551,7 +547,7 @@ void loop() { //main loop
     //begin application based on icon number  
     switch(ic){                 //now that we know a touch was made on a specified icon:
       case 1:                   //case 1 (clock)
-        clock();
+        clocks();
       break;                    //end of case 1
       
       case 2:                   //case 2 (calculator)

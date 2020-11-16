@@ -147,12 +147,12 @@ PROGMEM const int DIALOG_BUTTON_CANCEL_HEIGHT = 16;
 //PROGMEM char DIALOG_MESSAGE_SAVE_GAME[] = "Game successfully saved.";
 //PROGMEM char DIALOG_TITLE_SAVE_GAME[] = "Save Game";
 
-FILERESULT res;            //create the variable that will store all SMARTGPU2 commands responses
+SG_FILERESULT res;            //create the variable that will store all SMARTGPU2 commands responses
  
 SMARTGPU2 lcd;           
 
-AXIS LCD_WIDTH, LCD_HEIGHT; //Variables to handle the screen resolution
-AXIS MAX_X_PORTRAIT, MAX_Y_PORTRAIT, MAX_X_LANDSCAPE, MAX_Y_LANDSCAPE;
+SG_AXIS LCD_WIDTH, LCD_HEIGHT; //Variables to handle the screen resolution
+SG_AXIS MAX_X_PORTRAIT, MAX_Y_PORTRAIT, MAX_X_LANDSCAPE, MAX_Y_LANDSCAPE;
 
 char solution[9][9];
 char board[9][9][10];
@@ -170,21 +170,21 @@ char* filename = "";
 boolean gameSaved0 = false;
 boolean gameSaved1 = false;
 
-RADIUS radius5 = 5;  
+SG_RADIUS radius5 = 5;  
 
-FILLGEOM solidFill=(FILLGEOM)1;
-FILLGEOM hollowFill=(FILLGEOM)0;
+SG_FILLGEOM solidFill=(SG_FILLGEOM)1;
+SG_FILLGEOM hollowFill=(SG_FILLGEOM)0;
 
 boolean showPencilInError = true;
 boolean showPenInError = true;
 
-POINT point;
+SG_POINT point;
 
 void setup() { 
 
   lcd.init();  
   lcd.start(); 
-  lcd.baudChange(BAUD6);      
+  lcd.baudChange(SG_BAUD6);      
 
   //Obtain screen resolution
   lcd.getWidth(&LCD_WIDTH);
@@ -195,8 +195,8 @@ void setup() {
   MAX_X_LANDSCAPE= LCD_WIDTH-1;
   MAX_Y_LANDSCAPE= LCD_HEIGHT-1;
 
-  gameSaved0 = isGameSaved(PAGE0);
-  gameSaved1 = isGameSaved(PAGE1);
+  gameSaved0 = isGameSaved(SG_PAGE0);
+  gameSaved1 = isGameSaved(SG_PAGE1);
   
   if (!gameSaved1) {
     
@@ -215,7 +215,7 @@ void setup() {
   }
   else {
     
-    restoreGame(PAGE1);
+    restoreGame(SG_PAGE1);
     selectedScreen = SCREEN_PLAY;
     
   }
@@ -255,7 +255,7 @@ void process_ScreenOptions() {
   
   if (point.x >= PENCIL_ERROR_LEFT && point.x < PENCIL_ERROR_LEFT + CHECK_WIDTH && point.y >= PENCIL_ERROR_TOP && point.y < PENCIL_ERROR_TOP + CHECK_HEIGHT) {
 
-    lcd.drawRoundRect(PENCIL_ERROR_LEFT + CHECK_INSET, PENCIL_ERROR_TOP + CHECK_INSET, PENCIL_ERROR_LEFT + CHECK_WIDTH - CHECK_INSET, PENCIL_ERROR_TOP + CHECK_HEIGHT - CHECK_INSET, CHECK_INNER_RADIUS, (showPencilInError ? BLACK : COLOUR_DARKBLUE), solidFill);  
+    lcd.drawRoundRect(PENCIL_ERROR_LEFT + CHECK_INSET, PENCIL_ERROR_TOP + CHECK_INSET, PENCIL_ERROR_LEFT + CHECK_WIDTH - CHECK_INSET, PENCIL_ERROR_TOP + CHECK_HEIGHT - CHECK_INSET, CHECK_INNER_RADIUS, (showPencilInError ? SG_BLACK : COLOUR_DARKBLUE), solidFill);  
     showPencilInError = !showPencilInError;
 
   }
@@ -265,7 +265,7 @@ void process_ScreenOptions() {
   
   if (point.x >= PEN_ERROR_LEFT && point.x < PEN_ERROR_LEFT + CHECK_WIDTH && point.y >= PEN_ERROR_TOP && point.y < PEN_ERROR_TOP + CHECK_HEIGHT) {
 
-    lcd.drawRoundRect(PEN_ERROR_LEFT + CHECK_INSET, PEN_ERROR_TOP + CHECK_INSET, PEN_ERROR_LEFT + CHECK_WIDTH - CHECK_INSET, PEN_ERROR_TOP + CHECK_HEIGHT - CHECK_INSET, CHECK_INNER_RADIUS, (showPenInError ? BLACK : COLOUR_DARKBLUE), solidFill);  
+    lcd.drawRoundRect(PEN_ERROR_LEFT + CHECK_INSET, PEN_ERROR_TOP + CHECK_INSET, PEN_ERROR_LEFT + CHECK_WIDTH - CHECK_INSET, PEN_ERROR_TOP + CHECK_HEIGHT - CHECK_INSET, CHECK_INNER_RADIUS, (showPenInError ? SG_BLACK : COLOUR_DARKBLUE), solidFill);  
     showPenInError = !showPenInError;
 
   }
@@ -275,7 +275,7 @@ void process_ScreenOptions() {
   
   if (point.x >= COMMAND_SAVE_LEFT && point.x < COMMAND_SAVE_LEFT + COMMAND_SAVE_WIDTH && point.y >= COMMAND_SAVE_TOP && point.y < COMMAND_SAVE_TOP + COMMAND_SAVE_HEIGHT) {
    
-    saveGame(PAGE0);
+    saveGame(SG_PAGE0);
     gameSaved0 = true;
     showDialog("Save Game", "Game successfully saved.", DIALOG_BUTTONS_OKONLY);
     drawScreen();    
@@ -289,7 +289,7 @@ void process_ScreenOptions() {
     
     if (showDialog("Restore Game", "Quit current game and restore to previously saved version ?", DIALOG_BUTTONS_OKCANCEL) == DIALOG_RESULT_OK) {
     
-      restoreGame(PAGE0);
+      restoreGame(SG_PAGE0);
       selectedCellX = -1;
       selectedCellY = -1;
       selectedScreen = SCREEN_PLAY;
@@ -442,7 +442,7 @@ void process_ScreenPlay() {
     drawPenBoard(selectedCellX, selectedCellY, true);
   
     refreshAffectedCells(selectedCellX, selectedCellY);
-    saveGame(PAGE1);
+    saveGame(SG_PAGE1);
     
   }
   
@@ -467,7 +467,7 @@ void process_ScreenPlay() {
     drawPenBoard(selectedCellX, selectedCellY, true);
       
     refreshAffectedCells(selectedCellX, selectedCellY);
-    saveGame(PAGE1);
+    saveGame(SG_PAGE1);
   
     if (isComplete()) {
       
@@ -494,7 +494,7 @@ void process_ScreenPlay() {
 
 void drawScreen() {
   
-  lcd.setEraseBackColour(BLACK);
+  lcd.setEraseBackColour(SG_BLACK);
   lcd.erase();
   
   if (selectedScreen == SCREEN_OPTIONS) {
@@ -502,21 +502,21 @@ void drawScreen() {
        
     // Draw checkboxes ..
   
-    lcd.setTextColour(WHITE);    
-    lcd.setTextSize(FONT1);
+    lcd.setTextColour(SG_WHITE);    
+    lcd.setTextSize(SG_FONT1);
 
     lcd.string(PENCIL_ERROR_LEFT + 2, PENCIL_ERROR_TOP - 22, MAX_X_LANDSCAPE, MAX_Y_LANDSCAPE, "Show :", 0);
   
     lcd.drawRoundRect(PENCIL_ERROR_LEFT, PENCIL_ERROR_TOP, PENCIL_ERROR_LEFT + CHECK_WIDTH, PENCIL_ERROR_TOP + CHECK_HEIGHT, CHECK_OUTER_RADIUS, COLOUR_LIGHTBLUE, hollowFill);  
-    lcd.drawRoundRect(PENCIL_ERROR_LEFT + CHECK_INSET, PENCIL_ERROR_TOP + CHECK_INSET, PENCIL_ERROR_LEFT + CHECK_WIDTH - CHECK_INSET, PENCIL_ERROR_TOP + CHECK_HEIGHT - CHECK_INSET, CHECK_INNER_RADIUS, (showPencilInError ? COLOUR_DARKBLUE : BLACK), solidFill);  
+    lcd.drawRoundRect(PENCIL_ERROR_LEFT + CHECK_INSET, PENCIL_ERROR_TOP + CHECK_INSET, PENCIL_ERROR_LEFT + CHECK_WIDTH - CHECK_INSET, PENCIL_ERROR_TOP + CHECK_HEIGHT - CHECK_INSET, CHECK_INNER_RADIUS, (showPencilInError ? COLOUR_DARKBLUE : SG_BLACK), solidFill);  
     lcd.string(PENCIL_ERROR_LEFT + CHECK_WIDTH + CHECK_LABEL_SPACING, PENCIL_ERROR_TOP + 2, MAX_X_LANDSCAPE, MAX_Y_LANDSCAPE, "Pencil Errors", 0);
     
     lcd.drawRoundRect(PEN_ERROR_LEFT, PEN_ERROR_TOP, PEN_ERROR_LEFT + CHECK_WIDTH, PEN_ERROR_TOP + CHECK_HEIGHT, CHECK_OUTER_RADIUS, COLOUR_LIGHTBLUE, hollowFill);  
-    lcd.drawRoundRect(PEN_ERROR_LEFT + CHECK_INSET, PEN_ERROR_TOP + CHECK_INSET, PEN_ERROR_LEFT + CHECK_WIDTH - CHECK_INSET, PEN_ERROR_TOP + CHECK_HEIGHT - CHECK_INSET, CHECK_INNER_RADIUS, (showPenInError ? COLOUR_DARKBLUE : BLACK), solidFill);  
+    lcd.drawRoundRect(PEN_ERROR_LEFT + CHECK_INSET, PEN_ERROR_TOP + CHECK_INSET, PEN_ERROR_LEFT + CHECK_WIDTH - CHECK_INSET, PEN_ERROR_TOP + CHECK_HEIGHT - CHECK_INSET, CHECK_INNER_RADIUS, (showPenInError ? COLOUR_DARKBLUE : SG_BLACK), solidFill);  
     lcd.string(PEN_ERROR_LEFT + CHECK_WIDTH + CHECK_LABEL_SPACING, PEN_ERROR_TOP + 2, MAX_X_LANDSCAPE, MAX_Y_LANDSCAPE, "Pen Errors", 0);
         
-    lcd.setTextColour(WHITE);    
-    lcd.setTextSize(FONT1);
+    lcd.setTextColour(SG_WHITE);    
+    lcd.setTextSize(SG_FONT1);
 
     lcd.drawRoundRect(COMMAND_SAVE_LEFT, COMMAND_SAVE_TOP, COMMAND_SAVE_LEFT + COMMAND_SAVE_WIDTH, COMMAND_SAVE_TOP + COMMAND_SAVE_HEIGHT, radius5, COLOUR_DARKBLUE, solidFill);
     lcd.drawRoundRect(COMMAND_SAVE_LEFT, COMMAND_SAVE_TOP, COMMAND_SAVE_LEFT + COMMAND_SAVE_WIDTH, COMMAND_SAVE_TOP + COMMAND_SAVE_HEIGHT, radius5, COLOUR_LIGHTBLUE, hollowFill);
@@ -542,8 +542,8 @@ void drawScreen() {
     lcd.drawRoundRect(COMMAND_MENU_LEFT, COMMAND_MENU_TOP, COMMAND_MENU_LEFT + COMMAND_MENU_WIDTH, COMMAND_MENU_TOP + COMMAND_MENU_HEIGHT, radius5, COLOUR_DARKBLUE, solidFill);
     lcd.drawRoundRect(COMMAND_MENU_LEFT, COMMAND_MENU_TOP, COMMAND_MENU_LEFT + COMMAND_MENU_WIDTH, COMMAND_MENU_TOP + COMMAND_MENU_HEIGHT, radius5, COLOUR_LIGHTBLUE, hollowFill);
         
-    lcd.setTextColour(WHITE);    
-    lcd.setTextSize(FONT1);
+    lcd.setTextColour(SG_WHITE);    
+    lcd.setTextSize(SG_FONT1);
     lcd.string(COMMAND_MENU_LEFT + 32, COMMAND_MENU_TOP + 9, MAX_X_LANDSCAPE, MAX_Y_LANDSCAPE, "Menu", 0);
 
   }
@@ -622,13 +622,13 @@ void drawTab() {
 
   }
 
-  lcd.setTextSize(FONT1);
+  lcd.setTextSize(SG_FONT1);
 
-  lcd.setTextColour(selectedTab == TAB_EASY ? WHITE : GREY5);    
+  lcd.setTextColour(selectedTab == TAB_EASY ? SG_WHITE : GREY5);    
   lcd.string(27, 6, MAX_X_LANDSCAPE, MAX_Y_LANDSCAPE, "Easy", 0);
-  lcd.setTextColour(selectedTab == TAB_MEDIUM ? WHITE : GREY5);    
+  lcd.setTextColour(selectedTab == TAB_MEDIUM ? SG_WHITE : GREY5);    
   lcd.string(108, 6, MAX_X_LANDSCAPE, MAX_Y_LANDSCAPE, "Medium", 0);
-  lcd.setTextColour(selectedTab == TAB_HARD ? WHITE : GREY5);    
+  lcd.setTextColour(selectedTab == TAB_HARD ? SG_WHITE : GREY5);    
   lcd.string(204, 6, MAX_X_LANDSCAPE, MAX_Y_LANDSCAPE, "Hard", 0);
 
  
@@ -728,8 +728,8 @@ void refreshAffectedCells(char selectedX, char selectedY) {  // refreshes those 
 
 void drawCell(char x, char y, boolean highlight) {
   
-  POINT p1, p2;
-  COLOUR colour;
+  SG_POINT p1, p2;
+  SG_COLOUR colour;
 
   p1.x = (x * CELL_SPACING);
   p1.y = (y * CELL_SPACING);
@@ -757,8 +757,8 @@ void drawCell(char x, char y, boolean highlight) {
   
   if (solution[x][y] > 0) {
   
-    lcd.setTextColour(WHITE);    
-    lcd.setTextSize(FONT3);
+    lcd.setTextColour(SG_WHITE);    
+    lcd.setTextSize(SG_FONT3);
     itoa(solution[x][y], buf, 10);
     lcd.string((x * CELL_SPACING) + 11, (y * CELL_SPACING) + 6, MAX_X_LANDSCAPE, MAX_Y_LANDSCAPE, buf, 0);
     
@@ -767,13 +767,13 @@ void drawCell(char x, char y, boolean highlight) {
  
     if (board[x][y][CELL_SELECTED_VALUE] > 0) {
 
-      lcd.setTextColour(YELLOW);    
-      lcd.setTextSize(FONT3);
+      lcd.setTextColour(SG_YELLOW);    
+      lcd.setTextSize(SG_FONT3);
 
       if (showPenInError && penInError(x, y, board[x][y][CELL_SELECTED_VALUE])) {
 
-        lcd.setTextColour(RED);    
-        lcd.setTextSize(FONT3);
+        lcd.setTextColour(SG_RED);    
+        lcd.setTextSize(SG_FONT3);
 
       }
       
@@ -783,8 +783,8 @@ void drawCell(char x, char y, boolean highlight) {
     }
     else {
 
-      lcd.setTextColour(YELLOW);    
-      lcd.setTextSize(FONT0);
+      lcd.setTextColour(SG_YELLOW);    
+      lcd.setTextSize(SG_FONT0);
 
       for (byte x1=1; x1<=3; x1++) {
 
@@ -792,13 +792,13 @@ void drawCell(char x, char y, boolean highlight) {
           
           if (board[x][y][(y1*3)+x1] > 0) {
 
-            lcd.setTextColour(YELLOW);    
-            lcd.setTextSize(FONT0);
+            lcd.setTextColour(SG_YELLOW);    
+            lcd.setTextSize(SG_FONT0);
 
             if (showPencilInError && pencilInError(x, y, (y1*3)+x1)) {
                
-                lcd.setTextColour(RED);    
-                lcd.setTextSize(FONT0);
+                lcd.setTextColour(SG_RED);    
+                lcd.setTextSize(SG_FONT0);
               
             }
         
@@ -832,7 +832,7 @@ void drawPencilBoard(char selectedX, char selectedY, boolean highlight) {
 
   
   int i = 1;
-  lcd.setTextSize(FONT0);
+  lcd.setTextSize(SG_FONT0);
     
   for (byte y1=0; y1<=2; y1++) {
   
@@ -842,18 +842,18 @@ void drawPencilBoard(char selectedX, char selectedY, boolean highlight) {
         
         if (board[selectedX][selectedY][(y1 * 3) + x1] > 0) {
   
-          lcd.setTextColour(YELLOW);    
+          lcd.setTextColour(SG_YELLOW);    
   
           if (showPencilInError && pencilInError(selectedX, selectedY, (y1 * 3) + x1)) {
            
-            lcd.setTextColour(RED);    
+            lcd.setTextColour(SG_RED);    
             
           }
         
         }
         else {
     
-          lcd.setTextColour(WHITE);    
+          lcd.setTextColour(SG_WHITE);    
       
         }
         
@@ -875,12 +875,12 @@ void drawPencilBoard(char selectedX, char selectedY, boolean highlight) {
   
   // Draw label ..
     
-  lcd.setTextColour(highlight ? WHITE : GREY3);    
-  lcd.setTextSize(FONT0);
+  lcd.setTextColour(highlight ? SG_WHITE : GREY3);    
+  lcd.setTextSize(SG_FONT0);
   lcd.drawRoundRect(PENCIL_LABEL_LEFT, PENCIL_LABEL_TOP, PENCIL_LABEL_LEFT + PENCIL_LABEL_WIDTH, PENCIL_LABEL_TOP + PENCIL_LABEL_HEIGHT, CHECK_OUTER_RADIUS, (highlight ? COLOUR_DARKBLUE : GREY1), solidFill);  
-  lcd.orientation(PORTRAIT_LOW);
+  lcd.orientation(SG_PORTRAIT_LOW);
   lcd.string(255, PENCIL_LABEL_LEFT + 6, MAX_X_PORTRAIT, MAX_Y_PORTRAIT, "Pencil", 0);
-  lcd.orientation(LANDSCAPE_LEFT);
+  lcd.orientation(SG_LANDSCAPE_LEFT);
   
 }
 
@@ -947,7 +947,7 @@ void drawPenBoard(char selectedX, char selectedY, boolean highlight) {
     
   }
 
-  lcd.setTextSize(FONT3);
+  lcd.setTextSize(SG_FONT3);
   
   for (byte y=0; y<=2; y++) {
   
@@ -957,18 +957,18 @@ void drawPenBoard(char selectedX, char selectedY, boolean highlight) {
 
         if (board[selectedX][selectedY][CELL_SELECTED_VALUE] == (y * 3) + x) {
   
-          lcd.setTextColour(YELLOW);    
+          lcd.setTextColour(SG_YELLOW);    
   
           if (showPenInError && penInError(selectedX, selectedY, (y * 3) + x)) {
             
-            lcd.setTextColour(RED);    
+            lcd.setTextColour(SG_RED);    
       
           }
           
         }
         else {
   
-          lcd.setTextColour(WHITE);    
+          lcd.setTextColour(SG_WHITE);    
       
         } 
         
@@ -989,12 +989,12 @@ void drawPenBoard(char selectedX, char selectedY, boolean highlight) {
   
   // Draw label ..
     
-  lcd.setTextColour(highlight ? WHITE : GREY3);    
-  lcd.setTextSize(FONT0);
+  lcd.setTextColour(highlight ? SG_WHITE : GREY3);    
+  lcd.setTextSize(SG_FONT0);
   lcd.drawRoundRect(PEN_LABEL_LEFT, PEN_LABEL_TOP, PEN_LABEL_LEFT + PEN_LABEL_WIDTH, PEN_LABEL_TOP + PEN_LABEL_HEIGHT, CHECK_OUTER_RADIUS, (highlight ? COLOUR_DARKBLUE : GREY1), solidFill);  
-  lcd.orientation(PORTRAIT_LOW);
+  lcd.orientation(SG_PORTRAIT_LOW);
   lcd.string(PEN_LABEL_TOP + 18, PEN_LABEL_LEFT + 6, MAX_X_PORTRAIT, MAX_Y_PORTRAIT, "Pen", 0);
-  lcd.orientation(LANDSCAPE_LEFT);
+  lcd.orientation(SG_LANDSCAPE_LEFT);
   
 }
 
@@ -1126,12 +1126,12 @@ boolean isComplete() {
 
 void drawCompleteMessage() {
   
-  lcd.setTextSize(FONT3);
+  lcd.setTextSize(SG_FONT3);
   lcd.string(164, 164, MAX_X_LANDSCAPE, MAX_Y_LANDSCAPE, "Complete !", 0);
 
 }
 
-void saveGame(EEPROMPAGE page) {
+void saveGame(SG_EEPROMPAGE page) {
 
   lcd.initClearEEPROMBuff();
 
@@ -1180,7 +1180,7 @@ void saveGame(EEPROMPAGE page) {
 }
 
 
-void restoreGame(EEPROMPAGE page) {
+void restoreGame(SG_EEPROMPAGE page) {
 
   lcd.initClearEEPROMBuff();
   lcd.fillBuffFromEEPROMPage(page);
@@ -1232,7 +1232,7 @@ void restoreGame(EEPROMPAGE page) {
 }
 
 
-boolean isGameSaved(EEPROMPAGE page) {
+boolean isGameSaved(SG_EEPROMPAGE page) {
 
   lcd.initClearEEPROMBuff();
   lcd.fillBuffFromEEPROMPage(page);
@@ -1255,9 +1255,9 @@ boolean isGameSaved(EEPROMPAGE page) {
   
 }
 
-void die(FILERESULT response){ //if the response is different than OK, print and loop forever
+void die(SG_FILERESULT response){ //if the response is different than OK, print and loop forever
 
-  if(response!=F_OK){
+  if(response!=SG_F_OK){
     lcd.string(10,20,MAX_X_LANDSCAPE,MAX_Y_LANDSCAPE,"Error... forever loop @",0);
     while(1); 
   }
@@ -1272,8 +1272,8 @@ int renderFilenames() {
   boolean highlight = false; 
   boolean cont = true;
   
-  lcd.setTextSize(FONT1);
-  lcd.setTextColour(WHITE);    
+  lcd.setTextSize(SG_FONT1);
+  lcd.setTextColour(SG_WHITE);    
  
   unsigned int bytesRead=0, i=0;       
  
@@ -1281,19 +1281,19 @@ int renderFilenames() {
   if (selectedTab == TAB_MEDIUM)   { filename = "sudoku_Medium.txt   "; }
   if (selectedTab == TAB_HARD)     { filename = "sudoku_Hard.txt     "; }
  
-  res = lcd.SDFopenFile(filename, READONLY, WORKSPACE0); 
+  res = lcd.SDFopenFile(filename, SG_READONLY, SG_WORKSPACE0); 
 
-  if (res!=F_OK){
+  if (res!=SG_F_OK){
  
     res=lcd.SDFnewFile(filename);                                                die(res);
-    res=lcd.SDFopenFile(filename, WRITEONLY, WORKSPACE0);                        die(res);
+    res=lcd.SDFopenFile(filename, SG_WRITEONLY, SG_WORKSPACE0);                  die(res);
  
   }
  
   do {
  
     memset(buffer, 0, sizeof(buffer));
-    res = lcd.SDFreadFile(buffer, RECORD_DESC_LENGTH, &bytesRead, WORKSPACE0);        die(res);    
+    res = lcd.SDFreadFile(buffer, RECORD_DESC_LENGTH, &bytesRead, SG_WORKSPACE0);        die(res);    
  
     if (bytesRead == RECORD_DESC_LENGTH) {
  
@@ -1311,7 +1311,7 @@ int renderFilenames() {
       
       // Read and discard remainder of record ..
       
-      res = lcd.SDFreadFile(buffer, RECORD_SOLUTION_LENGTH + 2, &bytesRead, WORKSPACE0);        die(res);       // Be careful about text files with CR / LF ! will need to have RECORD_SOLUTION_LENGTH + 1
+      res = lcd.SDFreadFile(buffer, RECORD_SOLUTION_LENGTH + 2, &bytesRead, SG_WORKSPACE0);        die(res);       // Be careful about text files with CR / LF ! will need to have RECORD_SOLUTION_LENGTH + 1
      
       i++;
  
@@ -1325,7 +1325,7 @@ int renderFilenames() {
   }
   while (cont);
  
-  lcd.SDFcloseFile(WORKSPACE0);   
+  lcd.SDFcloseFile(SG_WORKSPACE0);   
 
   return i;
  
@@ -1336,8 +1336,8 @@ void loadGame(int fileIndex) {
   char* filename = "";             
   boolean cont = true;
   
-  lcd.setTextSize(FONT1);
-  lcd.setTextColour(WHITE);    
+  lcd.setTextSize(SG_FONT1);
+  lcd.setTextColour(SG_WHITE);    
  
   unsigned int bytesRead=0, i=0;       
  
@@ -1345,16 +1345,16 @@ void loadGame(int fileIndex) {
   if (selectedTab == TAB_MEDIUM)   { filename = "sudoku_Medium.txt   "; }
   if (selectedTab == TAB_HARD)     { filename = "sudoku_Hard.txt     "; }
  
-  res = lcd.SDFopenFile(filename, READONLY, WORKSPACE0); 
+  res = lcd.SDFopenFile(filename, SG_READONLY, SG_WORKSPACE0); 
  
   do {
  
     memset(buffer, 0, sizeof(buffer));
-    res = lcd.SDFreadFile(buffer, RECORD_DESC_LENGTH, &bytesRead, WORKSPACE0);        die(res);    
+    res = lcd.SDFreadFile(buffer, RECORD_DESC_LENGTH, &bytesRead, SG_WORKSPACE0);        die(res);    
  
     if (bytesRead == RECORD_DESC_LENGTH) {
       
-      res = lcd.SDFreadFile(buffer, RECORD_SOLUTION_LENGTH + 2, &bytesRead, WORKSPACE0);        die(res);       // Be careful about text files with CR / LF ! will need to have RECORD_SOLUTION_LENGTH + 1
+      res = lcd.SDFreadFile(buffer, RECORD_SOLUTION_LENGTH + 2, &bytesRead, SG_WORKSPACE0);        die(res);       // Be careful about text files with CR / LF ! will need to have RECORD_SOLUTION_LENGTH + 1
  
       if ((selectedTab_Page * TAB_ENTRIES_PER_PAGE) + fileIndex == i) {
 
@@ -1405,8 +1405,8 @@ void loadGame(int fileIndex) {
   }
   while (cont);
   
-  lcd.SDFcloseFile(WORKSPACE0);   
-  saveGame(PAGE1);
+  lcd.SDFcloseFile(SG_WORKSPACE0);   
+  saveGame(SG_PAGE1);
 
 }
 
@@ -1414,9 +1414,9 @@ int showDialog(char caption[], char message[], int buttons) {
 
   int dialogResult = -1; 
  
-  lcd.setTextColour(BLACK);    
-  lcd.setTextSize(FONT1);
-  lcd.objWindow(DIALOG_LEFT, DIALOG_TOP, DIALOG_LEFT + DIALOG_WIDTH, DIALOG_TOP + DIALOG_HEIGHT, FONT2, SELECTEDGRAY, caption);
+  lcd.setTextColour(SG_BLACK);    
+  lcd.setTextSize(SG_FONT1);
+  lcd.objWindow(DIALOG_LEFT, DIALOG_TOP, DIALOG_LEFT + DIALOG_WIDTH, DIALOG_TOP + DIALOG_HEIGHT, SG_FONT2, SG_SELECTEDGRAY, caption);
   lcd.string(DIALOG_LEFT + DIALOG_MESSAGE_LEFT, DIALOG_TOP + DIALOG_MESSAGE_TOP, DIALOG_LEFT + DIALOG_MESSAGE_LEFT + DIALOG_MESSAGE_WIDTH, MAX_Y_LANDSCAPE, message, 0);
   
   if (buttons == DIALOG_BUTTONS_OKCANCEL) {
