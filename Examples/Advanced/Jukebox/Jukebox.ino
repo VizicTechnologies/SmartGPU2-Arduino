@@ -1,5 +1,5 @@
 /*********************************************************
-VIZIC TECHNOLOGIES. COPYRIGHT 2019.
+VIZIC TECHNOLOGIES. COPYRIGHT 2020.
 THE DATASHEETS, SOFTWARE AND LIBRARIES ARE PROVIDED "AS IS." 
 VIZIC EXPRESSLY DISCLAIM ANY WARRANTY OF ANY KIND, WHETHER 
 EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO, THE IMPLIED 
@@ -21,31 +21,31 @@ OR OTHER SIMILAR COSTS.
 
 SMARTGPU2 lcd;                     //create our object called LCD
 
-AXIS LCD_WIDTH, LCD_HEIGHT;        //Variables to handle the screen resolution
+SG_AXIS LCD_WIDTH, LCD_HEIGHT;        //Variables to handle the screen resolution
 
 char songsOnSDCard[20]={0};        //array containing the names of the different called videos, up to 20 characters including .vid extension
 unsigned char volume=100;
   
 /**********************************/
 void drawIntro(void){
-  lcd.drawGradientRect(0,0,LCD_WIDTH-1,LCD_HEIGHT-1,MAGENTA,BLACK,VERTICAL);
-  lcd.setTextSize(FONT5);
+  lcd.drawGradientRect(0,0,LCD_WIDTH-1,LCD_HEIGHT-1,SG_MAGENTA,SG_BLACK,SG_VERTICAL);
+  lcd.setTextSize(SG_FONT5);
   lcd.string(80,30,LCD_WIDTH-1,LCD_HEIGHT-1,"Jukebox",0);
   lcd.string(40,100,LCD_WIDTH-1,LCD_HEIGHT-1,"SmartGPU 2",0);  
-  lcd.setTextSize(FONT3);  
+  lcd.setTextSize(SG_FONT3);  
   lcd.string(23,180,LCD_WIDTH-1,LCD_HEIGHT-1,"Vizic Technologies 2019",0);
   delay(2000);
-  lcd.drawGradientRect(0,0,LCD_WIDTH-1,LCD_HEIGHT-1,MAGENTA,BLACK,VERTICAL);  
+  lcd.drawGradientRect(0,0,LCD_WIDTH-1,LCD_HEIGHT-1,SG_MAGENTA,SG_BLACK,SG_VERTICAL);  
   lcd.string(30,100,LCD_WIDTH-1,LCD_HEIGHT-1,"Searching for songs...",0);    
   delay(500);
 }
 
 /**********************************/
-void drawControls(ACTIVE stateRR, char *symbol, ACTIVE stateFF){
+void drawControls(SG_ACTIVE stateRR, char *symbol, SG_ACTIVE stateFF){
   //draw button RR
   lcd.objButton(5,LCD_HEIGHT-1-50,((LCD_WIDTH/3)*1)-1,LCD_HEIGHT-1-5,stateRR,"<<<");
   //draw button Play/Pause     
-  lcd.objButton(((LCD_WIDTH/3)*1)+1,LCD_HEIGHT-1-50,((LCD_WIDTH/3)*2)-1,LCD_HEIGHT-1-5,SELECTED,symbol);
+  lcd.objButton(((LCD_WIDTH/3)*1)+1,LCD_HEIGHT-1-50,((LCD_WIDTH/3)*2)-1,LCD_HEIGHT-1-5,SG_SELECTED,symbol);
   //draw button FF
   lcd.objButton(((LCD_WIDTH/3)*2)+1,LCD_HEIGHT-1-50,LCD_WIDTH-1-5,LCD_HEIGHT-1-5,stateFF,">>>");   
 }
@@ -56,7 +56,7 @@ void findNextAudioFile(char *fileName){
   static unsigned int songNumber=0;
   char *pch;
   while(1){
-    if(lcd.SDFgetFileName(songNumber++,fileName) == F_INVALID_PARAMETER) songNumber=0; //if the function throws invalid parameter, then reset i
+    if(lcd.SDFgetFileName(songNumber++,fileName) == SG_F_INVALID_PARAMETER) songNumber=0; //if the function throws invalid parameter, then reset i
     pch=strstr(fileName,".wav"); //find the .wav extension in the name
     if(pch != 0){                //if .wav extension is present in the name
       strncpy(pch,0x00,1);       //cut/replace the .wav extension for the NULL 0x00 character   
@@ -85,19 +85,19 @@ void setup() { //initial setup
 /**********************************/
 /**********************************/
 void loop() { //main loop
-  POINT point;
+  SG_POINT point;
   unsigned int vid=0,i=0;
-  STATE state;
+  SG_STATE state;
   
-  lcd.baudChange(BAUD5);                             //Set a fast baud!, always that we use touch functions is recommended to use fast baud rates
+  lcd.baudChange(SG_BAUD6);                             //Set a fast baud!, always that we use touch functions is recommended to use fast baud rates
   //Audio Init
-  lcd.initDACAudio(ENABLE);                          //Turn on the Audio DACs
-  lcd.audioBoost(ENABLE);                            //ENABLE boost
+  lcd.initDACAudio(SG_ENABLE);                          //Turn on the Audio DACs
+  lcd.audioBoost(SG_ENABLE);                            //ENABLE boost
   
   //Text config
-  lcd.setTextSize(FONT2);
+  lcd.setTextSize(SG_FONT2);
   //Open music folder
-  lcd.SDFopenDir("Music");                           //Open the folder that contains the songs, if commented songs will be searched on root path
+  lcd.SDFopenDir("Music");                             //Open the folder that contains the songs, if commented songs will be searched on root path
 
   //draw background/Intro
   drawIntro();
@@ -105,43 +105,43 @@ void loop() { //main loop
   //start playing
   while(1){ //Loop forever in the player!
     lcd.erase();
-    findNextAudioFile(songsOnSDCard);                //obtain a xxx.wav file name without the.wav extension
-    lcd.stopWAVFile();                               //stop current song if any
-    lcd.playWAVFile(songsOnSDCard,0);                //play found .wav file
+    findNextAudioFile(songsOnSDCard);                         //obtain a xxx.wav file name without the.wav extension
+    lcd.stopWAVFile();                                        //stop current song if any
+    lcd.playWAVFile(songsOnSDCard,0);                         //play found .wav file
     lcd.string(0,0,LCD_WIDTH-1,LCD_HEIGHT-1,songsOnSDCard,0); //print file name
-    drawControls(DESELECTED,"Pause",DESELECTED);     //draw Buttons
+    drawControls(SG_DESELECTED,"Pause",SG_DESELECTED);        //draw Buttons
     
-    while((lcd.getWAVPlayState(&state)==OK) && (state == ENABLE)){ //while song is still playing
-      lcd.drawGradientRect(0,40,LCD_WIDTH-1,LCD_HEIGHT-1-70,random(0,65536),random(0,65536),HORIZONTAL); //draw animation
+    while((lcd.getWAVPlayState(&state)==SG_OK) && (state == SG_ENABLE)){ //while song is still playing
+      lcd.drawGradientRect(0,40,LCD_WIDTH-1,LCD_HEIGHT-1-70,random(0,65536),random(0,65536),SG_HORIZONTAL); //draw animation
       delay(100);
       //try to receive a touch...
-      if(lcd.touchScreen(&point)==VALID){              //if valid touch...
-        if(point.y > (LCD_HEIGHT-1-50)){            //if touch on buttons
-          if(point.x < ((LCD_WIDTH/3)*1)){             //touch on <<< button
-            drawControls(SELECTED,"Pause",DESELECTED);   
-            delay(200);                                //wait
-            drawControls(DESELECTED,"Pause",DESELECTED);
-            lcd.advanceWAVFile(0);                     //rewind to beginning
-          }else if(point.x < ((LCD_WIDTH/3)*2)){       //touch on Play/Pause button
+      if(lcd.touchScreen(&point)==SG_VALID){              //if valid touch...
+        if(point.y > (LCD_HEIGHT-1-50)){                  //if touch on buttons
+          if(point.x < ((LCD_WIDTH/3)*1)){                //touch on <<< button
+            drawControls(SG_SELECTED,"Pause",SG_DESELECTED);   
+            delay(200);                                   //wait
+            drawControls(SG_DESELECTED,"Pause",SG_DESELECTED);
+            lcd.advanceWAVFile(0);                        //rewind to beginning
+          }else if(point.x < ((LCD_WIDTH/3)*2)){          //touch on Play/Pause button
             lcd.getWAVPlayState(&state);
-            if(state == ENABLE){                       //if playing
-              lcd.pauseWAVFile();                      //pause playing
-              drawControls(DESELECTED,"Play",DESELECTED);
+            if(state == SG_ENABLE){                       //if playing
+              lcd.pauseWAVFile();                         //pause playing
+              drawControls(SG_DESELECTED,"Play",SG_DESELECTED);
               delay(300);              
               while(1){                                //loop until touch on play button is performed
-                while(lcd.touchScreen(&point) == INVALID);
+                while(lcd.touchScreen(&point) == SG_INVALID);
                 if((point.y >= (LCD_HEIGHT-1-50)) && (point.x > ((LCD_WIDTH/3)*1)) && point.x < ((LCD_WIDTH/3)*2)){ //if touch on Play/Pause button
                   lcd.pauseWAVFile();                  //resume playing
-                  drawControls(DESELECTED,"Pause",DESELECTED);
+                  drawControls(SG_DESELECTED,"Pause",SG_DESELECTED);
                   delay(300);                                
                   break;
                 }
               }
             }else{ break;}
           }else{ //touch on >>> button
-            drawControls(DESELECTED,"Pause",SELECTED);
+            drawControls(SG_DESELECTED,"Pause",SG_SELECTED);
             delay(200);                                //wait
-            drawControls(DESELECTED,"Pause",DESELECTED);
+            drawControls(SG_DESELECTED,"Pause",SG_DESELECTED);
             break;                                     //go to next track
           }
         }else{                                         //touch on any other part of the screen = volume up or volume down
@@ -152,7 +152,7 @@ void loop() { //main loop
           } 
           lcd.setVolumeWAV(volume);                    //set new volume
           lcd.string(LCD_WIDTH-1-150,0,LCD_WIDTH-1,LCD_HEIGHT-1,"volume:",0); //print file name
-          lcd.drawRectangle(LCD_WIDTH-1-50,0,LCD_WIDTH-1,40,BLACK,FILL);
+          lcd.drawRectangle(LCD_WIDTH-1-50,0,LCD_WIDTH-1,40,SG_BLACK,SG_FILL);
           lcd.printNumber(LCD_WIDTH-1-50,0,volume);
         } 
       }

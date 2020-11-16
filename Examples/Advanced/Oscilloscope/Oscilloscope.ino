@@ -1,5 +1,5 @@
 /*********************************************************
-VIZIC TECHNOLOGIES. COPYRIGHT 2019.
+VIZIC TECHNOLOGIES. COPYRIGHT 2020.
 THE DATASHEETS, SOFTWARE AND LIBRARIES ARE PROVIDED "AS IS." 
 VIZIC EXPRESSLY DISCLAIM ANY WARRANTY OF ANY KIND, WHETHER 
 EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO, THE IMPLIED 
@@ -24,7 +24,7 @@ OR OTHER SIMILAR COSTS.
 
 SMARTGPU2 lcd;                             //create our object called LCD
 
-AXIS LCD_WIDTH, LCD_HEIGHT; //Variables to handle the screen resolution
+SG_AXIS LCD_WIDTH, LCD_HEIGHT; //Variables to handle the screen resolution
 
 #define GRAY 0x528A                        //GRAY colour of the grid
 
@@ -41,12 +41,12 @@ unsigned char       voltsPerDivPointer=3, millisecondsPerDivPointer=3; //default
 unsigned int sampleBuffer[450];                                //array to store ADC probe samples
 
 //Display variables
-AXIS WIN_HORIZONTAL_START;
-AXIS WIN_VERTICAL_START;
-AXIS WIN_HORIZONTAL_END;
-AXIS WIN_VERTICAL_END;
-AXIS MAX_X;
-AXIS MAX_Y;
+SG_AXIS WIN_HORIZONTAL_START;
+SG_AXIS WIN_VERTICAL_START;
+SG_AXIS WIN_HORIZONTAL_END;
+SG_AXIS WIN_VERTICAL_END;
+SG_AXIS MAX_X;
+SG_AXIS MAX_Y;
 unsigned int MAX_SAMPLES;
 
 /*********************************************************/
@@ -60,19 +60,19 @@ void initSampleBuffer(void){
 void showIntro(void){
   int aux=5,xs,ys,i, time=30;
 
-  lcd.setTextSize(FONT4);
+  lcd.setTextSize(SG_FONT4);
   lcd.string(2,2,MAX_X,MAX_Y,"SmartGPU 2 : Simple Oscilloscope", 0);
-  lcd.setTextSize(FONT2);
-  lcd.string(20,MAX_Y-35,MAX_X,MAX_Y,"Vizic Technologies 2019(c)", 0);
+  lcd.setTextSize(SG_FONT2);
+  lcd.string(20,MAX_Y-35,MAX_X,MAX_Y,"Vizic Technologies 2020(c)", 0);
   while(time--){
     //draw next circle
     xs=(sin(((aux*24)*3.14)/180)) * 40;
     ys=(cos(((aux*24)*3.14)/180)) * 40;
-    lcd.drawCircle((LCD_WIDTH/2)+xs,(LCD_HEIGHT/2)-ys,2,BLUE,FILL); 
+    lcd.drawCircle((LCD_WIDTH/2)+xs,(LCD_HEIGHT/2)-ys,2,SG_BLUE,SG_FILL); 
     //erase previous circle
     xs=(sin((((aux-5)*24)*3.14)/180)) * 40;
     ys=(cos((((aux-5)*24)*3.14)/180)) * 40;
-    lcd.drawCircle((LCD_WIDTH/2)+xs,(LCD_HEIGHT/2)-ys,3,BLACK,FILL);    
+    lcd.drawCircle((LCD_WIDTH/2)+xs,(LCD_HEIGHT/2)-ys,3,SG_BLACK,SG_FILL);    
     //increase vaiable aux
     if(aux++ > 13) aux=0;        
     delay(100);
@@ -82,17 +82,17 @@ void showIntro(void){
 
 /*********************************************************/
 void wait_milliseconds_and_process_touch(void){ //wait the millisecondsPerDivValues[] parameter and process touch in the while
-  POINT point;
+  SG_POINT point;
   
   TCNT1=0;               //reset timer counter - timer counts one step every 4 microseconds 
   while(TCNT1 < ((millisecondsPerDivValues[millisecondsPerDivPointer]*(1000/4)) / ((MAX_SAMPLES)/5))){    //wait to reach scaled time
-    if((lcd.touchScreen(&point)==VALID) && (point.y > WIN_VERTICAL_END)){    //if a touch is received and if touch on volts per div or in mSec per div strings
+    if((lcd.touchScreen(&point)==SG_VALID) && (point.y > WIN_VERTICAL_END)){    //if a touch is received and if touch on volts per div or in mSec per div strings
       if(point.x < (LCD_WIDTH/2)){        //if touch on volts per div(left half of the screen)
         if(++voltsPerDivPointer >= NUMBEROFVOLTSVALUES) voltsPerDivPointer = 0;
       }else{                              //touch on mSec per div(right half of the screen)
         if(++millisecondsPerDivPointer >= NUMBEROFMILLISECVALUES) millisecondsPerDivPointer = 0;
       }
-      lcd.drawRectangle(0,MAX_Y-20,MAX_X,MAX_Y,GREEN,FILL);  //erase previous strings
+      lcd.drawRectangle(0,MAX_Y-20,MAX_X,MAX_Y,SG_GREEN,SG_FILL);  //erase previous strings
       lcd.string(20,MAX_Y-20,MAX_X,MAX_Y,"Volts/Div:",0);
       lcd.printNumber(110,MAX_Y-20,voltsPerDivValues[voltsPerDivPointer]);
       lcd.string(MAX_X-140,MAX_Y-20,MAX_X,MAX_Y,"mSec/Div:",0);
@@ -127,24 +127,24 @@ void drawGrid(){
 void updateScreen(void){
   static int drawPointer= 0;
   sampleBuffer[drawPointer+1]= getScaledSample();                                              //store a scaled sample
-  lcd.drawLine(drawPointer+WIN_HORIZONTAL_START, sampleBuffer[drawPointer], drawPointer+WIN_HORIZONTAL_START+1, sampleBuffer[drawPointer+1], YELLOW);        //draw fresh sample
+  lcd.drawLine(drawPointer+WIN_HORIZONTAL_START, sampleBuffer[drawPointer], drawPointer+WIN_HORIZONTAL_START+1, sampleBuffer[drawPointer+1], SG_YELLOW);        //draw fresh sample
   drawPointer++;
   if((drawPointer+2) >= MAX_SAMPLES){
     drawGrid();                                                                              //re-draw Grid
     drawPointer = 0;  
   }
-  lcd.drawLine(drawPointer+WIN_HORIZONTAL_START+1, sampleBuffer[drawPointer+1], drawPointer+WIN_HORIZONTAL_START+2, sampleBuffer[drawPointer+2], BLACK);         //erase old sample
+  lcd.drawLine(drawPointer+WIN_HORIZONTAL_START+1, sampleBuffer[drawPointer+1], drawPointer+WIN_HORIZONTAL_START+2, sampleBuffer[drawPointer+2], SG_BLACK);         //erase old sample
 }
 
 /*********************************************************/
 void drawInterface(void){
-  lcd.drawGradientRect(0, 0, MAX_X, MAX_Y, BLUE, GREEN, VERTICAL);                              //draw background
-  lcd.drawRectangle(WIN_HORIZONTAL_START, WIN_VERTICAL_START, WIN_HORIZONTAL_END, WIN_VERTICAL_END, BLACK, FILL);   //draw plotting area
+  lcd.drawGradientRect(0, 0, MAX_X, MAX_Y, SG_BLUE, SG_GREEN, SG_VERTICAL);                              //draw background
+  lcd.drawRectangle(WIN_HORIZONTAL_START, WIN_VERTICAL_START, WIN_HORIZONTAL_END, WIN_VERTICAL_END, SG_BLACK, SG_FILL);   //draw plotting area
   drawGrid();
-  lcd.setTextSize(FONT1);
+  lcd.setTextSize(SG_FONT1);
   lcd.string(2,2,MAX_X,30,"SmartGPU 2 - Simple Oscilloscope", 0);
-  lcd.setTextColour(BLACK);
-  lcd.drawRectangle(0,MAX_Y-20,MAX_X,MAX_Y,GREEN,FILL);
+  lcd.setTextColour(SG_BLACK);
+  lcd.drawRectangle(0,MAX_Y-20,MAX_X,MAX_Y,SG_GREEN,SG_FILL);
   lcd.string(20,MAX_Y-20,MAX_X,MAX_Y,"Volts/Div:",0);
   lcd.printNumber(110,MAX_Y-20,voltsPerDivValues[voltsPerDivPointer]);
   lcd.string(MAX_X-140,MAX_Y-20,MAX_X,MAX_Y,"mSec/Div:",0);
@@ -172,7 +172,7 @@ void setup() { //initial setup
   MAX_SAMPLES          = WIN_HORIZONTAL_END - WIN_HORIZONTAL_START;  //must be the substraction of those 2 numbers 
 
   //oscilloscope configurations
-  //set analog reference as EXTERNAL to avoid damage to arduino boards when using smartGPU2 as shield, this is already done in the smartGPU2 library
+  //set analog reference as EXTERNAL to avoid damage to arduino boards when using smartGPU2 as shield!
   //analogReference(EXTERNAL); //which AREF is connected to 3.3V of SmartGPU2 board
   pinMode(PROBE_INPUT, INPUT);
   
@@ -190,7 +190,7 @@ void setup() { //initial setup
 /*********************************************************/
 /*********************************************************/
 void loop() { //main loop draw random colour, size and fill Ellipses    
-  lcd.baudChange(BAUD7); //for fast drawing we need a big baudRate
+  lcd.baudChange(SG_BAUD7); //for fast drawing we need a big baudRate
   
   showIntro();           //a Small intro  
   initSampleBuffer();    //initialize the sample Buffer to lowest value possible

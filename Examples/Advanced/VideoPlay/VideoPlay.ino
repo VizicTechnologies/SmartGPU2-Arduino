@@ -1,5 +1,5 @@
 /*********************************************************
- * VIZIC TECHNOLOGIES. COPYRIGHT 2019.
+ * VIZIC TECHNOLOGIES. COPYRIGHT 2020.
  * THE DATASHEETS, SOFTWARE AND LIBRARIES ARE PROVIDED "AS IS." 
  * VIZIC EXPRESSLY DISCLAIM ANY WARRANTY OF ANY KIND, WHETHER 
  * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO, THE IMPLIED 
@@ -23,8 +23,8 @@
 
 SMARTGPU2 lcd;               //create our object called LCD      
 
-AXIS LCD_WIDTH, LCD_HEIGHT;  //Variables to handle the screen resolution
-AXIS MAX_X, MAX_Y;
+SG_AXIS LCD_WIDTH, LCD_HEIGHT;  //Variables to handle the screen resolution
+SG_AXIS MAX_X, MAX_Y;
 
 char videosOnSDCard[20]={0}; //array containing the names of the different called videos, up to 20 characters including .vid extension
 
@@ -34,7 +34,7 @@ void findNextVideoFile(char *fileName){
   static unsigned int i=0;
   char *pch;
   while(1){
-    if(lcd.SDFgetFileName(i++,fileName) == F_INVALID_PARAMETER) i=0; //if the function throws invalid parameter, then reset i
+    if(lcd.SDFgetFileName(i++,fileName) == SG_F_INVALID_PARAMETER) i=0; //if the function throws invalid parameter, then reset i
     pch=strstr(fileName,".vid"); //find the .vid extension in the name
     if(pch != 0){                //if .vid extension is present in the name
       strncpy(pch,0x00,1);       //cut/replace the .vid extension for the NULL 0x00 character
@@ -48,10 +48,10 @@ void findNextVideoFile(char *fileName){
 /**************************************************/
 //function that draws buttons and current progress bar - used by media
 void drawButtonsAndProgress(unsigned long currFrame, unsigned long totFrames){
-  lcd.objButton(0,LCD_HEIGHT-40,(LCD_WIDTH/2)-1,LCD_HEIGHT-10,DESELECTED,"Continue");
-  lcd.objButton((LCD_WIDTH/2)+1,LCD_HEIGHT-40,MAX_X,LCD_HEIGHT-10,DESELECTED,"Next...");
-  lcd.drawRectangle(0,LCD_HEIGHT-80,(currFrame*MAX_X)/(totFrames),LCD_HEIGHT-60,RED,FILL);                 //scale currentFrame value to 0-LCD_WIDTH pixels
-  lcd.drawRectangle((currFrame*MAX_X)/(totFrames),LCD_HEIGHT-80,MAX_X,LCD_HEIGHT-60,BLACK,FILL); //scale currentFrame value to 0-LCD_WIDTH pixels 
+  lcd.objButton(0,LCD_HEIGHT-40,(LCD_WIDTH/2)-1,LCD_HEIGHT-10,SG_DESELECTED,"Continue");
+  lcd.objButton((LCD_WIDTH/2)+1,LCD_HEIGHT-40,MAX_X,LCD_HEIGHT-10,SG_DESELECTED,"Next...");
+  lcd.drawRectangle(0,LCD_HEIGHT-80,(currFrame*MAX_X)/(totFrames),LCD_HEIGHT-60,SG_RED,SG_FILL);                 //scale currentFrame value to 0-LCD_WIDTH pixels
+  lcd.drawRectangle((currFrame*MAX_X)/(totFrames),LCD_HEIGHT-80,MAX_X,LCD_HEIGHT-60,SG_BLACK,SG_FILL); //scale currentFrame value to 0-LCD_WIDTH pixels 
 }
 
 /**************************************************/
@@ -76,15 +76,15 @@ void setup() { //initial setup
 /**************************************************/
 void loop() { //main loop
   //structures and variables
-  POINT point;
-  ICON icon;
-  VIDDATA vidData;
+  SG_POINT point;
+  SG_ICON icon;
+  SG_VIDDATA vidData;
   unsigned long currentFrame=0, currentSecond=0;
   
-  lcd.baudChange(BAUD5);                                                        //set high baud for advanced applications
+  lcd.baudChange(SG_BAUD5);                                                     //set high baud for advanced applications
   
-  lcd.initDACAudio(ENABLE);
-  lcd.audioBoost(ENABLE);
+  lcd.initDACAudio(SG_ENABLE);
+  lcd.audioBoost(SG_ENABLE);
   
   lcd.SDFopenDir("Videos");                                                     //Open the "Videos" foldet that contains the .vid files
 
@@ -94,7 +94,7 @@ void loop() { //main loop
     lcd.string(0,0,MAX_X,MAX_Y, "Trying to allocate:", 0);
     lcd.string(0,20,MAX_X,MAX_Y, videosOnSDCard, 0);
    
-    if(lcd.allocateVideoSD(videosOnSDCard, &vidData) == OK){                    //if the found video is correctly allocated
+    if(lcd.allocateVideoSD(videosOnSDCard, &vidData) == SG_OK){                 //if the found video is correctly allocated
       currentFrame=0; currentSecond=0;                                          //reset variables
       //print video statistics
       lcd.string(0,40,MAX_X,MAX_Y, "Video Allocated", 0);  
@@ -110,15 +110,15 @@ void loop() { //main loop
       lcd.playWAVFile(videosOnSDCard,0);                                        //open audio if any, must be named the same as the video expept for the .wav extension
       
       while(1){
-        if(lcd.playVideoSD(0,0,vidData.framesPerSec)!=OK) break;                //play video for 1 second(this equal the obtained frames per second parameter) break while(1) if error
+        if(lcd.playVideoSD(0,0,vidData.framesPerSec)!=SG_OK) break;             //play video for 1 second(this equal the obtained frames per second parameter) break while(1) if error
         currentSecond++; currentFrame+=vidData.framesPerSec;                    //advance variables
-        if(lcd.touchScreen(&point)==VALID){                                     //check about each ~1 second for a touch, if VALID:
+        if(lcd.touchScreen(&point)==SG_VALID){                                  //check about each ~1 second for a touch, if VALID:
           lcd.pauseWAVFile();                                                   //pause audio
           //draw buttons and progress bar
           drawButtonsAndProgress(currentFrame, vidData.totalFrames);
           delay(300);
           while(1){                                                             //loop until touch on any button
-            while(lcd.touchScreen(&point)==INVALID || point.y<(LCD_HEIGHT-80)); //while no valid touch or touch outside buttons and progress bar
+            while(lcd.touchScreen(&point)==SG_INVALID || point.y<(LCD_HEIGHT-80)); //while no valid touch or touch outside buttons and progress bar
             //if touch on buttons - exit while(1)..
             if(point.y > (LCD_HEIGHT-40)) break;                                
             //if touch on progress bar, advance file to received touch in progress bar value...
@@ -134,12 +134,12 @@ void loop() { //main loop
           }
           //when previous touch was on buttons, process the touch:
           if(point.x < (LCD_WIDTH/2)){                                          //touch on continue button(left side of the screen)
-            lcd.objButton(0,LCD_HEIGHT-40,(LCD_WIDTH/2)-1,LCD_HEIGHT-10,SELECTED,"Continue");    
+            lcd.objButton(0,LCD_HEIGHT-40,(LCD_WIDTH/2)-1,LCD_HEIGHT-10,SG_SELECTED,"Continue");    
             delay(300);
             lcd.erase();
             lcd.pauseWAVFile();                                                 //resume audio and continue playback
           }else{                                                                //touch on return button(right side of the screen
-            lcd.objButton((LCD_WIDTH/2)+1,LCD_HEIGHT-40,MAX_X,LCD_HEIGHT-10,SELECTED,"Next...");
+            lcd.objButton((LCD_WIDTH/2)+1,LCD_HEIGHT-40,MAX_X,LCD_HEIGHT-10,SG_SELECTED,"Next...");
             lcd.stopWAVFile();
             delay(300);
             break;                                                              //exit playback, go to next video...
