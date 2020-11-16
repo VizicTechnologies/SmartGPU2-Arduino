@@ -2,8 +2,8 @@
 
 SMARTGPU2 lcd; 
 
-AXIS LCD_WIDTH, LCD_HEIGHT; //Variables to handle the screen resolution
-AXIS MAX_X_PORTRAIT, MAX_Y_PORTRAIT, MAX_X_LANDSCAPE, MAX_Y_LANDSCAPE;
+SG_AXIS LCD_WIDTH, LCD_HEIGHT; //Variables to handle the screen resolution
+SG_AXIS MAX_X_PORTRAIT, MAX_Y_PORTRAIT, MAX_X_LANDSCAPE, MAX_Y_LANDSCAPE;
 
 #define GREY1 0x2104
 #define GREY2 0x3186
@@ -171,13 +171,13 @@ AXIS MAX_X_PORTRAIT, MAX_Y_PORTRAIT, MAX_X_LANDSCAPE, MAX_Y_LANDSCAPE;
 #define URL_LEFT 77
 #define URL_TOP 415 
 
-RADIUS radius5 = 5;  
-RADIUS radius2 = 2;  
-FILLGEOM solidFill=(FILLGEOM)1;
-FILLGEOM hollowFill=(FILLGEOM)0;
-ORIENTATIONPARAMETER horizontal=(ORIENTATIONPARAMETER)0;
+SG_RADIUS radius5 = 5;  
+SG_RADIUS radius2 = 2;  
+SG_FILLGEOM solidFill=(SG_FILLGEOM)1;
+SG_FILLGEOM hollowFill=(SG_FILLGEOM)0;
+SG_ORIENTATIONPARAMETER horizontal=(SG_ORIENTATIONPARAMETER)0;
 
-POINT point;
+SG_POINT point;
 
 int purse = 100;
 int currentBetTotal = 0;
@@ -185,9 +185,9 @@ int currentBetInit = 0;
 int currentWin = 0;
 boolean showOptions = false;
 
-ACTIVE chkAllowSplit = SELECTED;
-ACTIVE chkDoubleOnSplit = SELECTED;
-ACTIVE chkBlackjackPays322 = SELECTED;
+SG_ACTIVE chkAllowSplit = SG_SELECTED;
+SG_ACTIVE chkDoubleOnSplit = SG_SELECTED;
+SG_ACTIVE chkBlackjackPays322 = SG_SELECTED;
 
 byte buttonMode = SHOW_BET_BUTTONS;
 
@@ -223,8 +223,8 @@ void setup() {
   
   lcd.init();  
   lcd.start(); 
-  lcd.orientation(PORTRAIT_LOW);
-  lcd.baudChange(BAUD7);      
+  lcd.orientation(SG_PORTRAIT_LOW);
+  lcd.baudChange(SG_BAUD6);      
   lcd.SDFopenDir("blackjack");
 
  // randomSeed(11);
@@ -265,12 +265,12 @@ void loop() {
   player_FirstHand_Bet = 0;
   currentWin = 0;
  
-  lcd.setTextSize(FONT1);
-  lcd.setTextColour(WHITE);
+  lcd.setTextSize(SG_FONT1);
+  lcd.setTextColour(SG_WHITE);
   
   if (showOptions) {
     
-    lcd.imageJPGSD(0, 0, SCALE1_1, "splash2");
+    lcd.imageJPGSD(0, 0, SG_SCALE1_1, "splash2");
     lcd.objCheckbox(CHK_ALLOW_SPLIT_LEFT, CHK_ALLOW_SPLIT_TOP, CHK_SIZE, chkAllowSplit ); 
     lcd.string(CHK_ALLOW_SPLIT_CAPTION_LEFT, CHK_ALLOW_SPLIT_TOP, MAX_X_PORTRAIT, MAX_Y_PORTRAIT, "Allow split?", 0);
     lcd.objCheckbox(CHK_DOUBLE_ON_SPLIT_LEFT, CHK_DOUBLE_ON_SPLIT_TOP, CHK_SIZE, chkDoubleOnSplit ); 
@@ -281,22 +281,22 @@ void loop() {
   }
   else {
 
-    lcd.imageJPGSD(0, 0, SCALE1_1, "splash");
+    lcd.imageJPGSD(0, 0, SG_SCALE1_1, "splash");
     
   }
 
-  lcd.drawRoundRect(BUTTONS_OPTIONS_LEFT, BUTTONS_OPTIONS_TOP, BUTTONS_OPTIONS_LEFT + BUTTONS_OPTIONS_WIDTH, BUTTONS_OPTIONS_TOP + BUTTONS_OPTIONS_HEIGHT, radius5, WHITE, hollowFill);
+  lcd.drawRoundRect(BUTTONS_OPTIONS_LEFT, BUTTONS_OPTIONS_TOP, BUTTONS_OPTIONS_LEFT + BUTTONS_OPTIONS_WIDTH, BUTTONS_OPTIONS_TOP + BUTTONS_OPTIONS_HEIGHT, radius5, SG_WHITE, hollowFill);
   lcd.string(BUTTONS_OPTIONS_LEFT + 15, BUTTONS_OPTIONS_TOP + 8, MAX_X_PORTRAIT, MAX_Y_PORTRAIT, "Options", 0);
-  lcd.drawRoundRect(BUTTONS_PLAY_GAME_LEFT, BUTTONS_PLAY_GAME_TOP, BUTTONS_PLAY_GAME_LEFT + BUTTONS_PLAY_GAME_WIDTH, BUTTONS_PLAY_GAME_TOP + BUTTONS_PLAY_GAME_HEIGHT, radius5, WHITE, hollowFill);
+  lcd.drawRoundRect(BUTTONS_PLAY_GAME_LEFT, BUTTONS_PLAY_GAME_TOP, BUTTONS_PLAY_GAME_LEFT + BUTTONS_PLAY_GAME_WIDTH, BUTTONS_PLAY_GAME_TOP + BUTTONS_PLAY_GAME_HEIGHT, radius5, SG_WHITE, hollowFill);
   lcd.string(BUTTONS_PLAY_GAME_LEFT + 24, BUTTONS_PLAY_GAME_TOP + 8, MAX_X_PORTRAIT, MAX_Y_PORTRAIT, "Start", 0);
 
   while (true) {
     
-    if (lcd.touchScreen(&point) == VALID) {  
+    if (lcd.touchScreen(&point) == SG_VALID) {  
     
-        if (point.x >= CHK_ALLOW_SPLIT_LEFT && point.x <= CHK_ALLOW_SPLIT_LEFT + CHK_SIZE && point.y >= CHK_ALLOW_SPLIT_TOP && point.y <= CHK_ALLOW_SPLIT_TOP + CHK_SIZE)                                                 { chkAllowSplit = (chkAllowSplit == SELECTED ? DESELECTED : SELECTED); lcd.objCheckbox(CHK_ALLOW_SPLIT_LEFT, CHK_ALLOW_SPLIT_TOP, CHK_SIZE, chkAllowSplit ); }
-        else if (point.x >= CHK_DOUBLE_ON_SPLIT_LEFT && point.x <= CHK_DOUBLE_ON_SPLIT_LEFT + CHK_SIZE && point.y >= CHK_DOUBLE_ON_SPLIT_TOP && point.y <= CHK_DOUBLE_ON_SPLIT_TOP + CHK_SIZE)                            { chkDoubleOnSplit = (chkDoubleOnSplit == SELECTED ? DESELECTED : SELECTED); lcd.objCheckbox(CHK_DOUBLE_ON_SPLIT_LEFT, CHK_DOUBLE_ON_SPLIT_TOP, CHK_SIZE, chkDoubleOnSplit ); }
-        else if (point.x >= CHK_BLACKJACK_PAYS_322_LEFT && point.x <= CHK_BLACKJACK_PAYS_322_LEFT + CHK_SIZE && point.y >= CHK_BLACKJACK_PAYS_322_TOP && point.y <= CHK_BLACKJACK_PAYS_322_TOP + CHK_SIZE)                { chkBlackjackPays322 = (chkBlackjackPays322 == SELECTED ? DESELECTED : SELECTED); lcd.objCheckbox(CHK_BLACKJACK_PAYS_322_LEFT, CHK_BLACKJACK_PAYS_322_TOP, CHK_SIZE, chkBlackjackPays322 ); }
+        if (point.x >= CHK_ALLOW_SPLIT_LEFT && point.x <= CHK_ALLOW_SPLIT_LEFT + CHK_SIZE && point.y >= CHK_ALLOW_SPLIT_TOP && point.y <= CHK_ALLOW_SPLIT_TOP + CHK_SIZE)                                                 { chkAllowSplit = (chkAllowSplit == SG_SELECTED ? SG_DESELECTED : SG_SELECTED); lcd.objCheckbox(CHK_ALLOW_SPLIT_LEFT, CHK_ALLOW_SPLIT_TOP, CHK_SIZE, chkAllowSplit ); }
+        else if (point.x >= CHK_DOUBLE_ON_SPLIT_LEFT && point.x <= CHK_DOUBLE_ON_SPLIT_LEFT + CHK_SIZE && point.y >= CHK_DOUBLE_ON_SPLIT_TOP && point.y <= CHK_DOUBLE_ON_SPLIT_TOP + CHK_SIZE)                            { chkDoubleOnSplit = (chkDoubleOnSplit == SG_SELECTED ? SG_DESELECTED : SG_SELECTED); lcd.objCheckbox(CHK_DOUBLE_ON_SPLIT_LEFT, CHK_DOUBLE_ON_SPLIT_TOP, CHK_SIZE, chkDoubleOnSplit ); }
+        else if (point.x >= CHK_BLACKJACK_PAYS_322_LEFT && point.x <= CHK_BLACKJACK_PAYS_322_LEFT + CHK_SIZE && point.y >= CHK_BLACKJACK_PAYS_322_TOP && point.y <= CHK_BLACKJACK_PAYS_322_TOP + CHK_SIZE)                { chkBlackjackPays322 = (chkBlackjackPays322 == SG_SELECTED ? SG_DESELECTED : SG_SELECTED); lcd.objCheckbox(CHK_BLACKJACK_PAYS_322_LEFT, CHK_BLACKJACK_PAYS_322_TOP, CHK_SIZE, chkBlackjackPays322 ); }
         else if (point.x >= BUTTONS_OPTIONS_LEFT && point.x <= BUTTONS_OPTIONS_LEFT + BUTTONS_OPTIONS_WIDTH && point.y >= BUTTONS_OPTIONS_TOP && point.y <= BUTTONS_OPTIONS_TOP + BUTTONS_OPTIONS_HEIGHT)                 { showOptions = !showOptions; break; }
         else if (point.x >= BUTTONS_PLAY_GAME_LEFT && point.x <= BUTTONS_PLAY_GAME_LEFT + BUTTONS_PLAY_GAME_WIDTH && point.y >= BUTTONS_PLAY_GAME_TOP && point.y <= BUTTONS_PLAY_GAME_TOP + BUTTONS_PLAY_GAME_HEIGHT)     { playGame_Loop(); break; }
   
@@ -313,7 +313,7 @@ void loop() {
       }
       else {
         
-        lcd.setTextSize(FONT0);
+        lcd.setTextSize(SG_FONT0);
         lcd.setTextColour(GREY7);
         lcd.string(URL_LEFT, URL_TOP, MAX_X_PORTRAIT, MAX_Y_PORTRAIT, "bloggingadeadhorse.com/blackjack.php", 0);
         
@@ -355,12 +355,12 @@ void playGame_Loop() {
   
    
     
-    lcd.setEraseBackColour(BLACK);
+    lcd.setEraseBackColour(SG_BLACK);
     lcd.erase();
     lcd.drawRectangle(0, STATUS_LOWER_TOP, MAX_X_PORTRAIT, STATUS_HEIGHT, TABLE_GREEN, solidFill);
   
-    lcd.setTextSize(FONT1);
-    lcd.setTextColour(BLACK);
+    lcd.setTextSize(SG_FONT1);
+    lcd.setTextColour(SG_BLACK);
   
     drawButtons();
   
@@ -380,7 +380,7 @@ void playGame_Loop() {
       
     while (!endOfHand) {
       
-      if (lcd.touchScreen(&point) == VALID) {         
+      if (lcd.touchScreen(&point) == SG_VALID) {         
         
         if (buttonMode == SHOW_BET_BUTTONS && currentBetInit <= 199 && purse >= 1 && point.x >= BUTTONS_1_LEFT && point.x <= BUTTONS_1_LEFT + BUTTONS_1_WIDTH && point.y >= BUTTONS_1_TOP && point.y <= BUTTONS_1_TOP + BUTTONS_1_HEIGHT)                                                    { currentBetInit = currentBetInit + 1; currentBetTotal = currentBetInit; player_FirstHand_Bet = currentBetInit; purse = purse - 1; drawButtons(); }
         else if (buttonMode == SHOW_BET_BUTTONS && currentBetInit <= 195 && purse >= 5 && point.x >= BUTTONS_5_LEFT && point.x <= BUTTONS_5_LEFT + BUTTONS_5_WIDTH && point.y >= BUTTONS_5_TOP && point.y <= BUTTONS_5_TOP + BUTTONS_5_HEIGHT)                                               { currentBetInit = currentBetInit + 5; currentBetTotal = currentBetInit; player_FirstHand_Bet = currentBetInit; purse = purse - 5; drawButtons(); }
@@ -403,9 +403,9 @@ void playGame_Loop() {
   
         else if (buttonMode == SHOW_GAME_PLAY_BUTTONS && point.x >= BUTTONS_HITME_LEFT && point.x <= BUTTONS_HITME_LEFT + BUTTONS_HITME_WIDTH && point.y >= BUTTONS_HITME_TOP && point.y <= BUTTONS_HITME_TOP + BUTTONS_HITME_HEIGHT)                                                        { hitMe(); }
         
-        else if ((chkDoubleOnSplit == SELECTED) && currentBetInit <= purse && ((player_FirstHand_CardCount == 2 && handInPlay == FIRST_HAND) || (player_SecondHand_CardCount == 2 && handInPlay == SECOND_HAND)) && buttonMode == SHOW_GAME_PLAY_BUTTONS && 
+        else if ((chkDoubleOnSplit == SG_SELECTED) && currentBetInit <= purse && ((player_FirstHand_CardCount == 2 && handInPlay == FIRST_HAND) || (player_SecondHand_CardCount == 2 && handInPlay == SECOND_HAND)) && buttonMode == SHOW_GAME_PLAY_BUTTONS && 
                   currentBetInit <= purse && point.x >= BUTTONS_DOUBLE_LEFT && point.x <= BUTTONS_DOUBLE_LEFT + BUTTONS_DOUBLE_WIDTH && point.y >= BUTTONS_DOUBLE_TOP && point.y <= BUTTONS_DOUBLE_TOP + BUTTONS_DOUBLE_HEIGHT)                                                              { doubleUp(); }
-        else if ((chkDoubleOnSplit == DESELECTED) && currentBetInit <= purse && player_FirstHand_CardCount == 2 && handInPlay == FIRST_HAND && buttonMode == SHOW_GAME_PLAY_BUTTONS && currentBetInit <= purse && point.x >= BUTTONS_DOUBLE_LEFT && 
+        else if ((chkDoubleOnSplit == SG_DESELECTED) && currentBetInit <= purse && player_FirstHand_CardCount == 2 && handInPlay == FIRST_HAND && buttonMode == SHOW_GAME_PLAY_BUTTONS && currentBetInit <= purse && point.x >= BUTTONS_DOUBLE_LEFT && 
                   point.x <= BUTTONS_DOUBLE_LEFT + BUTTONS_DOUBLE_WIDTH && point.y >= BUTTONS_DOUBLE_TOP && point.y <= BUTTONS_DOUBLE_TOP + BUTTONS_DOUBLE_HEIGHT)                                                                                                                           { doubleUp(); }
         else if (buttonMode == SHOW_GAME_PLAY_BUTTONS && point.x >= BUTTONS_STAND_LEFT && point.x <= BUTTONS_STAND_LEFT + BUTTONS_STAND_WIDTH && point.y >= BUTTONS_STAND_TOP && point.y <= BUTTONS_STAND_TOP + BUTTONS_STAND_HEIGHT)                                                        { playNextHand(); }
         else if (buttonMode == SHOW_GAME_PLAY_BUTTONS && currentBetInit <= purse && player_Split && point.x >= BUTTONS_SPLIT_LEFT && point.x <= BUTTONS_SPLIT_LEFT + BUTTONS_SPLIT_WIDTH && point.y >= BUTTONS_SPLIT_TOP && point.y <= BUTTONS_SPLIT_TOP + BUTTONS_SPLIT_HEIGHT)             { split(); }
@@ -419,18 +419,18 @@ void playGame_Loop() {
       
       if (purse == 0 && endOfHand) {
 
-        lcd.imageJPGSD(0, 0, SCALE1_1, "splash3");
+        lcd.imageJPGSD(0, 0, SG_SCALE1_1, "splash3");
         
         delay(3000);
         
-        lcd.setTextSize(FONT1);
-        lcd.setTextColour(WHITE);
-        lcd.drawRoundRect(BUTTONS_END_SPLASH_LEFT, BUTTONS_END_SPLASH_TOP, BUTTONS_END_SPLASH_LEFT + BUTTONS_END_SPLASH_WIDTH, BUTTONS_END_SPLASH_TOP + BUTTONS_END_SPLASH_HEIGHT, radius5, WHITE, hollowFill);
+        lcd.setTextSize(SG_FONT1);
+        lcd.setTextColour(SG_WHITE);
+        lcd.drawRoundRect(BUTTONS_END_SPLASH_LEFT, BUTTONS_END_SPLASH_TOP, BUTTONS_END_SPLASH_LEFT + BUTTONS_END_SPLASH_WIDTH, BUTTONS_END_SPLASH_TOP + BUTTONS_END_SPLASH_HEIGHT, radius5, SG_WHITE, hollowFill);
         lcd.string(BUTTONS_END_SPLASH_LEFT + 16, BUTTONS_END_SPLASH_TOP + 9, MAX_X_PORTRAIT, MAX_Y_PORTRAIT, "Continue", 0);
 
         while (true) {
       
-          if (lcd.touchScreen(&point) == VALID) {         
+          if (lcd.touchScreen(&point) == SG_VALID) {         
 
             if (point.x >= BUTTONS_END_SPLASH_LEFT && point.x <= BUTTONS_END_SPLASH_LEFT + BUTTONS_END_SPLASH_WIDTH && point.y >= BUTTONS_END_SPLASH_TOP && point.y <= BUTTONS_END_SPLASH_TOP + BUTTONS_END_SPLASH_HEIGHT) {
            
@@ -451,18 +451,18 @@ void playGame_Loop() {
       
       if (purse >= 10000 && endOfHand) {
 
-        lcd.imageJPGSD(0, 0, SCALE1_1, "splash4");
+        lcd.imageJPGSD(0, 0, SG_SCALE1_1, "splash4");
         
         delay(3000);
         
-        lcd.setTextSize(FONT1);
-        lcd.setTextColour(WHITE);
-        lcd.drawRoundRect(BUTTONS_END_SPLASH_LEFT, BUTTONS_END_SPLASH_TOP, BUTTONS_END_SPLASH_LEFT + BUTTONS_END_SPLASH_WIDTH, BUTTONS_END_SPLASH_TOP + BUTTONS_END_SPLASH_HEIGHT, radius5, WHITE, hollowFill);
+        lcd.setTextSize(SG_FONT1);
+        lcd.setTextColour(SG_WHITE);
+        lcd.drawRoundRect(BUTTONS_END_SPLASH_LEFT, BUTTONS_END_SPLASH_TOP, BUTTONS_END_SPLASH_LEFT + BUTTONS_END_SPLASH_WIDTH, BUTTONS_END_SPLASH_TOP + BUTTONS_END_SPLASH_HEIGHT, radius5, SG_WHITE, hollowFill);
         lcd.string(BUTTONS_END_SPLASH_LEFT + 16, BUTTONS_END_SPLASH_TOP + 9, MAX_X_PORTRAIT, MAX_Y_PORTRAIT, "Continue", 0);
 
         while (true) {
       
-          if (lcd.touchScreen(&point) == VALID) {         
+          if (lcd.touchScreen(&point) == SG_VALID) {         
 
             if (point.x >= BUTTONS_END_SPLASH_LEFT && point.x <= BUTTONS_END_SPLASH_LEFT + BUTTONS_END_SPLASH_WIDTH && point.y >= BUTTONS_END_SPLASH_TOP && point.y <= BUTTONS_END_SPLASH_TOP + BUTTONS_END_SPLASH_HEIGHT) {
            

@@ -2,36 +2,36 @@
 
 void drawButtons() {
   
-  lcd.setTextSize(FONT1);
+  lcd.setTextSize(SG_FONT1);
   lcd.drawRectangle(0, BUTTONS_TOP, MAX_X_PORTRAIT, BUTTONS_TOP + BUTTONS_HEIGHT, TABLE_GREEN, solidFill);
 
   if (buttonMode == SHOW_GAME_PLAY_BUTTONS) {
     
-    lcd.setTextColour(handInPlay != DEALER_HAND ? WHITE : GREY5);
-    lcd.drawRoundRect(BUTTONS_HITME_LEFT, BUTTONS_HITME_TOP, BUTTONS_HITME_LEFT + BUTTONS_HITME_WIDTH, BUTTONS_HITME_TOP + BUTTONS_HITME_HEIGHT, radius5, (handInPlay != DEALER_HAND ? WHITE : GREY5), hollowFill);
+    lcd.setTextColour(handInPlay != DEALER_HAND ? SG_WHITE : GREY5);
+    lcd.drawRoundRect(BUTTONS_HITME_LEFT, BUTTONS_HITME_TOP, BUTTONS_HITME_LEFT + BUTTONS_HITME_WIDTH, BUTTONS_HITME_TOP + BUTTONS_HITME_HEIGHT, radius5, (handInPlay != DEALER_HAND ? SG_WHITE : GREY5), hollowFill);
     lcd.string(BUTTONS_HITME_LEFT + 12, BUTTONS_HITME_TOP + 9, MAX_X_PORTRAIT, MAX_Y_PORTRAIT, "Hit Me", 0);
 
-    lcd.setTextColour(handInPlay != DEALER_HAND ? WHITE : GREY5);
-    lcd.drawRoundRect(BUTTONS_STAND_LEFT, BUTTONS_STAND_TOP, BUTTONS_STAND_LEFT + BUTTONS_STAND_WIDTH, BUTTONS_STAND_TOP + BUTTONS_STAND_HEIGHT, radius5, (handInPlay != DEALER_HAND ? WHITE : GREY5), hollowFill);
+    lcd.setTextColour(handInPlay != DEALER_HAND ? SG_WHITE : GREY5);
+    lcd.drawRoundRect(BUTTONS_STAND_LEFT, BUTTONS_STAND_TOP, BUTTONS_STAND_LEFT + BUTTONS_STAND_WIDTH, BUTTONS_STAND_TOP + BUTTONS_STAND_HEIGHT, radius5, (handInPlay != DEALER_HAND ? SG_WHITE : GREY5), hollowFill);
     lcd.string(BUTTONS_STAND_LEFT + 12, BUTTONS_STAND_TOP + 9, MAX_X_PORTRAIT, MAX_Y_PORTRAIT, "Stand", 0);
 
-    if (chkDoubleOnSplit == SELECTED) {
+    if (chkDoubleOnSplit == SG_SELECTED) {
   
-      lcd.setTextColour(currentBetInit <= purse && ((player_FirstHand_CardCount == 2 && handInPlay == FIRST_HAND) || (player_SecondHand_CardCount == 2 && handInPlay == SECOND_HAND)) ? WHITE : GREY5);
-      lcd.drawRoundRect(BUTTONS_DOUBLE_LEFT, BUTTONS_DOUBLE_TOP, BUTTONS_DOUBLE_LEFT + BUTTONS_DOUBLE_WIDTH, BUTTONS_DOUBLE_TOP + BUTTONS_DOUBLE_HEIGHT, radius5, (currentBetInit <= purse && ((player_FirstHand_CardCount == 2 && handInPlay == FIRST_HAND) || (player_SecondHand_CardCount == 2 && handInPlay == SECOND_HAND)) ? WHITE : GREY5), hollowFill);
+      lcd.setTextColour(currentBetInit <= purse && ((player_FirstHand_CardCount == 2 && handInPlay == FIRST_HAND) || (player_SecondHand_CardCount == 2 && handInPlay == SECOND_HAND)) ? SG_WHITE : GREY5);
+      lcd.drawRoundRect(BUTTONS_DOUBLE_LEFT, BUTTONS_DOUBLE_TOP, BUTTONS_DOUBLE_LEFT + BUTTONS_DOUBLE_WIDTH, BUTTONS_DOUBLE_TOP + BUTTONS_DOUBLE_HEIGHT, radius5, (currentBetInit <= purse && ((player_FirstHand_CardCount == 2 && handInPlay == FIRST_HAND) || (player_SecondHand_CardCount == 2 && handInPlay == SECOND_HAND)) ? SG_WHITE : GREY5), hollowFill);
       lcd.string(BUTTONS_DOUBLE_LEFT + 11, BUTTONS_DOUBLE_TOP + 9, MAX_X_PORTRAIT, MAX_Y_PORTRAIT, "Double", 0);
 
     }
     else {
   
-      lcd.setTextColour(currentBetInit <= purse && player_FirstHand_CardCount == 2 && handInPlay == FIRST_HAND ? WHITE : GREY5);
-      lcd.drawRoundRect(BUTTONS_DOUBLE_LEFT, BUTTONS_DOUBLE_TOP, BUTTONS_DOUBLE_LEFT + BUTTONS_DOUBLE_WIDTH, BUTTONS_DOUBLE_TOP + BUTTONS_DOUBLE_HEIGHT, radius5, (currentBetInit <= purse && player_FirstHand_CardCount == 2 && handInPlay == FIRST_HAND ? WHITE : GREY5), hollowFill);
+      lcd.setTextColour(currentBetInit <= purse && player_FirstHand_CardCount == 2 && handInPlay == FIRST_HAND ? SG_WHITE : GREY5);
+      lcd.drawRoundRect(BUTTONS_DOUBLE_LEFT, BUTTONS_DOUBLE_TOP, BUTTONS_DOUBLE_LEFT + BUTTONS_DOUBLE_WIDTH, BUTTONS_DOUBLE_TOP + BUTTONS_DOUBLE_HEIGHT, radius5, (currentBetInit <= purse && player_FirstHand_CardCount == 2 && handInPlay == FIRST_HAND ? SG_WHITE : GREY5), hollowFill);
       lcd.string(BUTTONS_DOUBLE_LEFT + 11, BUTTONS_DOUBLE_TOP + 9, MAX_X_PORTRAIT, MAX_Y_PORTRAIT, "Double", 0);
 
     }
     
-    lcd.setTextColour(currentBetInit <= purse && player_Split && handInPlay != DEALER_HAND && (chkAllowSplit == SELECTED) ? WHITE : GREY5);
-    lcd.drawRoundRect(BUTTONS_SPLIT_LEFT, BUTTONS_SPLIT_TOP, BUTTONS_SPLIT_LEFT + BUTTONS_SPLIT_WIDTH, BUTTONS_SPLIT_TOP + BUTTONS_SPLIT_HEIGHT, radius5, (currentBetInit <= purse && player_Split && handInPlay != DEALER_HAND && (chkAllowSplit == SELECTED) ? WHITE : GREY5), hollowFill);
+    lcd.setTextColour(currentBetInit <= purse && player_Split && handInPlay != DEALER_HAND && (chkAllowSplit == SG_SELECTED) ? SG_WHITE : GREY5);
+    lcd.drawRoundRect(BUTTONS_SPLIT_LEFT, BUTTONS_SPLIT_TOP, BUTTONS_SPLIT_LEFT + BUTTONS_SPLIT_WIDTH, BUTTONS_SPLIT_TOP + BUTTONS_SPLIT_HEIGHT, radius5, (currentBetInit <= purse && player_Split && handInPlay != DEALER_HAND && (chkAllowSplit == SG_SELECTED) ? SG_WHITE : GREY5), hollowFill);
     lcd.string(BUTTONS_SPLIT_LEFT + 18, BUTTONS_SPLIT_TOP + 9, MAX_X_PORTRAIT, MAX_Y_PORTRAIT, "Split", 0);
   
   }
@@ -52,65 +52,65 @@ void drawButtons() {
 
   if (buttonMode == SHOW_BET_BUTTONS) {
   
-    lcd.setTextColour(currentBetInit <= 199 && purse >= 1 && handInPlay != DEALER_HAND ? WHITE : GREY5);
-    lcd.drawRoundRect(BUTTONS_1_LEFT, BUTTONS_1_TOP, BUTTONS_1_LEFT + BUTTONS_1_WIDTH, BUTTONS_1_TOP + BUTTONS_1_HEIGHT, radius5, (currentBetInit <= 199 && purse >= 1 && handInPlay != DEALER_HAND ? WHITE : GREY5), hollowFill);
+    lcd.setTextColour(currentBetInit <= 199 && purse >= 1 && handInPlay != DEALER_HAND ? SG_WHITE : GREY5);
+    lcd.drawRoundRect(BUTTONS_1_LEFT, BUTTONS_1_TOP, BUTTONS_1_LEFT + BUTTONS_1_WIDTH, BUTTONS_1_TOP + BUTTONS_1_HEIGHT, radius5, (currentBetInit <= 199 && purse >= 1 && handInPlay != DEALER_HAND ? SG_WHITE : GREY5), hollowFill);
     lcd.string(BUTTONS_1_LEFT + 14, BUTTONS_1_TOP + 9, MAX_X_PORTRAIT, MAX_Y_PORTRAIT, "$1", 0);
 
-    lcd.setTextColour(currentBetInit <= 195 && purse >= 5 && handInPlay != DEALER_HAND ? WHITE : GREY5);
-    lcd.drawRoundRect(BUTTONS_5_LEFT, BUTTONS_5_TOP, BUTTONS_5_LEFT + BUTTONS_5_WIDTH, BUTTONS_5_TOP + BUTTONS_5_HEIGHT, radius5, (currentBetInit <= 195 && purse >= 5 && handInPlay != DEALER_HAND ? WHITE : GREY5), hollowFill);
+    lcd.setTextColour(currentBetInit <= 195 && purse >= 5 && handInPlay != DEALER_HAND ? SG_WHITE : GREY5);
+    lcd.drawRoundRect(BUTTONS_5_LEFT, BUTTONS_5_TOP, BUTTONS_5_LEFT + BUTTONS_5_WIDTH, BUTTONS_5_TOP + BUTTONS_5_HEIGHT, radius5, (currentBetInit <= 195 && purse >= 5 && handInPlay != DEALER_HAND ? SG_WHITE : GREY5), hollowFill);
     lcd.string(BUTTONS_5_LEFT + 10, BUTTONS_5_TOP + 9, MAX_X_PORTRAIT, MAX_Y_PORTRAIT, "$5", 0);
 
-    lcd.setTextColour(currentBetInit <= 190 && purse >= 10 && handInPlay != DEALER_HAND ? WHITE : GREY5);
-    lcd.drawRoundRect(BUTTONS_10_LEFT, BUTTONS_10_TOP, BUTTONS_10_LEFT + BUTTONS_10_WIDTH, BUTTONS_10_TOP + BUTTONS_10_HEIGHT, radius5, (currentBetInit <= 190 && purse >= 10 && handInPlay != DEALER_HAND ? WHITE : GREY5), hollowFill);
+    lcd.setTextColour(currentBetInit <= 190 && purse >= 10 && handInPlay != DEALER_HAND ? SG_WHITE : GREY5);
+    lcd.drawRoundRect(BUTTONS_10_LEFT, BUTTONS_10_TOP, BUTTONS_10_LEFT + BUTTONS_10_WIDTH, BUTTONS_10_TOP + BUTTONS_10_HEIGHT, radius5, (currentBetInit <= 190 && purse >= 10 && handInPlay != DEALER_HAND ? SG_WHITE : GREY5), hollowFill);
     lcd.string(BUTTONS_10_LEFT + 8, BUTTONS_10_TOP + 9, MAX_X_PORTRAIT, MAX_Y_PORTRAIT, "$10", 0);
 
-    lcd.setTextColour(currentBetInit <= 175 && purse >= 25 && handInPlay != DEALER_HAND ? WHITE : GREY5);
-    lcd.drawRoundRect(BUTTONS_25_LEFT, BUTTONS_25_TOP, BUTTONS_25_LEFT + BUTTONS_25_WIDTH, BUTTONS_25_TOP + BUTTONS_25_HEIGHT, radius5, (currentBetInit <= 175 && purse >= 25 && handInPlay != DEALER_HAND ? WHITE : GREY5), hollowFill);
+    lcd.setTextColour(currentBetInit <= 175 && purse >= 25 && handInPlay != DEALER_HAND ? SG_WHITE : GREY5);
+    lcd.drawRoundRect(BUTTONS_25_LEFT, BUTTONS_25_TOP, BUTTONS_25_LEFT + BUTTONS_25_WIDTH, BUTTONS_25_TOP + BUTTONS_25_HEIGHT, radius5, (currentBetInit <= 175 && purse >= 25 && handInPlay != DEALER_HAND ? SG_WHITE : GREY5), hollowFill);
     lcd.string(BUTTONS_25_LEFT + 6, BUTTONS_25_TOP + 9, MAX_X_PORTRAIT, MAX_Y_PORTRAIT, "$25", 0);
 
-    lcd.setTextColour(currentBetInit > 0 && handInPlay != DEALER_HAND ? WHITE : GREY5);
-    lcd.drawRoundRect(BUTTONS_CLEAR_LEFT, BUTTONS_CLEAR_TOP, BUTTONS_CLEAR_LEFT + BUTTONS_CLEAR_WIDTH, BUTTONS_CLEAR_TOP + BUTTONS_CLEAR_HEIGHT, radius5, (currentBetInit > 0 && handInPlay != DEALER_HAND ? WHITE : GREY5), hollowFill);
+    lcd.setTextColour(currentBetInit > 0 && handInPlay != DEALER_HAND ? SG_WHITE : GREY5);
+    lcd.drawRoundRect(BUTTONS_CLEAR_LEFT, BUTTONS_CLEAR_TOP, BUTTONS_CLEAR_LEFT + BUTTONS_CLEAR_WIDTH, BUTTONS_CLEAR_TOP + BUTTONS_CLEAR_HEIGHT, radius5, (currentBetInit > 0 && handInPlay != DEALER_HAND ? SG_WHITE : GREY5), hollowFill);
     lcd.string(BUTTONS_CLEAR_LEFT + 10, BUTTONS_CLEAR_TOP + 9, MAX_X_PORTRAIT, MAX_Y_PORTRAIT, "Clear", 0);
 
-    lcd.setTextColour(currentBetInit > 0 && handInPlay != DEALER_HAND ? WHITE : GREY5);
-    lcd.drawRoundRect(BUTTONS_PLAY_LEFT, BUTTONS_PLAY_TOP, BUTTONS_PLAY_LEFT + BUTTONS_PLAY_WIDTH, BUTTONS_PLAY_TOP + BUTTONS_PLAY_HEIGHT, radius5, (currentBetInit > 0 && handInPlay != DEALER_HAND ? WHITE : GREY5), hollowFill);
+    lcd.setTextColour(currentBetInit > 0 && handInPlay != DEALER_HAND ? SG_WHITE : GREY5);
+    lcd.drawRoundRect(BUTTONS_PLAY_LEFT, BUTTONS_PLAY_TOP, BUTTONS_PLAY_LEFT + BUTTONS_PLAY_WIDTH, BUTTONS_PLAY_TOP + BUTTONS_PLAY_HEIGHT, radius5, (currentBetInit > 0 && handInPlay != DEALER_HAND ? SG_WHITE : GREY5), hollowFill);
     lcd.string(BUTTONS_PLAY_LEFT + 14, BUTTONS_PLAY_TOP + 9, MAX_X_PORTRAIT, MAX_Y_PORTRAIT, "Play", 0);
   
   }
   
   if (buttonMode == SHOW_INSURANCE_BUTTONS) {
   
-    lcd.setTextColour(purse >= 1 && (insurance + 1) <= (currentBetInit / 2) && handInPlay != DEALER_HAND ? WHITE : GREY5);
-    lcd.drawRoundRect(BUTTONS_1_LEFT, BUTTONS_1_TOP, BUTTONS_1_LEFT + BUTTONS_1_WIDTH, BUTTONS_1_TOP + BUTTONS_1_HEIGHT, radius5, (purse >= 1 && (insurance + 1) <= (currentBetInit / 2) && handInPlay != DEALER_HAND ? WHITE : GREY5), hollowFill);
+    lcd.setTextColour(purse >= 1 && (insurance + 1) <= (currentBetInit / 2) && handInPlay != DEALER_HAND ? SG_WHITE : GREY5);
+    lcd.drawRoundRect(BUTTONS_1_LEFT, BUTTONS_1_TOP, BUTTONS_1_LEFT + BUTTONS_1_WIDTH, BUTTONS_1_TOP + BUTTONS_1_HEIGHT, radius5, (purse >= 1 && (insurance + 1) <= (currentBetInit / 2) && handInPlay != DEALER_HAND ? SG_WHITE : GREY5), hollowFill);
     lcd.string(BUTTONS_1_LEFT + 14, BUTTONS_1_TOP + 9, MAX_X_PORTRAIT, MAX_Y_PORTRAIT, "$1", 0);
 
-    lcd.setTextColour(purse >= 5 && (insurance + 5) <= (currentBetInit / 2) && handInPlay != DEALER_HAND ? WHITE : GREY5);
-    lcd.drawRoundRect(BUTTONS_5_LEFT, BUTTONS_5_TOP, BUTTONS_5_LEFT + BUTTONS_5_WIDTH, BUTTONS_5_TOP + BUTTONS_5_HEIGHT, radius5, (purse >= 5 && (insurance + 5) <= (currentBetInit / 2) && handInPlay != DEALER_HAND ? WHITE : GREY5), hollowFill);
+    lcd.setTextColour(purse >= 5 && (insurance + 5) <= (currentBetInit / 2) && handInPlay != DEALER_HAND ? SG_WHITE : GREY5);
+    lcd.drawRoundRect(BUTTONS_5_LEFT, BUTTONS_5_TOP, BUTTONS_5_LEFT + BUTTONS_5_WIDTH, BUTTONS_5_TOP + BUTTONS_5_HEIGHT, radius5, (purse >= 5 && (insurance + 5) <= (currentBetInit / 2) && handInPlay != DEALER_HAND ? SG_WHITE : GREY5), hollowFill);
     lcd.string(BUTTONS_5_LEFT + 10, BUTTONS_5_TOP + 9, MAX_X_PORTRAIT, MAX_Y_PORTRAIT, "$5", 0);
 
-    lcd.setTextColour(purse >= 10 && (insurance + 10) <= (currentBetInit / 2) && handInPlay != DEALER_HAND ? WHITE : GREY5);
-    lcd.drawRoundRect(BUTTONS_10_LEFT, BUTTONS_10_TOP, BUTTONS_10_LEFT + BUTTONS_10_WIDTH, BUTTONS_10_TOP + BUTTONS_10_HEIGHT, radius5, (purse >= 10 && (insurance + 10) <= (currentBetInit / 2) && handInPlay != DEALER_HAND ? WHITE : GREY5), hollowFill);
+    lcd.setTextColour(purse >= 10 && (insurance + 10) <= (currentBetInit / 2) && handInPlay != DEALER_HAND ? SG_WHITE : GREY5);
+    lcd.drawRoundRect(BUTTONS_10_LEFT, BUTTONS_10_TOP, BUTTONS_10_LEFT + BUTTONS_10_WIDTH, BUTTONS_10_TOP + BUTTONS_10_HEIGHT, radius5, (purse >= 10 && (insurance + 10) <= (currentBetInit / 2) && handInPlay != DEALER_HAND ? SG_WHITE : GREY5), hollowFill);
     lcd.string(BUTTONS_10_LEFT + 8, BUTTONS_10_TOP + 9, MAX_X_PORTRAIT, MAX_Y_PORTRAIT, "$10", 0);
 
-    lcd.setTextColour(purse >= 25 && (insurance + 25) <= (currentBetInit / 2) && handInPlay != DEALER_HAND ? WHITE : GREY5);
-    lcd.drawRoundRect(BUTTONS_25_LEFT, BUTTONS_25_TOP, BUTTONS_25_LEFT + BUTTONS_25_WIDTH, BUTTONS_25_TOP + BUTTONS_25_HEIGHT, radius5, (purse >= 25 && (insurance + 25) <= (currentBetInit / 2) && handInPlay != DEALER_HAND ? WHITE : GREY5), hollowFill);
+    lcd.setTextColour(purse >= 25 && (insurance + 25) <= (currentBetInit / 2) && handInPlay != DEALER_HAND ? SG_WHITE : GREY5);
+    lcd.drawRoundRect(BUTTONS_25_LEFT, BUTTONS_25_TOP, BUTTONS_25_LEFT + BUTTONS_25_WIDTH, BUTTONS_25_TOP + BUTTONS_25_HEIGHT, radius5, (purse >= 25 && (insurance + 25) <= (currentBetInit / 2) && handInPlay != DEALER_HAND ? SG_WHITE : GREY5), hollowFill);
     lcd.string(BUTTONS_25_LEFT + 6, BUTTONS_25_TOP + 9, MAX_X_PORTRAIT, MAX_Y_PORTRAIT, "$25", 0);
 
-    lcd.setTextColour(currentBetInit > 0 && handInPlay != DEALER_HAND ? WHITE : GREY5);
-    lcd.drawRoundRect(BUTTONS_CLEAR_LEFT, BUTTONS_CLEAR_TOP, BUTTONS_CLEAR_LEFT + BUTTONS_CLEAR_WIDTH, BUTTONS_CLEAR_TOP + BUTTONS_CLEAR_HEIGHT, radius5, (currentBetInit > 0 && handInPlay != DEALER_HAND ? WHITE : GREY5), hollowFill);
+    lcd.setTextColour(currentBetInit > 0 && handInPlay != DEALER_HAND ? SG_WHITE : GREY5);
+    lcd.drawRoundRect(BUTTONS_CLEAR_LEFT, BUTTONS_CLEAR_TOP, BUTTONS_CLEAR_LEFT + BUTTONS_CLEAR_WIDTH, BUTTONS_CLEAR_TOP + BUTTONS_CLEAR_HEIGHT, radius5, (currentBetInit > 0 && handInPlay != DEALER_HAND ? SG_WHITE : GREY5), hollowFill);
     lcd.string(BUTTONS_CLEAR_LEFT + 10, BUTTONS_CLEAR_TOP + 9, MAX_X_PORTRAIT, MAX_Y_PORTRAIT, "Clear", 0);
 
     if (insurance > 0) {
 
-      lcd.setTextColour(currentBetInit > 0 && handInPlay != DEALER_HAND ? WHITE : GREY5);
-      lcd.drawRoundRect(BUTTONS_PLAY_LEFT, BUTTONS_PLAY_TOP, BUTTONS_PLAY_LEFT + BUTTONS_PLAY_WIDTH, BUTTONS_PLAY_TOP + BUTTONS_PLAY_HEIGHT, radius5, (currentBetInit > 0 && handInPlay != DEALER_HAND ? WHITE : GREY5), hollowFill);
+      lcd.setTextColour(currentBetInit > 0 && handInPlay != DEALER_HAND ? SG_WHITE : GREY5);
+      lcd.drawRoundRect(BUTTONS_PLAY_LEFT, BUTTONS_PLAY_TOP, BUTTONS_PLAY_LEFT + BUTTONS_PLAY_WIDTH, BUTTONS_PLAY_TOP + BUTTONS_PLAY_HEIGHT, radius5, (currentBetInit > 0 && handInPlay != DEALER_HAND ? SG_WHITE : GREY5), hollowFill);
       lcd.string(BUTTONS_PLAY_LEFT + 14, BUTTONS_PLAY_TOP + 9, MAX_X_PORTRAIT, MAX_Y_PORTRAIT, "Play", 0);
     
     }
     else {
 
-      lcd.setTextColour(currentBetInit > 0 && handInPlay != DEALER_HAND ? WHITE : GREY5);
-      lcd.drawRoundRect(BUTTONS_PLAY_LEFT, BUTTONS_PLAY_TOP, BUTTONS_PLAY_LEFT + BUTTONS_PLAY_WIDTH, BUTTONS_PLAY_TOP + BUTTONS_PLAY_HEIGHT, radius5, (currentBetInit > 0 && handInPlay != DEALER_HAND ? WHITE : GREY5), hollowFill);
+      lcd.setTextColour(currentBetInit > 0 && handInPlay != DEALER_HAND ? SG_WHITE : GREY5);
+      lcd.drawRoundRect(BUTTONS_PLAY_LEFT, BUTTONS_PLAY_TOP, BUTTONS_PLAY_LEFT + BUTTONS_PLAY_WIDTH, BUTTONS_PLAY_TOP + BUTTONS_PLAY_HEIGHT, radius5, (currentBetInit > 0 && handInPlay != DEALER_HAND ? SG_WHITE : GREY5), hollowFill);
       lcd.string(BUTTONS_PLAY_LEFT + 14, BUTTONS_PLAY_TOP + 9, MAX_X_PORTRAIT, MAX_Y_PORTRAIT, "Skip", 0);
       
     }
@@ -119,18 +119,18 @@ void drawButtons() {
    
   if (buttonMode == SHOW_END_OF_GAME_BUTTONS) {
 
-    lcd.setTextColour(WHITE);
-    lcd.drawRoundRect(BUTTONS_QUIT_LEFT, BUTTONS_QUIT_TOP, BUTTONS_QUIT_LEFT + BUTTONS_QUIT_WIDTH, BUTTONS_QUIT_TOP + BUTTONS_QUIT_HEIGHT, radius5, WHITE, hollowFill);
+    lcd.setTextColour(SG_WHITE);
+    lcd.drawRoundRect(BUTTONS_QUIT_LEFT, BUTTONS_QUIT_TOP, BUTTONS_QUIT_LEFT + BUTTONS_QUIT_WIDTH, BUTTONS_QUIT_TOP + BUTTONS_QUIT_HEIGHT, radius5, SG_WHITE, hollowFill);
     lcd.string(BUTTONS_QUIT_LEFT + 36, BUTTONS_QUIT_TOP + 9, MAX_X_PORTRAIT, MAX_Y_PORTRAIT, "Quit", 0);
-    lcd.drawRoundRect(BUTTONS_CONTINUE_LEFT, BUTTONS_CONTINUE_TOP, BUTTONS_CONTINUE_LEFT + BUTTONS_CONTINUE_WIDTH, BUTTONS_CONTINUE_TOP + BUTTONS_CONTINUE_HEIGHT, radius5, WHITE, hollowFill);
+    lcd.drawRoundRect(BUTTONS_CONTINUE_LEFT, BUTTONS_CONTINUE_TOP, BUTTONS_CONTINUE_LEFT + BUTTONS_CONTINUE_WIDTH, BUTTONS_CONTINUE_TOP + BUTTONS_CONTINUE_HEIGHT, radius5, SG_WHITE, hollowFill);
     lcd.string(BUTTONS_CONTINUE_LEFT + 16, BUTTONS_CONTINUE_TOP + 9, MAX_X_PORTRAIT, MAX_Y_PORTRAIT, "Continue", 0);
     
   }
   
-  lcd.setTextSize(FONT0);
+  lcd.setTextSize(SG_FONT0);
 
-  lcd.drawRectangle(0, 0, MAX_X_PORTRAIT, STATUS_HEIGHT, BLACK, solidFill);
-  lcd.drawRectangle(0, STATUS_LOWER_TOP, MAX_X_PORTRAIT, STATUS_LOWER_TOP + STATUS_HEIGHT, BLACK, solidFill);
+  lcd.drawRectangle(0, 0, MAX_X_PORTRAIT, STATUS_HEIGHT, SG_BLACK, solidFill);
+  lcd.drawRectangle(0, STATUS_LOWER_TOP, MAX_X_PORTRAIT, STATUS_LOWER_TOP + STATUS_HEIGHT, SG_BLACK, solidFill);
 
   lcd.setTextColour(GREY3);
   lcd.string(STATUS_HANDS_PLAYED_CAPTION_LEFT, STATUS_TEXT_OFFSET, MAX_X_PORTRAIT, MAX_Y_PORTRAIT, "Hands Played", 0);
@@ -158,8 +158,8 @@ void drawButtons() {
   lcd.printNumber(STATUS_INIT_BET_VALUE_LEFT, STATUS_LOWER_TOP + STATUS_TEXT_OFFSET, currentBetInit);
   lcd.printNumber(STATUS_TOTAL_BET_VALUE_LEFT, STATUS_LOWER_TOP + STATUS_TEXT_OFFSET, currentBetTotal);
   
-  if (currentWin > 0) { lcd.setTextColour(GREEN); }
-  if (currentWin < 0) { lcd.setTextColour(RED); }
+  if (currentWin > 0) { lcd.setTextColour(SG_GREEN); }
+  if (currentWin < 0) { lcd.setTextColour(SG_RED); }
   lcd.printNumber(STATUS_WIN_VALUE_LEFT, STATUS_LOWER_TOP + STATUS_TEXT_OFFSET, currentWin);
 
 
@@ -169,8 +169,8 @@ void drawPlayerScores() {
 
   if (buttonMode == SHOW_INSURANCE_BUTTONS) {
 
-    lcd.drawRectangle(STATUS_LEFT_FIRSTHAND, STATUS_MIDDLE_TOP, MAX_X_PORTRAIT - 5, STATUS_MIDDLE_TOP + STATUS_HEIGHT, BLACK, solidFill);
-    lcd.setTextColour(YELLOW);
+    lcd.drawRectangle(STATUS_LEFT_FIRSTHAND, STATUS_MIDDLE_TOP, MAX_X_PORTRAIT - 5, STATUS_MIDDLE_TOP + STATUS_HEIGHT, SG_BLACK, solidFill);
+    lcd.setTextColour(SG_YELLOW);
     lcd.string(STATUS_LEFT_FIRSTHAND + 8, STATUS_MIDDLE_TOP + 5, MAX_X_PORTRAIT, MAX_Y_PORTRAIT, "Insurance ?", 0);
     lcd.setTextColour(GREY6);
     lcd.printNumber(STATUS_LEFT_FIRSTHAND + 88, STATUS_MIDDLE_TOP + 5, insurance);
@@ -178,15 +178,15 @@ void drawPlayerScores() {
   }
   else {
       
-    lcd.setTextSize(FONT0);
+    lcd.setTextSize(SG_FONT0);
     lcd.drawRectangle(0, STATUS_MIDDLE_TOP, MAX_X_PORTRAIT, STATUS_MIDDLE_TOP + STATUS_HEIGHT, TABLE_GREEN, solidFill);
   
     if (handInPlay == FIRST_HAND) {
   
       if (player_FirstHand_Double) {
   
-        lcd.drawRectangle(STATUS_LEFT_FIRSTHAND, STATUS_MIDDLE_TOP, STATUS_LEFT_FIRSTHAND + 185, STATUS_MIDDLE_TOP + STATUS_HEIGHT, BLACK, solidFill);
-        lcd.drawRectangle(STATUS_LEFT_FIRSTHAND + 185 + 5, STATUS_MIDDLE_TOP, MAX_X_PORTRAIT - 5, STATUS_MIDDLE_TOP + STATUS_HEIGHT, BLACK, solidFill);
+        lcd.drawRectangle(STATUS_LEFT_FIRSTHAND, STATUS_MIDDLE_TOP, STATUS_LEFT_FIRSTHAND + 185, STATUS_MIDDLE_TOP + STATUS_HEIGHT, SG_BLACK, solidFill);
+        lcd.drawRectangle(STATUS_LEFT_FIRSTHAND + 185 + 5, STATUS_MIDDLE_TOP, MAX_X_PORTRAIT - 5, STATUS_MIDDLE_TOP + STATUS_HEIGHT, SG_BLACK, solidFill);
         lcd.setTextColour(GREY3);
         lcd.string(STATUS_LEFT_FIRSTHAND + 8, STATUS_MIDDLE_TOP + 5, MAX_X_PORTRAIT, MAX_Y_PORTRAIT, "Bet", 0);
         lcd.setTextColour(GREY6);
@@ -194,7 +194,7 @@ void drawPlayerScores() {
   
          if (calculateHand(PLAYER, FIRST_HAND, false) > 21) {
            
-          lcd.setTextColour(RED);
+          lcd.setTextColour(SG_RED);
           lcd.string(STATUS_LEFT_FIRSTHAND + 68, STATUS_MIDDLE_TOP + 5, MAX_X_PORTRAIT, MAX_Y_PORTRAIT, "Bust !", 0);
           
          }
@@ -216,14 +216,14 @@ void drawPlayerScores() {
   
         if (player_SecondHand_CardCount == 0) {
           
-          lcd.drawRectangle(STATUS_LEFT_FIRSTHAND, STATUS_MIDDLE_TOP, STATUS_LEFT_FIRSTHAND + (player_FirstHand_CardCount * CARD_LARGE_SPACING) + CARD_LARGE_WIDTH - 10, STATUS_MIDDLE_TOP + STATUS_HEIGHT, BLACK, solidFill);
-          lcd.drawRectangle(STATUS_LEFT_FIRSTHAND + (player_FirstHand_CardCount * CARD_LARGE_SPACING) + CARD_LARGE_WIDTH - 5, STATUS_MIDDLE_TOP, MAX_X_PORTRAIT - 5, STATUS_MIDDLE_TOP + STATUS_HEIGHT, BLACK, solidFill);
+          lcd.drawRectangle(STATUS_LEFT_FIRSTHAND, STATUS_MIDDLE_TOP, STATUS_LEFT_FIRSTHAND + (player_FirstHand_CardCount * CARD_LARGE_SPACING) + CARD_LARGE_WIDTH - 10, STATUS_MIDDLE_TOP + STATUS_HEIGHT, SG_BLACK, solidFill);
+          lcd.drawRectangle(STATUS_LEFT_FIRSTHAND + (player_FirstHand_CardCount * CARD_LARGE_SPACING) + CARD_LARGE_WIDTH - 5, STATUS_MIDDLE_TOP, MAX_X_PORTRAIT - 5, STATUS_MIDDLE_TOP + STATUS_HEIGHT, SG_BLACK, solidFill);
           
         }
         else {
   
-          lcd.drawRectangle(STATUS_LEFT_FIRSTHAND, STATUS_MIDDLE_TOP, STATUS_LEFT_FIRSTHAND + 185, STATUS_MIDDLE_TOP + STATUS_HEIGHT, BLACK, solidFill);
-          lcd.drawRectangle(STATUS_LEFT_FIRSTHAND + 185 + 5, STATUS_MIDDLE_TOP, MAX_X_PORTRAIT - 5, STATUS_MIDDLE_TOP + STATUS_HEIGHT, BLACK, solidFill);
+          lcd.drawRectangle(STATUS_LEFT_FIRSTHAND, STATUS_MIDDLE_TOP, STATUS_LEFT_FIRSTHAND + 185, STATUS_MIDDLE_TOP + STATUS_HEIGHT, SG_BLACK, solidFill);
+          lcd.drawRectangle(STATUS_LEFT_FIRSTHAND + 185 + 5, STATUS_MIDDLE_TOP, MAX_X_PORTRAIT - 5, STATUS_MIDDLE_TOP + STATUS_HEIGHT, SG_BLACK, solidFill);
    
         }
         
@@ -243,7 +243,7 @@ void drawPlayerScores() {
   
         if (calculateHand(PLAYER, FIRST_HAND, false) > 21) {
            
-          lcd.setTextColour(RED);
+          lcd.setTextColour(SG_RED);
           lcd.string(STATUS_LEFT_FIRSTHAND + 68, STATUS_MIDDLE_TOP + 5, MAX_X_PORTRAIT, MAX_Y_PORTRAIT, "Bust !", 0);
           
         }
@@ -266,8 +266,8 @@ void drawPlayerScores() {
       
     if (handInPlay == SECOND_HAND) {
   
-      lcd.drawRectangle(STATUS_LEFT_FIRSTHAND, STATUS_MIDDLE_TOP, STATUS_LEFT_SECONDHAND - 5, STATUS_MIDDLE_TOP + STATUS_HEIGHT, BLACK, solidFill);
-      lcd.drawRectangle(STATUS_LEFT_SECONDHAND, STATUS_MIDDLE_TOP, MAX_X_PORTRAIT - 5, STATUS_MIDDLE_TOP + STATUS_HEIGHT, BLACK, solidFill);
+      lcd.drawRectangle(STATUS_LEFT_FIRSTHAND, STATUS_MIDDLE_TOP, STATUS_LEFT_SECONDHAND - 5, STATUS_MIDDLE_TOP + STATUS_HEIGHT, SG_BLACK, solidFill);
+      lcd.drawRectangle(STATUS_LEFT_SECONDHAND, STATUS_MIDDLE_TOP, MAX_X_PORTRAIT - 5, STATUS_MIDDLE_TOP + STATUS_HEIGHT, SG_BLACK, solidFill);
       lcd.setTextColour(GREY3);
       lcd.string(STATUS_LEFT_FIRSTHAND + 8, STATUS_MIDDLE_TOP + 5, MAX_X_PORTRAIT, MAX_Y_PORTRAIT, "Bet", 0);
       lcd.string(STATUS_LEFT_SECONDHAND + 8, STATUS_MIDDLE_TOP + 5, MAX_X_PORTRAIT, MAX_Y_PORTRAIT, "Bet", 0);
@@ -277,7 +277,7 @@ void drawPlayerScores() {
   
       if (player_FirstHand_Bust) {
   
-        lcd.setTextColour(RED);
+        lcd.setTextColour(SG_RED);
         lcd.string(STATUS_LEFT_FIRSTHAND + 68, STATUS_MIDDLE_TOP + 5, MAX_X_PORTRAIT, MAX_Y_PORTRAIT, "Bust !", 0);
       
       }
@@ -298,8 +298,8 @@ void drawPlayerScores() {
   
         if (player_FirstHand_Double) {
         
-          lcd.drawRectangle(STATUS_LEFT_FIRSTHAND, STATUS_MIDDLE_TOP, STATUS_LEFT_FIRSTHAND + 185, STATUS_MIDDLE_TOP + STATUS_HEIGHT, BLACK, solidFill);
-          lcd.drawRectangle(STATUS_LEFT_FIRSTHAND + 185 + 5, STATUS_MIDDLE_TOP, MAX_X_PORTRAIT - 5, STATUS_MIDDLE_TOP + STATUS_HEIGHT, BLACK, solidFill);
+          lcd.drawRectangle(STATUS_LEFT_FIRSTHAND, STATUS_MIDDLE_TOP, STATUS_LEFT_FIRSTHAND + 185, STATUS_MIDDLE_TOP + STATUS_HEIGHT, SG_BLACK, solidFill);
+          lcd.drawRectangle(STATUS_LEFT_FIRSTHAND + 185 + 5, STATUS_MIDDLE_TOP, MAX_X_PORTRAIT - 5, STATUS_MIDDLE_TOP + STATUS_HEIGHT, SG_BLACK, solidFill);
           lcd.setTextColour(GREY3);
           lcd.string(STATUS_LEFT_FIRSTHAND + 8, STATUS_MIDDLE_TOP + 5, MAX_X_PORTRAIT, MAX_Y_PORTRAIT, "Bet", 0);
           lcd.setTextColour(GREY6);
@@ -307,7 +307,7 @@ void drawPlayerScores() {
   
           if (player_FirstHand_Bust) {
   
-            lcd.setTextColour(RED);
+            lcd.setTextColour(SG_RED);
             lcd.string(STATUS_LEFT_FIRSTHAND + 68, STATUS_MIDDLE_TOP + 5, MAX_X_PORTRAIT, MAX_Y_PORTRAIT, "Bust !", 0);
       
           }
@@ -323,8 +323,8 @@ void drawPlayerScores() {
         }
         else {
         
-          lcd.drawRectangle(STATUS_LEFT_FIRSTHAND, STATUS_MIDDLE_TOP, STATUS_LEFT_FIRSTHAND + (player_FirstHand_CardCount * CARD_LARGE_SPACING) + CARD_LARGE_WIDTH - 10, STATUS_MIDDLE_TOP + STATUS_HEIGHT, BLACK, solidFill);
-          lcd.drawRectangle(STATUS_LEFT_FIRSTHAND + (player_FirstHand_CardCount * CARD_LARGE_SPACING) + CARD_LARGE_WIDTH - 5, STATUS_MIDDLE_TOP, MAX_X_PORTRAIT - 5, STATUS_MIDDLE_TOP + STATUS_HEIGHT, BLACK, solidFill);
+          lcd.drawRectangle(STATUS_LEFT_FIRSTHAND, STATUS_MIDDLE_TOP, STATUS_LEFT_FIRSTHAND + (player_FirstHand_CardCount * CARD_LARGE_SPACING) + CARD_LARGE_WIDTH - 10, STATUS_MIDDLE_TOP + STATUS_HEIGHT, SG_BLACK, solidFill);
+          lcd.drawRectangle(STATUS_LEFT_FIRSTHAND + (player_FirstHand_CardCount * CARD_LARGE_SPACING) + CARD_LARGE_WIDTH - 5, STATUS_MIDDLE_TOP, MAX_X_PORTRAIT - 5, STATUS_MIDDLE_TOP + STATUS_HEIGHT, SG_BLACK, solidFill);
           lcd.setTextColour(GREY3);
           lcd.string(STATUS_LEFT_FIRSTHAND + 8, STATUS_MIDDLE_TOP + 5, MAX_X_PORTRAIT, MAX_Y_PORTRAIT, "Bet", 0);
           lcd.setTextColour(GREY6);
@@ -332,7 +332,7 @@ void drawPlayerScores() {
   
           if (player_FirstHand_Bust) {
   
-            lcd.setTextColour(RED);
+            lcd.setTextColour(SG_RED);
             lcd.string(STATUS_LEFT_FIRSTHAND + 68, STATUS_MIDDLE_TOP + 5, MAX_X_PORTRAIT, MAX_Y_PORTRAIT, "Bust !", 0);
       
           }
@@ -351,8 +351,8 @@ void drawPlayerScores() {
   
       if (player_SecondHand_CardCount > 0) {
         
-        lcd.drawRectangle(STATUS_LEFT_FIRSTHAND, STATUS_MIDDLE_TOP, STATUS_LEFT_SECONDHAND - 5, STATUS_MIDDLE_TOP + STATUS_HEIGHT, BLACK, solidFill);
-        lcd.drawRectangle(STATUS_LEFT_SECONDHAND, STATUS_MIDDLE_TOP, MAX_X_PORTRAIT - 5, STATUS_MIDDLE_TOP + STATUS_HEIGHT, BLACK, solidFill);
+        lcd.drawRectangle(STATUS_LEFT_FIRSTHAND, STATUS_MIDDLE_TOP, STATUS_LEFT_SECONDHAND - 5, STATUS_MIDDLE_TOP + STATUS_HEIGHT, SG_BLACK, solidFill);
+        lcd.drawRectangle(STATUS_LEFT_SECONDHAND, STATUS_MIDDLE_TOP, MAX_X_PORTRAIT - 5, STATUS_MIDDLE_TOP + STATUS_HEIGHT, SG_BLACK, solidFill);
         lcd.setTextColour(GREY3);
         lcd.string(STATUS_LEFT_FIRSTHAND + 8, STATUS_MIDDLE_TOP + 5, MAX_X_PORTRAIT, MAX_Y_PORTRAIT, "Bet", 0);
         lcd.string(STATUS_LEFT_SECONDHAND + 8, STATUS_MIDDLE_TOP + 5, MAX_X_PORTRAIT, MAX_Y_PORTRAIT, "Bet", 0);
@@ -418,19 +418,19 @@ void highlightWin(int win, int purseInc) {
   purse = purse + purseInc;
 
   lcd.setTextColour(GREY6);
-  lcd.drawRectangle(STATUS_BANK_VALUE_LEFT, STATUS_LOWER_TOP, STATUS_INIT_BET_CAPTION_LEFT - 1, MAX_Y_PORTRAIT, BLACK, solidFill);
+  lcd.drawRectangle(STATUS_BANK_VALUE_LEFT, STATUS_LOWER_TOP, STATUS_INIT_BET_CAPTION_LEFT - 1, MAX_Y_PORTRAIT, SG_BLACK, solidFill);
   lcd.printNumber(STATUS_BANK_VALUE_LEFT, STATUS_LOWER_TOP + STATUS_TEXT_OFFSET, purse);
 
   lcd.setTextColour(GREY3);
-  lcd.drawRectangle(STATUS_WIN_CAPTION_LEFT, STATUS_LOWER_TOP, MAX_X_PORTRAIT, MAX_Y_PORTRAIT, BLACK, solidFill);
+  lcd.drawRectangle(STATUS_WIN_CAPTION_LEFT, STATUS_LOWER_TOP, MAX_X_PORTRAIT, MAX_Y_PORTRAIT, SG_BLACK, solidFill);
   lcd.string(STATUS_WIN_CAPTION_LEFT, STATUS_LOWER_TOP + STATUS_TEXT_OFFSET, MAX_X_PORTRAIT, MAX_Y_PORTRAIT, "Win", 0);
 
   for (int x=0; x< 3; x++) {
   
-    lcd.setTextColour(GREEN);
+    lcd.setTextColour(SG_GREEN);
     lcd.printNumber(STATUS_WIN_VALUE_LEFT, STATUS_LOWER_TOP + STATUS_TEXT_OFFSET, currentWin);
     delay(500);
-    lcd.drawRectangle( STATUS_WIN_VALUE_LEFT, STATUS_LOWER_TOP, MAX_X_PORTRAIT, MAX_Y_PORTRAIT, BLACK, solidFill);
+    lcd.drawRectangle( STATUS_WIN_VALUE_LEFT, STATUS_LOWER_TOP, MAX_X_PORTRAIT, MAX_Y_PORTRAIT, SG_BLACK, solidFill);
     delay(500);
 
   }
@@ -449,15 +449,15 @@ void highlightLoss(int loss) {
   currentWin = currentWin + loss;
   
   lcd.setTextColour(GREY3);
-  lcd.drawRectangle(STATUS_WIN_CAPTION_LEFT, STATUS_LOWER_TOP, MAX_X_PORTRAIT, MAX_Y_PORTRAIT, BLACK, solidFill);
+  lcd.drawRectangle(STATUS_WIN_CAPTION_LEFT, STATUS_LOWER_TOP, MAX_X_PORTRAIT, MAX_Y_PORTRAIT, SG_BLACK, solidFill);
   lcd.string(STATUS_WIN_CAPTION_LEFT, STATUS_LOWER_TOP + STATUS_TEXT_OFFSET, MAX_X_PORTRAIT, MAX_Y_PORTRAIT, "Lose", 0);
 
   for (int x=0; x< 3; x++) {
   
-    lcd.setTextColour(RED);
+    lcd.setTextColour(SG_RED);
     lcd.printNumber(STATUS_WIN_VALUE_LEFT, STATUS_LOWER_TOP + STATUS_TEXT_OFFSET, loss);
     delay(500);
-    lcd.drawRectangle( STATUS_WIN_VALUE_LEFT, STATUS_LOWER_TOP, MAX_X_PORTRAIT, MAX_Y_PORTRAIT, BLACK, solidFill);
+    lcd.drawRectangle( STATUS_WIN_VALUE_LEFT, STATUS_LOWER_TOP, MAX_X_PORTRAIT, MAX_Y_PORTRAIT, SG_BLACK, solidFill);
     delay(500);
 
   }
@@ -827,32 +827,32 @@ void drawCard(int xPos, int yPos, byte card, boolean rotated, boolean large) {
 
 void drawCardLarge(int xPos, int yPos, char card[2]) {
       
-  lcd.drawRoundRect(xPos, yPos, xPos + CARD_LARGE_WIDTH, yPos + CARD_LARGE_HEIGHT, radius5, WHITE, solidFill);
-  lcd.drawRoundRect(xPos, yPos, xPos + CARD_LARGE_WIDTH, yPos + CARD_LARGE_HEIGHT, radius5, BLACK, hollowFill);
-  lcd.imageJPGSD(xPos + CARD_LARGE_INSET, yPos + CARD_LARGE_INSET, SCALE1_1, card);
+  lcd.drawRoundRect(xPos, yPos, xPos + CARD_LARGE_WIDTH, yPos + CARD_LARGE_HEIGHT, radius5, SG_WHITE, solidFill);
+  lcd.drawRoundRect(xPos, yPos, xPos + CARD_LARGE_WIDTH, yPos + CARD_LARGE_HEIGHT, radius5, SG_BLACK, hollowFill);
+  lcd.imageJPGSD(xPos + CARD_LARGE_INSET, yPos + CARD_LARGE_INSET, SG_SCALE1_1, card);
 
 }
 
 void drawCardLarge_Rotated(int xPos, int yPos, char card[2]) {
       
-  lcd.drawRoundRect(xPos, yPos + CARD_LARGE_ROTATED_Y_OFFSET, xPos + CARD_LARGE_HEIGHT, yPos + CARD_LARGE_ROTATED_Y_OFFSET + CARD_LARGE_WIDTH, radius5, WHITE, solidFill);
-  lcd.drawRoundRect(xPos, yPos + CARD_LARGE_ROTATED_Y_OFFSET, xPos + CARD_LARGE_HEIGHT, yPos + CARD_LARGE_ROTATED_Y_OFFSET + CARD_LARGE_WIDTH, radius5, BLACK, hollowFill);
-  lcd.imageJPGSD(xPos + CARD_LARGE_INSET, yPos + CARD_LARGE_ROTATED_Y_OFFSET + CARD_LARGE_INSET, SCALE1_1, card);
+  lcd.drawRoundRect(xPos, yPos + CARD_LARGE_ROTATED_Y_OFFSET, xPos + CARD_LARGE_HEIGHT, yPos + CARD_LARGE_ROTATED_Y_OFFSET + CARD_LARGE_WIDTH, radius5, SG_WHITE, solidFill);
+  lcd.drawRoundRect(xPos, yPos + CARD_LARGE_ROTATED_Y_OFFSET, xPos + CARD_LARGE_HEIGHT, yPos + CARD_LARGE_ROTATED_Y_OFFSET + CARD_LARGE_WIDTH, radius5, SG_BLACK, hollowFill);
+  lcd.imageJPGSD(xPos + CARD_LARGE_INSET, yPos + CARD_LARGE_ROTATED_Y_OFFSET + CARD_LARGE_INSET, SG_SCALE1_1, card);
 
 }
 
 void drawCardSmall(int xPos, int yPos, char card[2]) {
       
-  lcd.drawRoundRect(xPos, yPos, xPos + CARD_SMALL_WIDTH, yPos + CARD_SMALL_HEIGHT, radius5, WHITE, solidFill);
-  lcd.drawRoundRect(xPos, yPos, xPos + CARD_SMALL_WIDTH, yPos + CARD_SMALL_HEIGHT, radius5, BLACK, hollowFill);
-  lcd.imageJPGSD(xPos + CARD_SMALL_INSET, yPos + CARD_SMALL_INSET, SCALE1_2, card);
+  lcd.drawRoundRect(xPos, yPos, xPos + CARD_SMALL_WIDTH, yPos + CARD_SMALL_HEIGHT, radius5, SG_WHITE, solidFill);
+  lcd.drawRoundRect(xPos, yPos, xPos + CARD_SMALL_WIDTH, yPos + CARD_SMALL_HEIGHT, radius5, SG_BLACK, hollowFill);
+  lcd.imageJPGSD(xPos + CARD_SMALL_INSET, yPos + CARD_SMALL_INSET, SG_SCALE1_2, card);
   
 }
 
 void drawCardSmall_Rotated(int xPos, int yPos, char card[2]) {
       
-  lcd.drawRoundRect(xPos, yPos + CARD_SMALL_ROTATED_Y_OFFSET, xPos + CARD_SMALL_HEIGHT, yPos + CARD_SMALL_ROTATED_Y_OFFSET + CARD_SMALL_WIDTH, radius5, WHITE, solidFill);
-  lcd.drawRoundRect(xPos, yPos + CARD_SMALL_ROTATED_Y_OFFSET, xPos + CARD_SMALL_HEIGHT, yPos + CARD_SMALL_ROTATED_Y_OFFSET + CARD_SMALL_WIDTH, radius5, BLACK, hollowFill);
-  lcd.imageJPGSD(xPos + CARD_SMALL_INSET, yPos + CARD_SMALL_ROTATED_Y_OFFSET + CARD_SMALL_INSET, SCALE1_2, card);
+  lcd.drawRoundRect(xPos, yPos + CARD_SMALL_ROTATED_Y_OFFSET, xPos + CARD_SMALL_HEIGHT, yPos + CARD_SMALL_ROTATED_Y_OFFSET + CARD_SMALL_WIDTH, radius5, SG_WHITE, solidFill);
+  lcd.drawRoundRect(xPos, yPos + CARD_SMALL_ROTATED_Y_OFFSET, xPos + CARD_SMALL_HEIGHT, yPos + CARD_SMALL_ROTATED_Y_OFFSET + CARD_SMALL_WIDTH, radius5, SG_BLACK, hollowFill);
+  lcd.imageJPGSD(xPos + CARD_SMALL_INSET, yPos + CARD_SMALL_ROTATED_Y_OFFSET + CARD_SMALL_INSET, SG_SCALE1_2, card);
 
 }

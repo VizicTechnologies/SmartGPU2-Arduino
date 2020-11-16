@@ -31,7 +31,7 @@ void initialDeal() {
 
 */
   
-  player_Split = ((player_FirstHand[0] % 13) == (player_FirstHand[1] % 13)) && (chkAllowSplit == SELECTED);
+  player_Split = ((player_FirstHand[0] % 13) == (player_FirstHand[1] % 13)) && (chkAllowSplit == SG_SELECTED);
   
   
   // Offer insurance ?
@@ -77,7 +77,7 @@ void initialDeal() {
 void peekOnTen() {
       
   lcd.setTextColour(GREY3);
-  lcd.drawRectangle(STATUS_LEFT_FIRSTHAND, STATUS_MIDDLE_TOP, MAX_X_PORTRAIT - 5, STATUS_MIDDLE_TOP + STATUS_HEIGHT, BLACK, solidFill);
+  lcd.drawRectangle(STATUS_LEFT_FIRSTHAND, STATUS_MIDDLE_TOP, MAX_X_PORTRAIT - 5, STATUS_MIDDLE_TOP + STATUS_HEIGHT, SG_BLACK, solidFill);
   delay(500);
   lcd.string(STATUS_LEFT_FIRSTHAND + 8, STATUS_MIDDLE_TOP + 5, MAX_X_PORTRAIT, MAX_Y_PORTRAIT, "Dealer is peeking at his hand.", 0);
   delay(1000);
@@ -86,7 +86,7 @@ void peekOnTen() {
 
     drawCard(CARD_LARGE_LEFT_DEALER + CARD_LARGE_SPACING, CARD_LARGE_TOP_DEALER, dealer[1], false, true);   
     delay(500);
-    lcd.drawRectangle(STATUS_LEFT_FIRSTHAND, STATUS_MIDDLE_TOP, MAX_X_PORTRAIT - 5, STATUS_MIDDLE_TOP + STATUS_HEIGHT, BLACK, solidFill);
+    lcd.drawRectangle(STATUS_LEFT_FIRSTHAND, STATUS_MIDDLE_TOP, MAX_X_PORTRAIT - 5, STATUS_MIDDLE_TOP + STATUS_HEIGHT, SG_BLACK, solidFill);
 
     if (calculateHand(PLAYER, FIRST_HAND, true) == 21) {
     
@@ -105,7 +105,7 @@ void peekOnTen() {
 
       lcd.setTextColour(GREY3);
       lcd.string(STATUS_LEFT_FIRSTHAND + 8, STATUS_MIDDLE_TOP + 5, MAX_X_PORTRAIT, MAX_Y_PORTRAIT, "Dealer has a Blackjack, your hand loses", 0);
-      lcd.setTextColour(RED);
+      lcd.setTextColour(SG_RED);
       lcd.printNumber(STATUS_LEFT_FIRSTHAND + 254, STATUS_MIDDLE_TOP + 5, -currentBetInit);
   
       numberOfGamesLost++;
@@ -121,7 +121,7 @@ void peekOnTen() {
   else {
 
     drawCard(30, CARD_LARGE_TOP_DEALER, CARD_RED_BACKGROUND, false, true);
-    lcd.drawRectangle(STATUS_LEFT_FIRSTHAND, STATUS_MIDDLE_TOP, MAX_X_PORTRAIT - 5, STATUS_MIDDLE_TOP + STATUS_HEIGHT, BLACK, solidFill);
+    lcd.drawRectangle(STATUS_LEFT_FIRSTHAND, STATUS_MIDDLE_TOP, MAX_X_PORTRAIT - 5, STATUS_MIDDLE_TOP + STATUS_HEIGHT, SG_BLACK, solidFill);
     lcd.string(STATUS_LEFT_FIRSTHAND + 8, STATUS_MIDDLE_TOP + 5, MAX_X_PORTRAIT, MAX_Y_PORTRAIT, "Dealer does not have a blackjack.", 0);
     delay(2000);
   
@@ -137,7 +137,7 @@ void peekOnTen() {
 void playInsurance() {
       
   lcd.setTextColour(GREY3);
-  lcd.drawRectangle(STATUS_LEFT_FIRSTHAND, STATUS_MIDDLE_TOP, MAX_X_PORTRAIT - 5, STATUS_MIDDLE_TOP + STATUS_HEIGHT, BLACK, solidFill);
+  lcd.drawRectangle(STATUS_LEFT_FIRSTHAND, STATUS_MIDDLE_TOP, MAX_X_PORTRAIT - 5, STATUS_MIDDLE_TOP + STATUS_HEIGHT, SG_BLACK, solidFill);
   delay(500);
   lcd.string(STATUS_LEFT_FIRSTHAND + 8, STATUS_MIDDLE_TOP + 5, MAX_X_PORTRAIT, MAX_Y_PORTRAIT, "Dealer is peeking at his hand.", 0);
   delay(1000);
@@ -153,9 +153,9 @@ void playInsurance() {
       if (calculateHand(PLAYER, FIRST_HAND, true) == 21) {
       
         lcd.setTextColour(GREY3);
-        lcd.drawRectangle(STATUS_LEFT_FIRSTHAND, STATUS_MIDDLE_TOP, MAX_X_PORTRAIT - 5, STATUS_MIDDLE_TOP + STATUS_HEIGHT, BLACK, solidFill);
+        lcd.drawRectangle(STATUS_LEFT_FIRSTHAND, STATUS_MIDDLE_TOP, MAX_X_PORTRAIT - 5, STATUS_MIDDLE_TOP + STATUS_HEIGHT, SG_BLACK, solidFill);
         lcd.string(STATUS_LEFT_FIRSTHAND + 8, STATUS_MIDDLE_TOP + 5, MAX_X_PORTRAIT, MAX_Y_PORTRAIT, "You both have Blackjack! Insurance pays", 0);
-        lcd.setTextColour(GREEN);
+        lcd.setTextColour(SG_GREEN);
         lcd.printNumber(STATUS_LEFT_FIRSTHAND + 260, STATUS_MIDDLE_TOP + 5, (insurance * 2));
   
         purse = purse + currentBetInit;
@@ -172,11 +172,11 @@ void playInsurance() {
       else {
   
         lcd.setTextColour(GREY3);
-        lcd.drawRectangle(STATUS_LEFT_FIRSTHAND, STATUS_MIDDLE_TOP, MAX_X_PORTRAIT - 5, STATUS_MIDDLE_TOP + STATUS_HEIGHT, BLACK, solidFill);
+        lcd.drawRectangle(STATUS_LEFT_FIRSTHAND, STATUS_MIDDLE_TOP, MAX_X_PORTRAIT - 5, STATUS_MIDDLE_TOP + STATUS_HEIGHT, SG_BLACK, solidFill);
         lcd.string(STATUS_LEFT_FIRSTHAND + 8, STATUS_MIDDLE_TOP + 5, MAX_X_PORTRAIT, MAX_Y_PORTRAIT, "Blackjack, insurance pays      hand loses", 0);
-        lcd.setTextColour(GREEN);
+        lcd.setTextColour(SG_GREEN);
         lcd.printNumber(STATUS_LEFT_FIRSTHAND + 172, STATUS_MIDDLE_TOP + 5, (insurance * 2));
-        lcd.setTextColour(RED);
+        lcd.setTextColour(SG_RED);
         lcd.printNumber(STATUS_LEFT_FIRSTHAND + 270, STATUS_MIDDLE_TOP + 5, -currentBetInit);
 
         purse = purse + (3 * insurance);
@@ -202,9 +202,9 @@ void playInsurance() {
       delay(500);
   
       lcd.setTextColour(GREY3);
-      lcd.drawRectangle(STATUS_LEFT_FIRSTHAND, STATUS_MIDDLE_TOP, MAX_X_PORTRAIT - 5, STATUS_MIDDLE_TOP + STATUS_HEIGHT, BLACK, solidFill);
+      lcd.drawRectangle(STATUS_LEFT_FIRSTHAND, STATUS_MIDDLE_TOP, MAX_X_PORTRAIT - 5, STATUS_MIDDLE_TOP + STATUS_HEIGHT, SG_BLACK, solidFill);
       lcd.string(STATUS_LEFT_FIRSTHAND + 8, STATUS_MIDDLE_TOP + 5, MAX_X_PORTRAIT, MAX_Y_PORTRAIT, "No blackjack, you lose insurance of ", 0);
-      lcd.setTextColour(RED);
+      lcd.setTextColour(SG_RED);
       lcd.printNumber(STATUS_LEFT_FIRSTHAND + 225, STATUS_MIDDLE_TOP + 5, insurance);
       
       highlightLoss(-insurance);
@@ -243,7 +243,7 @@ void playInsurance() {
   
         lcd.setTextColour(GREY3);
         lcd.string(STATUS_LEFT_FIRSTHAND + 8, STATUS_MIDDLE_TOP + 5, MAX_X_PORTRAIT, MAX_Y_PORTRAIT, "Dealer has a Blackjack, your hand loses", 0);
-        lcd.setTextColour(RED);
+        lcd.setTextColour(SG_RED);
         lcd.printNumber(STATUS_LEFT_FIRSTHAND + 254, STATUS_MIDDLE_TOP + 5, -currentBetInit);
     
         numberOfGamesLost++;
@@ -310,7 +310,7 @@ void hitMe() {
 void bust(byte player, byte hand) {
   
   lcd.setTextColour(GREY5);
-  lcd.setTextSize(FONT1);
+  lcd.setTextSize(SG_FONT1);
   numberOfGamesLost++;  
   
   if (player == PLAYER && hand == FIRST_HAND) {
@@ -542,7 +542,7 @@ void playDealerHand() {
       
       if (calculateHand(PLAYER, FIRST_HAND, true) > calculateHand(DEALER, true) || calculateHand(DEALER, true) > 21) {
 
-        if (isBlackjack(PLAYER, FIRST_HAND) && (chkBlackjackPays322 == SELECTED)) {
+        if (isBlackjack(PLAYER, FIRST_HAND) && (chkBlackjackPays322 == SG_SELECTED)) {
 
           highlightWin(player_FirstHand_Bet * 3 / 2, player_FirstHand_Bet * 5 / 2);
 
@@ -569,7 +569,7 @@ void playDealerHand() {
     
       if (calculateHand(PLAYER, SECOND_HAND, true) > calculateHand(DEALER, true) || calculateHand(DEALER, true) > 21) {
 
-        if (isBlackjack(PLAYER, SECOND_HAND) && (chkBlackjackPays322 == SELECTED)) {
+        if (isBlackjack(PLAYER, SECOND_HAND) && (chkBlackjackPays322 == SG_SELECTED)) {
 
           highlightWin(player_SecondHand_Bet * 3 / 2, player_SecondHand_Bet * 5 / 2);
 
@@ -585,7 +585,7 @@ void playDealerHand() {
         
         if (isBlackjack(PLAYER, SECOND_HAND)) {
           
-          if (chkBlackjackPays322 == SELECTED) {
+          if (chkBlackjackPays322 == SG_SELECTED) {
 
             highlightWin(player_SecondHand_Bet * 3 / 2, player_SecondHand_Bet * 5 / 2);
             
@@ -611,7 +611,7 @@ void playDealerHand() {
       
       if (calculateHand(PLAYER, FIRST_HAND, true) > calculateHand(DEALER, true) || calculateHand(DEALER, true) > 21) {
 
-        if (isBlackjack(PLAYER, FIRST_HAND) && (chkBlackjackPays322 == SELECTED)) {
+        if (isBlackjack(PLAYER, FIRST_HAND) && (chkBlackjackPays322 == SG_SELECTED)) {
 
           highlightWin(player_FirstHand_Bet * 3 / 2, player_FirstHand_Bet * 5 / 2);
 
@@ -627,7 +627,7 @@ void playDealerHand() {
         
         if (isBlackjack(PLAYER, FIRST_HAND)) {
           
-          if (chkBlackjackPays322 == SELECTED) {
+          if (chkBlackjackPays322 == SG_SELECTED) {
 
             highlightWin(player_FirstHand_Bet * 3 / 2, player_FirstHand_Bet * 5 / 2);
             
@@ -653,7 +653,7 @@ void playDealerHand() {
       
       if (calculateHand(PLAYER, SECOND_HAND, true) > calculateHand(DEALER, true) || calculateHand(DEALER, true) > 21) {
  
-        if (isBlackjack(PLAYER, SECOND_HAND) && (chkBlackjackPays322 == SELECTED)) {
+        if (isBlackjack(PLAYER, SECOND_HAND) && (chkBlackjackPays322 == SG_SELECTED)) {
 
           highlightWin(player_SecondHand_Bet * 3 / 2, player_SecondHand_Bet * 5 / 2);
 
@@ -669,7 +669,7 @@ void playDealerHand() {
         
         if (isBlackjack(PLAYER, SECOND_HAND)) {
           
-          if (chkBlackjackPays322 == SELECTED) {
+          if (chkBlackjackPays322 == SG_SELECTED) {
 
             highlightWin(player_SecondHand_Bet * 3 / 2, player_SecondHand_Bet * 5 / 2);
             
@@ -700,7 +700,7 @@ void playDealerHand() {
        
     if (calculateHand(PLAYER, FIRST_HAND, true) > calculateHand(DEALER, true) || calculateHand(DEALER, true) > 21) {
  
-      if (isBlackjack(PLAYER, FIRST_HAND) && (chkBlackjackPays322 == SELECTED)) {
+      if (isBlackjack(PLAYER, FIRST_HAND) && (chkBlackjackPays322 == SG_SELECTED)) {
 
         highlightWin(player_FirstHand_Bet * 3 / 2, player_FirstHand_Bet * 5 / 2);
 
@@ -716,7 +716,7 @@ void playDealerHand() {
       
      if (isBlackjack(PLAYER, FIRST_HAND)) {
         
-        if (chkBlackjackPays322 == SELECTED) {
+        if (chkBlackjackPays322 == SG_SELECTED) {
 
           highlightWin(player_FirstHand_Bet * 3 / 2, player_FirstHand_Bet * 5 / 2);
           
