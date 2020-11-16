@@ -1,5 +1,5 @@
 /*********************************************************
-VIZIC TECHNOLOGIES. COPYRIGHT 2019.
+VIZIC TECHNOLOGIES. COPYRIGHT 2020.
 THE DATASHEETS, SOFTWARE AND LIBRARIES ARE PROVIDED "AS IS." 
 VIZIC EXPRESSLY DISCLAIM ANY WARRANTY OF ANY KIND, WHETHER 
 EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO, THE IMPLIED 
@@ -21,9 +21,9 @@ OR OTHER SIMILAR COSTS.
 
 SMARTGPU2 lcd;              //create our object called LCD
 
-AXIS LCD_WIDTH, LCD_HEIGHT; //Variables to handle the screen resolution
+SG_AXIS LCD_WIDTH, LCD_HEIGHT; //Variables to handle the screen resolution
 
-AXIS MAX_X_PORTRAIT, MAX_Y_PORTRAIT, MAX_X_LANDSCAPE, MAX_Y_LANDSCAPE;
+SG_AXIS MAX_X_PORTRAIT, MAX_Y_PORTRAIT, MAX_X_LANDSCAPE, MAX_Y_LANDSCAPE;
 
 //defines for GUI
 #define HALFX       LCD_HEIGHT/2
@@ -31,8 +31,12 @@ AXIS MAX_X_PORTRAIT, MAX_Y_PORTRAIT, MAX_X_LANDSCAPE, MAX_Y_LANDSCAPE;
 #define ICONSPACING (((MAX_X_PORTRAIT+1)-(((MAX_X_PORTRAIT+1)/50)*50))/(((MAX_X_PORTRAIT+1)/50)+1))
 
 //declare our structures POINT and ICON
-POINT point;
-ICON icon;
+SG_POINT point;
+SG_ICON icon;
+
+//Global variables
+//Start time: hours = 2, minutes = 19, seconds = 33;
+int clockTime= (2*(60*60)) + (19*60) + (33); //In seconds
        
 //array to store file names 25 characters max, also used as working file array
 char name[25];
@@ -53,7 +57,7 @@ const char moleType[6][9]={"MoleHap","MoleSee","MoleBad","MoleHole","MolePun","M
 unsigned char getTouchIconMainMenu(void){
   unsigned int icPress;  
 
-  while(lcd.touchScreen(&point)==INVALID);      //wait for a touch  
+  while(lcd.touchScreen(&point)==SG_INVALID);      //wait for a touch  
   //PROCEDURE TO DIVIDE THE TOUCHSCREEN AREA IN X x Y EQUAL PARTS------------------------------------
   //Divide screen into X equal horizontal parts for icons
   icPress= (point.x/((MAX_X_PORTRAIT+1)/((MAX_X_PORTRAIT+1)/50)))+1; //LCD_HEIGHT    
@@ -65,35 +69,35 @@ unsigned char getTouchIconMainMenu(void){
 
 //obtain from EEPROM FLASH memory the name of the current stored wallpaper on the "name" array
 void getCurrentWallFromEEPROM(void){
-  lcd.fillBuffFromEEPROMPage(PAGE0); //copy PAGE0 to EEPROM RAM buffer
-  lcd.readEEPROMBuff(name,0,14,0);   //read 14 bytes of the EEPROM RAM buffer to name array, wallpapers must not exceed 14 chars in name lenght
-  if(strstr(name, 0x00) != 0x00){    //find a null character in name, if not find, add the 0x00 NULL character
+  lcd.fillBuffFromEEPROMPage(SG_PAGE0); //copy SG_PAGE0 to EEPROM RAM buffer
+  lcd.readEEPROMBuff(name,0,14,0);      //read 14 bytes of the EEPROM RAM buffer to name array, wallpapers must not exceed 14 chars in name lenght
+  if(strstr(name, 0x00) != 0x00){       //find a null character in name, if not find, add the 0x00 NULL character
     name[0] = 0x00;
   }
 }
 
-//save current contents of "name" array on EEPROM PAGE0 at address 0x0000
+//save current contents of "name" array on EEPROM SG_PAGE0 at address 0x0000
 void saveWallpaperToEEPROM(void){
-  lcd.initClearEEPROMBuff();                  //Initialize EEPROM RAM Buffer
-  lcd.writeEEPROMBuff(name,0,sizeof(name),0); //write all the contents of "name" array to EEPROM RAM Buffer
-  lcd.eraseEEPROMPage(PAGE0);                 //erase all contents on the PAGE0
-  lcd.saveBuffToEEPROMPage(PAGE0);            //now save to EEPROM PAGE0 the contents of the EEPROM RAM Buffer(the name array + 0xFFs)
+  lcd.initClearEEPROMBuff();                     //Initialize EEPROM RAM Buffer
+  lcd.writeEEPROMBuff(name,0,sizeof(name),0);    //write all the contents of "name" array to EEPROM RAM Buffer
+  lcd.eraseEEPROMPage(SG_PAGE0);                 //erase all contents on the PAGE0
+  lcd.saveBuffToEEPROMPage(SG_PAGE0);            //now save to EEPROM PAGE0 the contents of the EEPROM RAM Buffer(the name array + 0xFFs)
 }
 
 /**************************************************/
 void drawHeader(char *text){
   unsigned int batteryPercentage = 65;                     //can be global variable to display the real battery consumption
   //draw header and text
-  lcd.drawRectangle(0,0,MAX_X_PORTRAIT,13,BLACK,FILL);     //draw upper bar
-  lcd.setTextSize(FONT0);
-  lcd.setTextColour(WHITE);
-  lcd.setTextBackFill(TRANS);
+  lcd.drawRectangle(0,0,MAX_X_PORTRAIT,13,SG_BLACK,SG_FILL);     //draw upper bar
+  lcd.setTextSize(SG_FONT0);
+  lcd.setTextColour(SG_WHITE);
+  lcd.setTextBackFill(SG_TRANS);
   lcd.string(2,0,MAX_X_PORTRAIT,20,"Vizic",0);             //draw Vizic string
   lcd.string((LCD_HEIGHT/2)-35,0,MAX_X_PORTRAIT,20,text,0); //draw string
   //draw battery icon according to the battery percentage variable
-  lcd.drawRectangle(MAX_X_PORTRAIT-25,0,(MAX_X_PORTRAIT-25)+((batteryPercentage*15)/100),10,GREEN,FILL);
-  lcd.drawRectangle(MAX_X_PORTRAIT-25,0,MAX_X_PORTRAIT-10,10,WHITE,UNFILL);
-  lcd.drawRectangle(MAX_X_PORTRAIT-10,4,MAX_X_PORTRAIT-8,6,WHITE,FILL);  
+  lcd.drawRectangle(MAX_X_PORTRAIT-25,0,(MAX_X_PORTRAIT-25)+((batteryPercentage*15)/100),10,SG_GREEN,SG_FILL);
+  lcd.drawRectangle(MAX_X_PORTRAIT-25,0,MAX_X_PORTRAIT-10,10,SG_WHITE,SG_UNFILL);
+  lcd.drawRectangle(MAX_X_PORTRAIT-10,4,MAX_X_PORTRAIT-8,6,SG_WHITE,SG_FILL);  
 }
 
 //Cuts the .ext and updates the name
@@ -104,42 +108,42 @@ void cutFileExtension(char *name, char *ext){
 }
 
  //function used by music
-void drawControlRR(ACTIVE state){
+void drawControlRR(SG_ACTIVE state){
   //draw button
   lcd.objButton(0,LCD_WIDTH-55,(LCD_HEIGHT/3)-1,LCD_WIDTH-5,state,"");
   //draw symbol
-  lcd.drawTriangle(0+10,(LCD_WIDTH-55)+(((LCD_WIDTH-5)-(LCD_WIDTH-55))/2),0+((LCD_HEIGHT/6)-1),(LCD_WIDTH-55)+10,0+((LCD_HEIGHT/6)-1),(LCD_WIDTH-5)-10,BLACK,FILL);
-  lcd.drawTriangle(0+((LCD_HEIGHT/6)-1),(LCD_WIDTH-55)+(((LCD_WIDTH-5)-(LCD_WIDTH-55))/2),0+((LCD_HEIGHT/3)-1)-10,(LCD_WIDTH-55)+10,0+((LCD_HEIGHT/3)-1)-10,(LCD_WIDTH-5)-10,BLACK,FILL);
+  lcd.drawTriangle(0+10,(LCD_WIDTH-55)+(((LCD_WIDTH-5)-(LCD_WIDTH-55))/2),0+((LCD_HEIGHT/6)-1),(LCD_WIDTH-55)+10,0+((LCD_HEIGHT/6)-1),(LCD_WIDTH-5)-10,SG_BLACK,SG_FILL);
+  lcd.drawTriangle(0+((LCD_HEIGHT/6)-1),(LCD_WIDTH-55)+(((LCD_WIDTH-5)-(LCD_WIDTH-55))/2),0+((LCD_HEIGHT/3)-1)-10,(LCD_WIDTH-55)+10,0+((LCD_HEIGHT/3)-1)-10,(LCD_WIDTH-5)-10,SG_BLACK,SG_FILL);
 }
 
 //function used by music
-void drawControlFF(ACTIVE state){
+void drawControlFF(SG_ACTIVE state){
   //draw button  
   lcd.objButton(((LCD_HEIGHT/3)*2),LCD_WIDTH-55,MAX_X_PORTRAIT,LCD_WIDTH-5,state,"");    
   //draw symbol
-  lcd.drawTriangle(LCD_HEIGHT-(((LCD_HEIGHT/3)-1)-10),(LCD_WIDTH-55)+10,LCD_HEIGHT-(((LCD_HEIGHT/3)-1)-10),(LCD_WIDTH-5)-10,LCD_HEIGHT-((LCD_HEIGHT/6)-1),(LCD_WIDTH-55)+(((LCD_WIDTH-5)-(LCD_WIDTH-55))/2),BLACK,FILL);  
-  lcd.drawTriangle(LCD_HEIGHT-((LCD_HEIGHT/6)-1),(LCD_WIDTH-55)+10,LCD_HEIGHT-((LCD_HEIGHT/6)-1),(LCD_WIDTH-5)-10,LCD_HEIGHT-10,(LCD_WIDTH-55)+(((LCD_WIDTH-5)-(LCD_WIDTH-55))/2),BLACK,FILL);  
+  lcd.drawTriangle(LCD_HEIGHT-(((LCD_HEIGHT/3)-1)-10),(LCD_WIDTH-55)+10,LCD_HEIGHT-(((LCD_HEIGHT/3)-1)-10),(LCD_WIDTH-5)-10,LCD_HEIGHT-((LCD_HEIGHT/6)-1),(LCD_WIDTH-55)+(((LCD_WIDTH-5)-(LCD_WIDTH-55))/2),SG_BLACK,SG_FILL);  
+  lcd.drawTriangle(LCD_HEIGHT-((LCD_HEIGHT/6)-1),(LCD_WIDTH-55)+10,LCD_HEIGHT-((LCD_HEIGHT/6)-1),(LCD_WIDTH-5)-10,LCD_HEIGHT-10,(LCD_WIDTH-55)+(((LCD_WIDTH-5)-(LCD_WIDTH-55))/2),SG_BLACK,SG_FILL);  
 } 
 
 //function used by music
 void drawControlPLAY(char symbol){
   //draw button  
-  lcd.objButton((LCD_HEIGHT/3),LCD_WIDTH-55,((LCD_HEIGHT/3)*2)-1,LCD_WIDTH-5,SELECTED,"");  
+  lcd.objButton((LCD_HEIGHT/3),LCD_WIDTH-55,((LCD_HEIGHT/3)*2)-1,LCD_WIDTH-5,SG_SELECTED,"");  
   //draw symbol
   if(symbol){      //PLAY
-    lcd.drawTriangle((LCD_HEIGHT/3)+10,(LCD_WIDTH-55)+10,(LCD_HEIGHT/3)+10,(LCD_WIDTH-5)-10,((LCD_HEIGHT/3)*2)-10,(LCD_WIDTH-55)+(((LCD_WIDTH-5)-(LCD_WIDTH-55))/2),BLACK,FILL);
+    lcd.drawTriangle((LCD_HEIGHT/3)+10,(LCD_WIDTH-55)+10,(LCD_HEIGHT/3)+10,(LCD_WIDTH-5)-10,((LCD_HEIGHT/3)*2)-10,(LCD_WIDTH-55)+(((LCD_WIDTH-5)-(LCD_WIDTH-55))/2),SG_BLACK,SG_FILL);
   }else{           //PAUSE
-    lcd.drawRectangle((LCD_HEIGHT/3)+10,(LCD_WIDTH-55)+10,(LCD_HEIGHT/3)+(LCD_HEIGHT/8),(LCD_WIDTH-5)-10,BLACK,FILL);
-    lcd.drawRectangle(((LCD_HEIGHT/3)*2)-(LCD_HEIGHT/8),(LCD_WIDTH-55)+10,((LCD_HEIGHT/3)*2)-10,(LCD_WIDTH-5)-10,BLACK,FILL);
+    lcd.drawRectangle((LCD_HEIGHT/3)+10,(LCD_WIDTH-55)+10,(LCD_HEIGHT/3)+(LCD_HEIGHT/8),(LCD_WIDTH-5)-10,SG_BLACK,SG_FILL);
+    lcd.drawRectangle(((LCD_HEIGHT/3)*2)-(LCD_HEIGHT/8),(LCD_WIDTH-55)+10,((LCD_HEIGHT/3)*2)-10,(LCD_WIDTH-5)-10,SG_BLACK,SG_FILL);
   }
 }
 
 //function that draws buttons and current progress bar - used by media
 void drawButtonsAndProgress(unsigned long currFrame, unsigned long totFrames){
-  lcd.objButton(0,LCD_HEIGHT-40,(LCD_WIDTH/2)-1,LCD_HEIGHT-10,DESELECTED,"Continue");
-  lcd.objButton((LCD_WIDTH/2)+1,LCD_HEIGHT-40,MAX_X_LANDSCAPE,LCD_HEIGHT-10,DESELECTED,"Return...");
-  lcd.drawRectangle(0,(LCD_WIDTH/2)+10,(currFrame*MAX_X_LANDSCAPE)/(totFrames),(LCD_WIDTH/2)+30,RED,FILL);                 //scale currentFrame value to 0-LCD_WIDTH pixels
-  lcd.drawRectangle((currFrame*MAX_X_LANDSCAPE)/(totFrames),(LCD_WIDTH/2)+10,MAX_X_LANDSCAPE,(LCD_WIDTH/2)+30,BLACK,FILL); //scale currentFrame value to 0-LCD_WIDTH pixels 
+  lcd.objButton(0,LCD_HEIGHT-40,(LCD_WIDTH/2)-1,LCD_HEIGHT-10,SG_DESELECTED,"Continue");
+  lcd.objButton((LCD_WIDTH/2)+1,LCD_HEIGHT-40,MAX_X_LANDSCAPE,LCD_HEIGHT-10,SG_DESELECTED,"Return...");
+  lcd.drawRectangle(0,(LCD_WIDTH/2)+10,(currFrame*MAX_X_LANDSCAPE)/(totFrames),(LCD_WIDTH/2)+30,SG_RED,SG_FILL);                 //scale currentFrame value to 0-LCD_WIDTH pixels
+  lcd.drawRectangle((currFrame*MAX_X_LANDSCAPE)/(totFrames),(LCD_WIDTH/2)+10,MAX_X_LANDSCAPE,(LCD_WIDTH/2)+30,SG_BLACK,SG_FILL); //scale currentFrame value to 0-LCD_WIDTH pixels 
 }
 
 //Main applications, the next applications are called by the main loop menu
@@ -149,13 +153,13 @@ void drawButtonsAndProgress(unsigned long currFrame, unsigned long totFrames){
 //draws Main Menu
 void drawMainMenu(void){  
   unsigned int i=0, j=0, k=0, xJump=ICONSPACING, yJump=20;
-  SMARTGPUREPLY res;
+  SG_REPLY res;
   char aux[25];
 
   strcpy(aux,"Wall/");  	                //copy to name the string "Wall/"
   getCurrentWallFromEEPROM();                   //fill global "name" array with the current EEPROM Stored name
   strcat(aux,name);                             //concatenate the currentWall name to "Wall/"
-  if(lcd.imageBMPSD(0,0,aux)!=OK) lcd.erase();  //try to draw WallPaper Image, if fail(not Wall set by user), just erase screen
+  if(lcd.imageBMPSD(0,0,aux)!=SG_OK) lcd.erase();  //try to draw WallPaper Image, if fail(not Wall set by user), just erase screen
   //now draw all top icons
   lcd.SDFopenDir("Ics");                     //open the folder with the icons
   for(i=0;i<((MAX_Y_PORTRAIT+1)/50);i++){
@@ -175,24 +179,24 @@ void drawMainMenu(void){
 void backlight(void){
   static unsigned char currentBacklightValue=100; //0-100
   
-  lcd.drawGradientRect(0,0,MAX_X_PORTRAIT,MAX_Y_PORTRAIT,BLACK,MAGENTA,VERTICAL); //draw a fullscreen gradient rectangle
-  lcd.setTextSize(FONT3);
-  lcd.setTextColour(WHITE);
-  lcd.setTextBackFill(TRANS);
+  lcd.drawGradientRect(0,0,MAX_X_PORTRAIT,MAX_Y_PORTRAIT,SG_BLACK,SG_MAGENTA,SG_VERTICAL); //draw a fullscreen gradient rectangle
+  lcd.setTextSize(SG_FONT3);
+  lcd.setTextColour(SG_WHITE);
+  lcd.setTextBackFill(SG_TRANS);
   lcd.string((MAX_X_PORTRAIT+1)/6,(MAX_Y_PORTRAIT+1)/4,MAX_X_PORTRAIT,MAX_Y_PORTRAIT,"Brightness Bar",0);
-  lcd.objSlider(10,(MAX_Y_PORTRAIT+1)/4,MAX_X_PORTRAIT-10,((MAX_Y_PORTRAIT+1)/4)*2,currentBacklightValue,101,HORIZONTAL);
-  lcd.objButton(10,MAX_Y_PORTRAIT-40,MAX_X_PORTRAIT-10,MAX_Y_PORTRAIT-10,DESELECTED,"Return");
+  lcd.objSlider(10,(MAX_Y_PORTRAIT+1)/4,MAX_X_PORTRAIT-10,((MAX_Y_PORTRAIT+1)/4)*2,currentBacklightValue,101,SG_HORIZONTAL);
+  lcd.objButton(10,MAX_Y_PORTRAIT-40,MAX_X_PORTRAIT-10,MAX_Y_PORTRAIT-10,SG_DESELECTED,"Return");
   drawHeader("Adjustments:");  
   while(1){
-    while(lcd.touchScreen(&point)==INVALID);//wait for a touch on screen to do something
-    if((point.x>10) && (point.x<MAX_X_PORTRAIT-10) && (point.y>((MAX_X_PORTRAIT+1)/4)) && (point.y<(((MAX_Y_PORTRAIT+1)/4)*2))){  //if touch inside brightness bar
-      currentBacklightValue= ((point.x-10)*100)/(MAX_X_PORTRAIT-10-10);                                                           //scale obtained touch value to 0-100
-      lcd.objSlider(10,(MAX_Y_PORTRAIT+1)/4,MAX_X_PORTRAIT-10,((MAX_Y_PORTRAIT+1)/4)*2,currentBacklightValue,101,HORIZONTAL);     //update slider
-      lcd.bright(currentBacklightValue);                                                                                          //set new brightness value
+    while(lcd.touchScreen(&point)==SG_INVALID);//wait for a touch on screen to do something
+    if((point.x>10) && (point.x<MAX_X_PORTRAIT-10) && (point.y>((MAX_X_PORTRAIT+1)/4)) && (point.y<(((MAX_Y_PORTRAIT+1)/4)*2))){     //if touch inside brightness bar
+      currentBacklightValue= ((point.x-10)*100)/(MAX_X_PORTRAIT-10-10);                                                              //scale obtained touch value to 0-100
+      lcd.objSlider(10,(MAX_Y_PORTRAIT+1)/4,MAX_X_PORTRAIT-10,((MAX_Y_PORTRAIT+1)/4)*2,currentBacklightValue,101,SG_HORIZONTAL);     //update slider
+      lcd.bright(currentBacklightValue);                                                                                             //set new brightness value
       delay(150);
     }
     if(point.y>(MAX_Y_PORTRAIT-40)){                                                                                              //if touch inside return button
-      lcd.objButton(10,MAX_Y_PORTRAIT-40,MAX_X_PORTRAIT-10,MAX_Y_PORTRAIT-10,SELECTED,"Return");
+      lcd.objButton(10,MAX_Y_PORTRAIT-40,MAX_X_PORTRAIT-10,MAX_Y_PORTRAIT-10,SG_SELECTED,"Return");
       delay(300);
       return;                                                                                                                     //exit function
     }     
@@ -200,7 +204,7 @@ void backlight(void){
 }
 
 /**************************************************/
-void clock(void){
+void clocks(void){
   unsigned int hours=4,mins=48,secs=0,i=0;
   unsigned int xs,ys,xm,ym,xh,yh;
   int angleH,angleM,angleS;
@@ -208,14 +212,20 @@ void clock(void){
   unsigned int handMin =handHour+10; //hand size
   unsigned int handSec =handMin+20; //hand size 
   
-  lcd.drawGradientRect(0,0,MAX_X_PORTRAIT,MAX_Y_PORTRAIT,BLACK,MAGENTA,VERTICAL); //draw a fullscreen gradient rectangle
-  lcd.objButton(10,MAX_Y_PORTRAIT-40,MAX_X_PORTRAIT-10,MAX_Y_PORTRAIT-10,DESELECTED,"Return");
+  lcd.drawGradientRect(0,0,MAX_X_PORTRAIT,MAX_Y_PORTRAIT,SG_BLACK,SG_MAGENTA,SG_VERTICAL); //draw a fullscreen gradient rectangle
+  lcd.objButton(10,MAX_Y_PORTRAIT-40,MAX_X_PORTRAIT-10,MAX_Y_PORTRAIT-10,SG_DESELECTED,"Return");
   drawHeader("Clocks:");    
   //drawClock Body
-  lcd.drawCircle(HALFX,HALFY,(MAX_X_PORTRAIT+1)/3,BLACK,FILL);
-  lcd.drawCircle(HALFX,HALFY,(MAX_X_PORTRAIT+1)/3,WHITE,UNFILL);  
+  lcd.drawCircle(HALFX,HALFY,(MAX_X_PORTRAIT+1)/3,SG_BLACK,SG_FILL);
+  lcd.drawCircle(HALFX,HALFY,(MAX_X_PORTRAIT+1)/3,SG_WHITE,SG_UNFILL);  
   
   while(1){
+    //time update managing
+    hours= ((clockTime+(millis()/1000))/(60*60));
+    while(hours >= 12){ hours = hours-12; }  // correct if more than 12 hrs
+    mins = (((clockTime+(millis()/1000))%(60*60))/60);
+    secs = (((clockTime+(millis()/1000))%(60*60))%60);
+      
     //Do some Math to get the second point of the clock hands. (first point is always the center of the clock)
     angleS=secs*6;                           //get the current seconds in angle form, a circle have 360 degrees divided by 60 seconds = 6, then we multiply the 6 by the current seconds to get current angle
     xs=(sin((angleS*3.14)/180)) * handSec;   //get X component of the second's hand
@@ -228,39 +238,26 @@ void clock(void){
     yh=(cos((angleH*3.14)/180)) * handHour;  //get Y component of the hours's hand
      
     //Draw current time hands  
-    lcd.drawLine(HALFX,HALFY,HALFX+xm,HALFY-ym,WHITE); // Draw the minutes hand, first point is the center of the clock, and the second is the point obtained by doing math
-    lcd.drawLine(HALFX,HALFY,HALFX+xh,HALFY-yh,WHITE); // Draw the hours hand, first point is the center of the clock, and the second is the point obtained by doing math
-    lcd.drawLine(HALFX,HALFY,HALFX+xs,HALFY-ys,RED);   // Draw the seconds hand, first point is the center of the clock, and the second is the point obtained by doing math
-    lcd.drawCircle(HALFX,HALFY,3,RED,FILL);            // Draw the center of the second's hand
+    lcd.drawLine(HALFX,HALFY,HALFX+xm,HALFY-ym,SG_WHITE); // Draw the minutes hand, first point is the center of the clock, and the second is the point obtained by doing math
+    lcd.drawLine(HALFX,HALFY,HALFX+xh,HALFY-yh,SG_WHITE); // Draw the hours hand, first point is the center of the clock, and the second is the point obtained by doing math
+    lcd.drawLine(HALFX,HALFY,HALFX+xs,HALFY-ys,SG_RED);   // Draw the seconds hand, first point is the center of the clock, and the second is the point obtained by doing math
+    lcd.drawCircle(HALFX,HALFY,3,SG_RED,SG_FILL);         // Draw the center of the second's hand
  
     for(i=0;i<10;i++){                                 //loop for 10 times a delay of 100ms asking for a touch - this gives a total delay of 1 second
-      if(lcd.touchScreen(&point)==VALID){              //ask for a touch on screen to do something
+      if(lcd.touchScreen(&point)==SG_VALID){           //ask for a touch on screen to do something
         if(point.y>(MAX_Y_PORTRAIT-40)){               //if touch inside return button
-          lcd.objButton(10,MAX_Y_PORTRAIT-40,MAX_X_PORTRAIT-10,MAX_Y_PORTRAIT-10,SELECTED,"Return");
+          lcd.objButton(10,MAX_Y_PORTRAIT-40,MAX_X_PORTRAIT-10,MAX_Y_PORTRAIT-10,SG_SELECTED,"Return");
           delay(300);
           return; //exit function
         }    
       }
       delay(100);
     }
-  
-    //time managing
-    secs++;                                         // increase seconds
-    if(secs==60){                                   // if we reach 60 seconds
-      mins++;                                       // increase the minutes
-      if(mins==60){                                 // if we reach 60 minutes
-        hours++;                                    // increase the minutes
-        if(hours==12){                              // if we reach 12 hours
-          hours=0;                                  // clear hours
-        } 
-        mins=0;                                     // clear minutes
-      }            
-      secs=0;                                       // clear seconds
-    }                      
+                  
     //Erase all hands         
-    lcd.drawLine(HALFX,HALFY,HALFX+xs,HALFY-ys,BLACK); // Erase Second's hand
-    lcd.drawLine(HALFX,HALFY,HALFX+xm,HALFY-ym,BLACK); // Erase Minute's hand
-    lcd.drawLine(HALFX,HALFY,HALFX+xh,HALFY-yh,BLACK); // Erase Hour's hand            
+    lcd.drawLine(HALFX,HALFY,HALFX+xs,HALFY-ys,SG_BLACK); // Erase Second's hand
+    lcd.drawLine(HALFX,HALFY,HALFX+xm,HALFY-ym,SG_BLACK); // Erase Minute's hand
+    lcd.drawLine(HALFX,HALFY,HALFX+xh,HALFY-yh,SG_BLACK); // Erase Hour's hand            
   } 
 }  
 
@@ -269,13 +266,13 @@ void photos(void){
   unsigned int pics=0;
   static unsigned int i=0;                             //static to save last image position even we exit function
   
-  lcd.orientation(LANDSCAPE_LEFT);                     //set orientation as landscape
-  lcd.setTextColour(WHITE);
-  lcd.setTextSize(FONT3);
-  lcd.setTextBackFill(TRANS);
-  lcd.drawGradientRect(0,0,MAX_X_LANDSCAPE,MAX_Y_LANDSCAPE,BLACK,MAGENTA,VERTICAL);
+  lcd.orientation(SG_LANDSCAPE_LEFT);                     //set orientation as landscape
+  lcd.setTextColour(SG_WHITE);
+  lcd.setTextSize(SG_FONT3);
+  lcd.setTextBackFill(SG_TRANS);
+  lcd.drawGradientRect(0,0,MAX_X_LANDSCAPE,MAX_Y_LANDSCAPE,SG_BLACK,SG_MAGENTA,SG_VERTICAL);
   lcd.string((MAX_X_LANDSCAPE+1)/3,(MAX_Y_LANDSCAPE+1)/3,MAX_X_LANDSCAPE,MAX_Y_LANDSCAPE,"Photo Gallery",0);
-  lcd.setTextSize(FONT2);  
+  lcd.setTextSize(SG_FONT2);  
   delay(1000);
   lcd.SDFopenDir("Photos");                            //open the folder with the photos
   lcd.SDFgetList(0,&pics);                             //get number of files/Pics under the current folder "Photos"
@@ -286,7 +283,7 @@ void photos(void){
     lcd.imageBMPSD(0,0,name);                          //Load image from SD card, all images must be full screen so we load them from top left corner X:0,Y:0
     delay(200);                                        //A little delay to avoid fast image changing    
     lcd.string((MAX_X_LANDSCAPE+1)/4,MAX_Y_LANDSCAPE-20,MAX_X_LANDSCAPE,MAX_Y_LANDSCAPE,"<Tap center to Exit>",0); //Show text
-    while(lcd.touchScreen(&point)==INVALID);           //wait for a touch to do something    
+    while(lcd.touchScreen(&point)==SG_INVALID);        //wait for a touch to do something    
     //check if we go to the next image, or to the previous one
     if(point.x>(MAX_X_LANDSCAPE-100)){                 //if the received touch was on the right corner of the screen we advance the image, else we decrease and go to previous image
       i++;                                             //decrease image selector
@@ -306,7 +303,7 @@ void photos(void){
     }   
   }
   lcd.SDFopenDir("..");                                //return/go up to parent dir one level
-  lcd.orientation(PORTRAIT_LOW);                       //change to portrait mode    
+  lcd.orientation(SG_PORTRAIT_LOW);                    //change to portrait mode    
   delay(300);
 }
 
@@ -314,37 +311,37 @@ void photos(void){
 void media(){
   unsigned int i=0, row=0, vids=0;
   unsigned long currentFrame=0, currentSecond=0;
-  VIDDATA videoData;
+  SG_VIDDATA videoData;
   
-  lcd.orientation(LANDSCAPE_LEFT);     //set orientation as landscape
-  lcd.setTextColour(WHITE);
-  lcd.setTextSize(FONT3);
-  lcd.setTextBackFill(TRANS);
-  lcd.drawGradientRect(0,0,MAX_X_LANDSCAPE,MAX_Y_LANDSCAPE,BLACK,MAGENTA,VERTICAL);
+  lcd.orientation(SG_LANDSCAPE_LEFT);     //set orientation as landscape
+  lcd.setTextColour(SG_WHITE);
+  lcd.setTextSize(SG_FONT3);
+  lcd.setTextBackFill(SG_TRANS);
+  lcd.drawGradientRect(0,0,MAX_X_LANDSCAPE,MAX_Y_LANDSCAPE,SG_BLACK,SG_MAGENTA,SG_VERTICAL);
   lcd.string((MAX_X_LANDSCAPE+1)/3,(MAX_Y_LANDSCAPE+1)/3,MAX_X_LANDSCAPE,MAX_Y_LANDSCAPE,"Video Player",0);  
   lcd.stopWAVFile();                   //stop current playing song if any   
   delay(1000);
   lcd.SDFopenDir("Videos");            //open the folder with the videos
-  lcd.setTextSize(FONT2);
+  lcd.setTextSize(SG_FONT2);
 
   while(1){
-    lcd.drawGradientRect(0,0,MAX_X_LANDSCAPE,MAX_Y_LANDSCAPE,BLACK,MAGENTA,VERTICAL);
+    lcd.drawGradientRect(0,0,MAX_X_LANDSCAPE,MAX_Y_LANDSCAPE,SG_BLACK,SG_MAGENTA,SG_VERTICAL);
     lcd.string(5,0,MAX_X_LANDSCAPE,MAX_Y_LANDSCAPE,"Available Videos:      (EXIT)",0);
     i=0; row=1; vids=0;
     while(1){                          //list names
       lcd.SDFgetFileName(i++,name);    //get the name of the vid file number i
       if(name[0]==0x00) break;         //if name is invalid, meand end of files 
       if(strstr(name,".vid")!=0x00){   //if .vid extension is found in the file name: print      
-        lcd.objButton(15,(row*30),MAX_X_LANDSCAPE-15,30+(row*30),DESELECTED,name);  row++;
+        lcd.objButton(15,(row*30),MAX_X_LANDSCAPE-15,30+(row*30),SG_DESELECTED,name);  row++;
         vids++;  
       }//else ignore name/file
     }
     
-    while(lcd.touchScreen(&point)==INVALID); //wait for a touch to perform action
+    while(lcd.touchScreen(&point)==SG_INVALID); //wait for a touch to perform action
     row=point.y/30;                    //decode touch point by dividing it by 30 (240/8) which gives the 30 pixels spacing between buttons
     if(row==0){                        //touch on header (EXIT);
       lcd.SDFopenDir("..");            //return/go up to parent dir one level
-      lcd.orientation(PORTRAIT_LOW);   //change to portrait mode     
+      lcd.orientation(SG_PORTRAIT_LOW);//change to portrait mode     
       delay(300); 
       return;                          //EXIT media()
     }else if(row > vids) continue;     //if touch on invalid row, where no button is present, go to top while(1)
@@ -355,20 +352,20 @@ void media(){
     }
     //Try to play video
     cutFileExtension(name,".vid");    //cut to name the .vid extension  
-    if(lcd.allocateVideoSD(name,&videoData)!=OK) continue; //try to allocate video, if fail, continue to top while(1)
+    if(lcd.allocateVideoSD(name,&videoData)!=SG_OK) continue; //try to allocate video, if fail, continue to top while(1)
     //up to here video is successfully allocated..
     currentFrame=0;  currentSecond=0; //reset variables
     lcd.playWAVFile(name,0);          //open audio if any, must be named the same as the video expept for the .extension
     while(1){
-      if(lcd.playVideoSD(0,0,videoData.framesPerSec)!=OK) break; //play video for 1 second(this equal the obtained frames per second parameter) break if error
+      if(lcd.playVideoSD(0,0,videoData.framesPerSec)!=SG_OK) break; //play video for 1 second(this equal the obtained frames per second parameter) break if error
       currentSecond++; currentFrame+=videoData.framesPerSec;
-      if(lcd.touchScreen(&point)==VALID){  //check about each ~1 second for a touch, if Valid:
+      if(lcd.touchScreen(&point)==SG_VALID){  //check about each ~1 second for a touch, if Valid:
         lcd.pauseWAVFile();           //stop audio
         //draw buttons and progress bar
         drawButtonsAndProgress(currentFrame, videoData.totalFrames);
         delay(300);
         while(1){
-          while(lcd.touchScreen(&point)==INVALID || point.y<170); //while no valid touch or touch outside buttons
+          while(lcd.touchScreen(&point)==SG_INVALID || point.y<170); //while no valid touch or touch outside buttons
           if(point.y > 200) break;                              //if touch on buttons, break while(1) and go to next ifs
           //advance file to received touch in progress bar value...
           currentFrame=((unsigned long)point.x * (unsigned long)videoData.totalFrames) / MAX_X_LANDSCAPE; //obtain new current frame value 0-319
@@ -382,11 +379,11 @@ void media(){
           delay(50);
         }
         if(point.x < 160){           //touch on continue button
-          lcd.objButton(0,200,159,230,SELECTED,"Continue");
+          lcd.objButton(0,200,159,230,SG_SELECTED,"Continue");
           delay(300);
           lcd.pauseWAVFile();        //resume audio
         }else{                       //touch on return button
-          lcd.objButton(161,200,319,230,SELECTED,"Return...");
+          lcd.objButton(161,200,319,230,SG_SELECTED,"Return...");
           lcd.stopWAVFile();
           delay(300);
           break;                     //exit playback        
@@ -399,21 +396,21 @@ void media(){
 /**************************************************/
 void notes(){
   lcd.imageBMPSD(0,0,"Misc/notes");          //load notes design
-  lcd.objButton(10,MAX_Y_PORTRAIT-40,MAX_X_PORTRAIT-10,MAX_Y_PORTRAIT-10,DESELECTED,"Return");
+  lcd.objButton(10,MAX_Y_PORTRAIT-40,MAX_X_PORTRAIT-10,MAX_Y_PORTRAIT-10,SG_DESELECTED,"Return");
   drawHeader("Adjustments:");
   delay(200);                                //A little delay to avoid fast image changing
 
   while(1){    
-    while(lcd.touchScreen(&point)==INVALID); //wait for a touch to do something    
+    while(lcd.touchScreen(&point)==SG_INVALID); //wait for a touch to do something    
     if(point.y<65){                          //Touch on upper Icons
       //clear note block
       lcd.imageBMPSD(0,0,"Misc/notes");      //load notes design
-      lcd.objButton(10,MAX_Y_PORTRAIT-40,MAX_X_PORTRAIT-10,MAX_Y_PORTRAIT-10,DESELECTED,"Return");
+      lcd.objButton(10,MAX_Y_PORTRAIT-40,MAX_X_PORTRAIT-10,MAX_Y_PORTRAIT-10,SG_DESELECTED,"Return");
       drawHeader("Note pad:");
     }else if(point.y<(MAX_Y_PORTRAIT-40)){   //touch on notepad
-      lcd.drawCircle(point.x,point.y,1,BLACK,FILL); //draw
+      lcd.drawCircle(point.x,point.y,1,SG_BLACK,SG_FILL); //draw
     }else{                                   //touch on return button
-      lcd.objButton(10,MAX_Y_PORTRAIT-40,MAX_X_PORTRAIT-10,MAX_Y_PORTRAIT-10,SELECTED,"Return");    
+      lcd.objButton(10,MAX_Y_PORTRAIT-40,MAX_X_PORTRAIT-10,MAX_Y_PORTRAIT-10,SG_SELECTED,"Return");    
       delay(300);
       return;                                //exit
     }                                
@@ -432,77 +429,77 @@ void settings(){
 
 /**************************************************/
 void music(){
-  STATE state; static char pause=1;
+  SG_STATE state; static char pause=1;
   unsigned int songs=0;
   static unsigned int currentSong=0, volume=100;//static to save current song and volume even we exit function
 
   lcd.SDFopenDir("Music");          //Open the folder that contains the songs in .wav format
   lcd.SDFgetList(0,&songs);         //get number of files/songs under the current folder "Music"
   
-  lcd.setTextColour(WHITE);
-  lcd.setTextSize(FONT3);
-  lcd.setTextBackFill(TRANS);
-  lcd.drawGradientRect(0,0,MAX_X_PORTRAIT,MAX_Y_PORTRAIT,BLACK,MAGENTA,VERTICAL);
+  lcd.setTextColour(SG_WHITE);
+  lcd.setTextSize(SG_FONT3);
+  lcd.setTextBackFill(SG_TRANS);
+  lcd.drawGradientRect(0,0,MAX_X_PORTRAIT,MAX_Y_PORTRAIT,SG_BLACK,SG_MAGENTA,SG_VERTICAL);
   lcd.string((MAX_X_PORTRAIT+1)/4,(MAX_Y_PORTRAIT+1)/2,MAX_X_PORTRAIT,MAX_Y_PORTRAIT,"Music Player",0);
   delay(1000);
   lcd.erase();  
   drawHeader("Music:");
   lcd.getWAVPlayState(&state);      //get playing state
-  if(state==DISABLE) pause=1;       //if not playing, set pause to active
+  if(state==SG_DISABLE) pause=1;    //if not playing, set pause to active
   drawControlPLAY(pause);           //draw button according to pause
-  drawControlRR(DESELECTED);
-  drawControlFF(DESELECTED); 
+  drawControlRR(SG_DESELECTED);
+  drawControlFF(SG_DESELECTED); 
   //draw current volume bar
-  lcd.drawRectangle(0,245,(volume*MAX_X_PORTRAIT)/(100),260,YELLOW,FILL);  //scale volume value to 0-239 pixels
-  lcd.drawRectangle((volume*MAX_X_PORTRAIT)/(100),245,MAX_X_PORTRAIT,260,BLACK,FILL); //scale volume value to 0-239 pixels 
+  lcd.drawRectangle(0,245,(volume*MAX_X_PORTRAIT)/(100),260,SG_YELLOW,SG_FILL);  //scale volume value to 0-239 pixels
+  lcd.drawRectangle((volume*MAX_X_PORTRAIT)/(100),245,MAX_X_PORTRAIT,260,SG_BLACK,SG_FILL); //scale volume value to 0-239 pixels 
     
   while(1){
-    lcd.getWAVPlayState(&state);                         //get playing state  
-    if(state==DISABLE){pause=1; drawControlPLAY(pause);} //if not playing, set pause to active and update button
-    if(pause==0) lcd.drawGradientRect(0,70,MAX_X_PORTRAIT,240,random(0,65536),random(0,65536),HORIZONTAL);
+    lcd.getWAVPlayState(&state);                            //get playing state  
+    if(state==SG_DISABLE){pause=1; drawControlPLAY(pause);} //if not playing, set pause to active and update button
+    if(pause==0) lcd.drawGradientRect(0,70,MAX_X_PORTRAIT,240,random(0,65536),random(0,65536),SG_HORIZONTAL);
     
     delay(100);
-    if(lcd.touchScreen(&point)==VALID){           //ask for touch and if valid..
+    if(lcd.touchScreen(&point)==SG_VALID){        //ask for touch and if valid..
       if(point.y>265){                            //Touch on controls
         if(point.x<80){                           //touch on << icon
-          drawControlRR(SELECTED);
+          drawControlRR(SG_SELECTED);
           lcd.advanceWAVFile(0);                  //rewind song to beginning
           delay(300);                             //wait                    
-          drawControlRR(DESELECTED);
+          drawControlRR(SG_DESELECTED);
         }else if(point.x<160){                    //touch on Play/Pause icon
-          if(state == ENABLE){                    //if playing
+          if(state == SG_ENABLE){                 //if playing
             lcd.pauseWAVFile();                   //pause playing
             pause=!pause;
           }else{                                  //begin to play any song
             lcd.SDFgetFileName(currentSong,name); //get the name of the song file number currentSong
             cutFileExtension(name,".wav");        //cut to name the .wav extension
             lcd.playWAVFile(name,0);              //play file 
-            lcd.drawRectangle(0,25,MAX_X_PORTRAIT,70,BLACK,FILL);   //erase previous name
+            lcd.drawRectangle(0,25,MAX_X_PORTRAIT,70,SG_BLACK,SG_FILL);   //erase previous name
             lcd.string(10,30,MAX_X_PORTRAIT,MAX_Y_PORTRAIT,name,0); //print new name
             pause=0; 
           }        
           delay(300);          
         }else{ //point.x<240                      //touch on >> icon
-          drawControlFF(SELECTED);
+          drawControlFF(SG_SELECTED);
           lcd.stopWAVFile();                      //stop current playing song if any
           currentSong++;                          //advance current song
           if(currentSong>=songs) currentSong=0;   //check
           lcd.SDFgetFileName(currentSong,name);   //get the name of the song file number currentSong
           cutFileExtension(name,".wav");          //cut to name the .wav extension
           lcd.playWAVFile(name,0);                //play file
-          lcd.drawRectangle(0,25,MAX_X_PORTRAIT,70,BLACK,FILL);   //erase previous name
+          lcd.drawRectangle(0,25,MAX_X_PORTRAIT,70,SG_BLACK,SG_FILL);   //erase previous name
           lcd.string(10,30,MAX_X_PORTRAIT,MAX_Y_PORTRAIT,name,0); //print new name         
           pause=0;
           delay(300);                             //wait          
-          drawControlFF(DESELECTED);
+          drawControlFF(SG_DESELECTED);
         }
         drawControlPLAY(pause);                   //update button        
       }else if(point.y>240){                      //Touch on volume bar
         volume=(point.x*100)/MAX_X_PORTRAIT;      //obtain new volume parameter by scaling to 0-239 pixels
         lcd.setVolumeWAV(volume);                 //set new volume to SmartGPU Audio
         //update volume bar
-        lcd.drawRectangle(0,245,(volume*MAX_X_PORTRAIT)/(100),260,YELLOW,FILL);             //scale volume value to 0-239 pixels
-        lcd.drawRectangle((volume*MAX_X_PORTRAIT)/(100),245,MAX_X_PORTRAIT,260,BLACK,FILL); //scale volume value to 0-239 pixels         
+        lcd.drawRectangle(0,245,(volume*MAX_X_PORTRAIT)/(100),260,SG_YELLOW,SG_FILL);             //scale volume value to 0-239 pixels
+        lcd.drawRectangle((volume*MAX_X_PORTRAIT)/(100),245,MAX_X_PORTRAIT,260,SG_BLACK,SG_FILL); //scale volume value to 0-239 pixels         
         delay(50);
       }else if(point.y<20){                       //if touch on main header, go to main menu
         lcd.SDFopenDir("..");                     //return/go up to parent dir one level
@@ -520,10 +517,10 @@ void wallpaper(){
   lcd.SDFopenDir("Wall") ;          //Open the folder that contains the wallpaper images
   lcd.SDFgetList(0,&walls);         //get number of files/Pics under the current folder "Wall"
   
-  lcd.setTextColour(WHITE);
-  lcd.setTextSize(FONT3);
-  lcd.setTextBackFill(TRANS);
-  lcd.drawGradientRect(0,0,MAX_X_PORTRAIT,MAX_Y_PORTRAIT,BLACK,MAGENTA,VERTICAL);
+  lcd.setTextColour(SG_WHITE);
+  lcd.setTextSize(SG_FONT3);
+  lcd.setTextBackFill(SG_TRANS);
+  lcd.drawGradientRect(0,0,MAX_X_PORTRAIT,MAX_Y_PORTRAIT,SG_BLACK,SG_MAGENTA,SG_VERTICAL);
   lcd.string((MAX_X_PORTRAIT+1)/4,(MAX_Y_PORTRAIT+1)/2,MAX_X_PORTRAIT,MAX_Y_PORTRAIT,"Wallpapers",0);
   delay(1000);
  
@@ -533,20 +530,20 @@ void wallpaper(){
     lcd.imageBMPSD(0,0,name);                          //Load image from SD card, all images are 240x320(full screen) so we load them from top left corner X:0,Y:0
     drawHeader("Wallpapers:");
     delay(200);                                        //A little delay to avoid fast image changing    
-    lcd.objButton(10,25,MAX_X_PORTRAIT-10,55,DESELECTED,"Set as Wall");    
-    lcd.objButton(10,280,MAX_X_PORTRAIT-10,310,DESELECTED,"Return");
+    lcd.objButton(10,25,MAX_X_PORTRAIT-10,55,SG_DESELECTED,"Set as Wall");    
+    lcd.objButton(10,280,MAX_X_PORTRAIT-10,310,SG_DESELECTED,"Return");
     
-    while(lcd.touchScreen(&point)==INVALID);           //wait for a touch to do something    
+    while(lcd.touchScreen(&point)==SG_INVALID);        //wait for a touch to do something    
     
     if(point.y > 280){                                 //if touch on "return" button, break to exit while(1);
-      lcd.objButton(10,280,MAX_X_PORTRAIT-10,310,SELECTED,"Return");
+      lcd.objButton(10,280,MAX_X_PORTRAIT-10,310,SG_SELECTED,"Return");
       lcd.SDFopenDir("..");                            //return/go up to parent dir one level
       delay(300);      
       return;                                          //EXIT                           
     }
     if(point.y < 60){                                  //if touch on "set as wall" button
-      lcd.objButton(10,25,MAX_X_PORTRAIT-10,55,SELECTED,"Set as Wall");
-      lcd.setTextSize(FONT2);
+      lcd.objButton(10,25,MAX_X_PORTRAIT-10,55,SG_SELECTED,"Set as Wall");
+      lcd.setTextSize(SG_FONT2);
       lcd.string(22,140,MAX_X_PORTRAIT,MAX_Y_PORTRAIT,"Saved on EEPROM",0);
       saveWallpaperToEEPROM();                         //Save the current contents of "name" array to EEPROM
       delay(500);
@@ -594,11 +591,11 @@ void setup() { //initial setup
 void loop() { //main loop
   unsigned char icons;
   
-  lcd.baudChange(BAUD5);           //set high baud for advanced applications
-  lcd.orientation(PORTRAIT_LOW);   //set orientation as portrait  
-  lcd.initDACAudio(ENABLE);        //Turn on the Audio DACs
-  lcd.audioBoost(ENABLE);          //ENABLE boost  
-  lcd.SDFopenDir("FullGUI");       //Open the FullGUI folder that contains the images of the Application
+  lcd.baudChange(SG_BAUD5);           //set high baud for advanced applications
+  lcd.orientation(SG_PORTRAIT_LOW);   //set orientation as portrait  
+  lcd.initDACAudio(SG_ENABLE);        //Turn on the Audio DACs
+  lcd.audioBoost(SG_ENABLE);          //ENABLE boost  
+  lcd.SDFopenDir("FullGUI");          //Open the FullGUI folder that contains the images of the Application
     
   while(1){
     //draw MainMenu
@@ -613,7 +610,7 @@ void loop() { //main loop
         //calculator();
       break;
       case 3: //case icon 3
-        clock();
+        clocks();
       break;
       case 4: //case icon 4
         games();

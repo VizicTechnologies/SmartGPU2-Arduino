@@ -1,5 +1,5 @@
 /*********************************************************
- * VIZIC TECHNOLOGIES. COPYRIGHT 2019.
+ * VIZIC TECHNOLOGIES. COPYRIGHT 2020.
  * THE DATASHEETS, SOFTWARE AND LIBRARIES ARE PROVIDED "AS IS." 
  * VIZIC EXPRESSLY DISCLAIM ANY WARRANTY OF ANY KIND, WHETHER 
  * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO, THE IMPLIED 
@@ -21,14 +21,16 @@
 
 SMARTGPU2 lcd;              //create our object called LCD
 
-AXIS LCD_WIDTH, LCD_HEIGHT; //Variables to handle the screen resolution
+SG_AXIS LCD_WIDTH, LCD_HEIGHT; //Variables to handle the screen resolution
 
 //declare our general coodinates structs
-POINT point;
-ICON icon;
+SG_POINT point;
+SG_ICON icon;
 
 //Global variables
-int hours=11,mins=19,secs=33;
+//Start time: hours = 2, minutes = 19, seconds = 33;
+int clockTime= (2*(60*60)) + (19*60) + (33); //In seconds
+
 char contactName[7][20]={
   "Adam Playford","Akash Krishnani","Alexis Barta","Alice Alcantara","Amanda Bannout","Andrea Jahanbozorg","Anna Kaltenbrunner"};
 
@@ -39,25 +41,32 @@ char contactName[7][20]={
 /**************************************************/
 //clock application THIS METHOD IS 100% RECOMMENDED TO BE EXECUTED WITH TIMER INTERRUPTS, BUT DUE TO SKETCH SIMPLICITY WE CREATED THIS WITH DELAYS INSTEAD OF TIMERS
 char clock(unsigned char drawHands){
-  int xs,ys,xm,ym,xh,yh,n;
+  int xs,ys,xm,ym,xh,yh,i;
   int angleH,angleM,angleS;
   int halfx=208 ,halfy=50, radiusClk=25; //Clock related sizes  
   int handHour=16;                       //hand size
   int handMin=20;                        //hand size
   int handSec=23;                        //hand size 
-  char time[9]={
+  char tim[9]={
     0x30,0x30,':',0x30,0x30,':',0x30,0x30,0x00            };
+  int hrs,secs,mins;
 
-  lcd.setTextColour(WHITE);
-  lcd.setTextSize(FONT1);
-  lcd.setTextBackFill(FILLED);    
+  lcd.setTextColour(SG_WHITE);
+  lcd.setTextSize(SG_FONT1);
+  lcd.setTextBackFill(SG_FILLED);    
 
   while(1){                              //we loop between clocks until a touch on something
     if(drawHands==1){   
-      lcd.drawCircle(halfx,halfy,radiusClk,WHITE,FILL);
-      lcd.drawCircle(halfx,halfy,radiusClk,BLUE,UNFILL);    
+      lcd.drawCircle(halfx,halfy,radiusClk,SG_WHITE,SG_FILL);
+      lcd.drawCircle(halfx,halfy,radiusClk,SG_BLUE,SG_UNFILL);    
     }    
     while(1){
+      //time update managing
+      hrs  = ((clockTime+(millis()/1000))/(60*60));
+      while(hrs >= 12){ hrs = hrs-12; }                     // correct if more than 12 hrs
+      mins = (((clockTime+(millis()/1000))%(60*60))/60);
+      secs = (((clockTime+(millis()/1000))%(60*60))%60);
+           
       //Do some Math to get the second point of the clock hands. (first point is always the center of the clock)
       angleS=secs*6;                           //get the current seconds in angle form, a circle have 360 degrees divided by 60 seconds = 6, then we multiply the 6 by the current seconds to get current angle
       xs=(sin((angleS*3.14)/180)) * handSec;   //get X component of the second's hand
@@ -65,48 +74,37 @@ char clock(unsigned char drawHands){
       angleM=mins*6;                           //get the current minutes in angle form, a circle have 360 degrees divided by 60 minutes = 6, then we multiply the 6 by the current minutes to get current angle
       xm=(sin((angleM*3.14)/180)) * handMin;   //get X component of the minutes's hand
       ym=(cos((angleM*3.14)/180)) * handMin;   //get Y component of the minutes's hand 
-      angleH=hours*30;                         //get the current hours in angle form, a circle have 360 degrees divided by 12 hours = 30, then we multiply the 30 by the current hours to get current angle
+      angleH=hrs*30;                         //get the current hours in angle form, a circle have 360 degrees divided by 12 hours = 30, then we multiply the 30 by the current hours to get current angle
       xh=(sin((angleH*3.14)/180)) * handHour;  //get X component of the hours's hand
       yh=(cos((angleH*3.14)/180)) * handHour;  //get Y component of the hours's hand
 
       //Draw current time hands if drawHands=1
       if(drawHands==1){ 
-        lcd.drawLine(halfx,halfy,halfx+xm,halfy-ym,BLACK);  // Draw the minutes hand, first point is the center of the clock, and the second is the point obtained by doing math
-        lcd.drawLine(halfx,halfy,halfx+xh,halfy-yh,BLACK);  // Draw the hours hand, first point is the center of the clock, and the second is the point obtained by doing math
-        lcd.drawLine(halfx,halfy,halfx+xs,halfy-ys,RED);    // Draw the seconds hand, first point is the center of the clock, and the second is the point obtained by doing math      
+        lcd.drawLine(halfx,halfy,halfx+xm,halfy-ym,SG_BLACK);  // Draw the minutes hand, first point is the center of the clock, and the second is the point obtained by doing math
+        lcd.drawLine(halfx,halfy,halfx+xh,halfy-yh,SG_BLACK);  // Draw the hours hand, first point is the center of the clock, and the second is the point obtained by doing math
+        lcd.drawLine(halfx,halfy,halfx+xs,halfy-ys,SG_RED);    // Draw the seconds hand, first point is the center of the clock, and the second is the point obtained by doing math      
       }      
       //Draw text time on top of screen 
-      time[0]=(hours/10)+0x30;                              // convert hours to ascii format
-      time[1]=(hours%10)+0x30;                              // convert hours to ascii format
-      time[3]=(mins/10)+0x30;                               // convert mins to ascii format 
-      time[4]=(mins%10)+0x30;                               // convert mins to ascii format 
-      time[6]=(secs/10)+0x30;                               // convert secs to ascii format 
-      time[7]=(secs%10)+0x30;                               // convert secs to ascii format       
-      lcd.string(185,3,239,30,time,0);     
+      tim[0]=(hrs/10)+0x30;                                // convert hours to ascii format
+      tim[1]=(hrs%10)+0x30;                                // convert hours to ascii format
+      tim[3]=(mins/10)+0x30;                               // convert mins to ascii format 
+      tim[4]=(mins%10)+0x30;                               // convert mins to ascii format 
+      tim[6]=(secs/10)+0x30;                               // convert secs to ascii format 
+      tim[7]=(secs%10)+0x30;                               // convert secs to ascii format       
+      lcd.string(170,3,LCD_HEIGHT-1,30,tim,0);     
 
-      for(n=0;n<7000;n++){                                  // loop for about one second delay (we dont need to explain why we're waiting one second, right?)
-        if(lcd.touchScreen(&point)){                 //if we receive a touch on screen
-          return 0;                                         //Break and go to process touch
-        }         
-      }      
-      //time managing
-      secs++;                                               // increase seconds
-      if(secs==60){                                         // if we reach 60 seconds
-        mins++;                                             // increase the minutes
-        if(mins==60){                                       // if we reach 60 minutes
-          hours++;                                          // increase the minutes
-          if(hours==12){                                    // if we reach 12 hours
-            hours=0;                                        // clear hours
-          } 
-          mins=0;                                           // clear minutes
-        }            
-        secs=0;                                             // clear seconds
-      }                       
+      for(i=0;i<100;i++){                                   // loop for about one second delay (we dont need to explain why we're waiting one second, right?)
+        if(lcd.touchScreen(&point)){                        //if we receive a touch on screen
+          return 0;                                         //Exit clock
+        }
+        delay(10);
+      }
+                    
       //Erase all hands    
       if(drawHands==1){       
-        lcd.drawLine(halfx,halfy,halfx+xs,halfy-ys,WHITE); // Erase Second's hand
-        lcd.drawLine(halfx,halfy,halfx+xm,halfy-ym,WHITE); // Erase Minute's hand
-        lcd.drawLine(halfx,halfy,halfx+xh,halfy-yh,WHITE); // Erase Hour's hand            
+        lcd.drawLine(halfx,halfy,halfx+xs,halfy-ys,SG_WHITE); // Erase Second's hand
+        lcd.drawLine(halfx,halfy,halfx+xm,halfy-ym,SG_WHITE); // Erase Minute's hand
+        lcd.drawLine(halfx,halfy,halfx+xh,halfy-yh,SG_WHITE); // Erase Hour's hand            
       }
     }
   }    
@@ -131,7 +129,7 @@ void notes(){
       }          
     }
     else if(point.y<270){             //touch on notepad
-      lcd.drawCircle(point.x,point.y,2,BLACK,FILL);          
+      lcd.drawCircle(point.x,point.y,2,SG_BLACK,SG_FILL);          
     }
     else{                                   //touch on Main Icons
       if(point.x<60){
@@ -159,10 +157,10 @@ void maps(){
     "map0","map1","map2","map3","map4","map5","map6","map7","map8","map9"            }; //array containing the names of the different called maps  
   static char maps=0;
 
-  lcd.orientation(LANDSCAPE_LEFT);                 //change to landscape Left mode 
-  lcd.setTextColour(RED);
-  lcd.setTextSize(FONT2);
-  lcd.setTextBackFill(TRANS);    
+  lcd.orientation(SG_LANDSCAPE_LEFT);                 //change to landscape Left mode 
+  lcd.setTextColour(SG_RED);
+  lcd.setTextSize(SG_FONT2);
+  lcd.setTextBackFill(SG_TRANS);    
   while(1){                                    //Loop forever in the slide show!
     lcd.imageBMPSD(0,0,mapsOnSDCard[maps]);       //Load image from SD card, all images are 320x240(full screen) so we load them from top left corner X:0,Y:0
     lcd.string(70,215,319,239,"Tap center to Exit",0); //Show text
@@ -189,7 +187,7 @@ void maps(){
       }       
     }
   }  
-  lcd.orientation(PORTRAIT_LOW);                  //change to portrait mode    
+  lcd.orientation(SG_PORTRAIT_LOW);                  //change to portrait mode    
 } 
 
 /**************************************************/
@@ -203,14 +201,14 @@ void settings(){
   delay(350);                                //A little delay to avoid fast image changing
   //Start application
   while(1){                                 
-    lcd.drawRectangle((bright)+33,103,201,105,WHITE,FILL);     //draw the white bar   
-    lcd.drawRectangle(33,103,(bright)+33,105,0x4C7C,FILL);     //draw brightness bar
+    lcd.drawRectangle((bright)+33,103,201,105,SG_WHITE,SG_FILL);  //draw the white bar   
+    lcd.drawRectangle(33,103,(bright)+33,105,0x4C7C,SG_FILL);     //draw brightness bar
     lcd.imageBMPSD(buttonCen,96,"button");                        //Load the button icon    
-    clock(0);                                                  //run clock   
-    if(point.y<270){                                     //Touch on bar
+    clock(0);                                                     //run clock   
+    if(point.y<270){                                              //Touch on bar
       lcd.imageBMPSD(buttonCen,96,"clrBar");                      //clear the button icon  
       //check where to move left or right
-      if(point.x>buttonCen){                             //if we need to move the bar to the right        
+      if(point.x>buttonCen){                                   //if we need to move the bar to the right        
         bright+=10;                                            //increase the brightness
         buttonCen+=10;                                         //increase the center of the button
         if(bright>169){                                        //if the button reach the right corner
@@ -218,7 +216,7 @@ void settings(){
           buttonCen=197;                                       //set maximum button center          
         }              
       }
-      else{                                                   //move the bar to the left                                          
+      else{                                                    //move the bar to the left                                          
         bright-=10;                                            //decrease the brightness
         buttonCen-=10;                                         //decrease the center of the button
         if(bright<1){                                          //if the button reach the left corner
@@ -228,7 +226,7 @@ void settings(){
       }
       lcd.bright(bright+20);                                   //set new brightness value to SMART GPU        
     }
-    else{                                                     //touch on Main Icons
+    else{                                                      //touch on Main Icons
       if(point.x<60){
         keypad();
       }
@@ -281,11 +279,11 @@ void photos(){
     "Sea","Lake","Rainbow","Beach","House","House","Bridge","Trees"            }; //array containing the names of the different called images
   static char pic=0;
 
-  lcd.setTextColour(RED);
-  lcd.setTextSize(FONT2);
-  lcd.setTextBackFill(TRANS);  
+  lcd.setTextColour(SG_RED);
+  lcd.setTextSize(SG_FONT2);
+  lcd.setTextBackFill(SG_TRANS);  
 
-  lcd.orientation(LANDSCAPE_LEFT);              //change to landscape Left mode  
+  lcd.orientation(SG_LANDSCAPE_LEFT);              //change to landscape Left mode  
   while(1){  
     lcd.imageBMPSD(0,0,imagesOnSDCard[pic]);   //Load image from SD card, all images are 320x240(full screen) so we load them from top left corner X:0,Y:0
     lcd.imageBMPSD(3,219,"prev");              //Load the prev icon        
@@ -310,7 +308,7 @@ void photos(){
       break;
     }   
   }
-  lcd.orientation(PORTRAIT_LOW);               //change to portrait mode  
+  lcd.orientation(SG_PORTRAIT_LOW);               //change to portrait mode  
 } 
 
 /**************************************************/
@@ -385,21 +383,21 @@ void keypad(){
         } 
       }           
       if(auxNum==0){
-        lcd.drawRectangle(0,70,239,140,BLACK,FILL);                //erase numbers
+        lcd.drawRectangle(0,70,239,140,SG_BLACK,SG_FILL);          //erase numbers
         numPosition=5;                                             //reset columns
         numRow=70;                                                 //reset Rows        
       }
       else{ 
-        lcd.setTextColour(WHITE);
-        lcd.setTextSize(FONT3);
-        lcd.setTextBackFill(FILLED);         
+        lcd.setTextColour(SG_WHITE);
+        lcd.setTextSize(SG_FONT3);
+        lcd.setTextBackFill(SG_FILLED);         
         lcd.putLetter(numPosition,numRow,auxNum,&numPosition); //write numbers
         if(numPosition>209){                                       //if we reach column end
           numRow+=32;                                              //jump to next row
           numPosition=5;                                           //reset numPosition(columns)
           if(numRow>102){                                          //if we reach end of rows
             numRow=70;                                             //reset Rows
-            lcd.drawRectangle(0,70,239,140,BLACK,FILL);            //erase numbers
+            lcd.drawRectangle(0,70,239,140,SG_BLACK,SG_FILL);      //erase numbers
           }
         }      
       }
@@ -428,20 +426,20 @@ char call(char *contact){
 
   lcd.imageBMPSD(0,0,"Call");                              //load call window 
   delay(250);                                //A little delay to avoid fast image changing  
-  lcd.setTextColour(GREEN);
-  lcd.setTextSize(FONT0);
-  lcd.setTextBackFill(TRANS);    
+  lcd.setTextColour(SG_GREEN);
+  lcd.setTextSize(SG_FONT0);
+  lcd.setTextBackFill(SG_TRANS);    
   lcd.string(48,190,192,225,contact,0); //show contact
   while(1){
     for(i=0;i<60;i+=20){
-      lcd.drawCircle(100+i,170,5,YELLOW,FILL);
+      lcd.drawCircle(100+i,170,5,SG_YELLOW,SG_FILL);
       if(lcd.touchScreen(&point)){                       //if we receive a touch on screen
         if(point.y>280) return 0;               //Break and return
       }    
       delay(300);      
     }
     for(i=0;i<60;i+=20){
-      lcd.drawCircle(100+i,170,5,BLACK,FILL);
+      lcd.drawCircle(100+i,170,5,SG_BLACK,SG_FILL);
       if(lcd.touchScreen(&point)){                       //if we receive a touch on screen
         if(point.y>280) return 0;               //Break and return
       }    
@@ -571,27 +569,27 @@ void setup() { //initial setup
 void loop() { //main loop
   unsigned char i,n; //icon variable
 
-  lcd.baudChange(BAUD7);        //set high baud for advanced applications
-  lcd.orientation(PORTRAIT_LOW);     //change to portrait mode  
+  lcd.baudChange(SG_BAUD7);          //set high baud for advanced applications
+  lcd.orientation(SG_PORTRAIT_LOW);  //change to portrait mode  
 
-  lcd.SDFopenDir("Cellphone");    //Open the Cellphone folder that contains the images of the Application
+  lcd.SDFopenDir("Cellphone");       //Open the Cellphone folder that contains the images of the Application
 
   //Processing Intro
-  lcd.imageBMPSD(0,20,"Intro");   //load main menu image  
+  lcd.imageBMPSD(0,20,"Intro");      //load main menu image  
   for(n=0;n<3;n++){
     for(i=0;i<60;i+=20){
-      lcd.drawCircle(100+i,285,5,YELLOW,FILL);
+      lcd.drawCircle(100+i,285,5,SG_YELLOW,SG_FILL);
       delay(200);      
     }
     for(i=0;i<60;i+=20){
-      lcd.drawCircle(100+i,285,5,BLACK,FILL);
+      lcd.drawCircle(100+i,285,5,SG_BLACK,SG_FILL);
       delay(200);      
     }         
   }  
 
   //Main Menu
   while(1){                       //Forever loop
-    lcd.orientation(PORTRAIT_LOW);//change to portrait mode
+    lcd.orientation(SG_PORTRAIT_LOW);//change to portrait mode
     lcd.imageBMPSD(0,0,"Menu");   //load main menu image
     clock(1);                     //Run clock app
 
