@@ -1,5 +1,5 @@
 /*********************************************************
-VIZIC TECHNOLOGIES. COPYRIGHT 2019.
+VIZIC TECHNOLOGIES. COPYRIGHT 2020.
 THE DATASHEETS, SOFTWARE AND LIBRARIES ARE PROVIDED "AS IS." 
 VIZIC EXPRESSLY DISCLAIM ANY WARRANTY OF ANY KIND, WHETHER 
 EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO, THE IMPLIED 
@@ -21,15 +21,15 @@ OR OTHER SIMILAR COSTS.
 
 SMARTGPU2 lcd;             //create our object called LCD
 
-AXIS LCD_WIDTH, LCD_HEIGHT; //Variables to handle the screen resolution
+SG_AXIS LCD_WIDTH, LCD_HEIGHT; //Variables to handle the screen resolution
 
 #define MOLEHOLE 3        //position of the array where mole hole image is contained
 #define HITMOLE 4         //position of the array where hit mole image is contained
 #define MISSMOLE 5        //position of the array where miss mole image is contained
 
 //Create the Structs
-POINT point;
-ICON icon;
+SG_POINT point;
+SG_ICON icon;
 
 char moleType[6][9]={"MoleHap","MoleSee","MoleBad","MoleHole","MolePun","MoleMiss"}; //array containing the names of the different called images
 
@@ -119,20 +119,20 @@ void loop() { //main loop
   char moleCounter=20,points=0;
   char pointsTotal[4]="00 ";       //array to store the points
   
-  lcd.baudChange(BAUD7);           //set high baud  
+  lcd.baudChange(SG_BAUD7);        //set high baud  
   lcd.SDFopenDir("Mole Stomp");    //Open the Mole Stomp folder that contains the images of the Application  
-  lcd.setTextBackColour(BLUE);     //set the all text background to blue
+  lcd.setTextBackColour(SG_BLUE);  //set the all text background to blue
   
  while(1){                         //loop forever the game
-  lcd.setTextColour(RED);
-  lcd.setTextSize(FONT5);
-  lcd.setTextBackFill(TRANS);  
+  lcd.setTextColour(SG_RED);
+  lcd.setTextSize(SG_FONT5);
+  lcd.setTextBackFill(SG_TRANS);  
   lcd.string(22,90,300,220,"GET READY!!!",0); //show ready string
   delay(1500);
   lcd.imageBMPSD(0,0,"MoleArea");     //show area   
-  lcd.setTextColour(WHITE);
-  lcd.setTextSize(FONT1);
-  lcd.setTextBackFill(FILLED);    
+  lcd.setTextColour(SG_WHITE);
+  lcd.setTextSize(SG_FONT1);
+  lcd.setTextBackFill(SG_FILLED);    
   lcd.string(35,27,50,50,"00",0); //draw the initial points
   delay(800);  
   
@@ -159,9 +159,9 @@ void loop() { //main loop
     }
     pointsTotal[0]=(points/10)+0x30;  //get the tens of the points and convert them to ascii
     pointsTotal[1]=(points%10)+0x30;  //get the ones of the points and convert them to ascii
-    lcd.setTextColour(WHITE);
-    lcd.setTextSize(FONT2);
-    lcd.setTextBackFill(FILLED);     
+    lcd.setTextColour(SG_WHITE);
+    lcd.setTextSize(SG_FONT2);
+    lcd.setTextBackFill(SG_FILLED);     
     lcd.string(33,27,100,100,pointsTotal,0); //draw the points    
     delay(350);
     showMole(MOLEHOLE,hole);          //show the bare hole
@@ -169,14 +169,14 @@ void loop() { //main loop
   }                                   //end of the game
   
   //Game over, display results
-  lcd.setTextColour(YELLOW);
-  lcd.setTextSize(FONT3);
-  lcd.setTextBackFill(TRANS);    
+  lcd.setTextColour(SG_YELLOW);
+  lcd.setTextSize(SG_FONT3);
+  lcd.setTextBackFill(SG_TRANS);    
   lcd.string(80,50,300,220,"Whacked Moles:",0);   
-  lcd.setTextColour(BLUE);  
+  lcd.setTextColour(SG_BLUE);  
   lcd.string(153,75,300,220,pointsTotal,0); //draw the converted to ascii points array 
-  lcd.setTextColour(RED);  
-  lcd.setTextSize(FONT2);  
+  lcd.setTextColour(SG_RED);  
+  lcd.setTextSize(SG_FONT2);  
   lcd.string(50,150,319,239,"TOUCH TO RESTART",0);   
   delay(1000);
   
