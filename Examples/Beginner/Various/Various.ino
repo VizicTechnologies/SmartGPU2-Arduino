@@ -44,6 +44,7 @@ void setup() { //initial setup
 void loop() { //main loop
   SG_NUMBEROFBYTES nb;
 
+  while(1){
     delay(1000);                                                                                     //wait some time 
     lcd.drawLine(50,50,150,200,SG_WHITE);                                                            //draw a line
     delay(1000);
@@ -80,4 +81,5 @@ void loop() { //main loop
     lcd.drawTriangle(15,15,200,210,180,70,SG_BLUE,SG_FILL);                                          //draw a triangle 
     delay(3000);
     lcd.erase();                                                                                     //erase screen
+  }
 }

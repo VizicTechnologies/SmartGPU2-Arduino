@@ -55,7 +55,7 @@ void loop() { //main loop draw random colour and size lines
       
     //draw the line
     if(lcd.drawLine(p1.x,p1.y,p2.x,p2.y,colour) != SG_OK){ //draw a line
-      while(1);                    //loop forever if different than 'O'--OK
+      while(1){ delay(100);}        //loop forever if different than 'O'--OK
     }
   }
 }

@@ -59,7 +59,7 @@ void loop() { //main loop draw random colour and size lines
       
     //draw the gradient rectangle
     if(lcd.drawGradientRect(p1.x,p1.y,p2.x,p2.y,firstColour,lastColour,SG_HORIZONTAL) != SG_OK){ //draw a gradient rectangle
-      while(1);                    //loop forever if different than 'O'--OK
+      while(1){ delay(100);}        //loop forever if different than 'O'--OK
     }
   }
 }

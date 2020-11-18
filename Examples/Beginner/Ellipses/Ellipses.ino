@@ -58,7 +58,7 @@ void loop() { //main loop draw random colour, size and fill Ellipses
       
       //draw the Ellipse
       if(lcd.drawEllipse(point.x,point.y,radiusx,radiusy,colour,fill) != SG_OK){  //draw an Ellipse
-        while(1);                    //loop forever if different than 'O'--OK
+        while(1){ delay(100);}       //loop forever if different than 'O'--OK
       }      
     }
 }

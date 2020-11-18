@@ -77,5 +77,5 @@ void loop() { //main loop
     lcd.drawLine(5,218,314,218,SG_GREEN);                                                              //draw a line    
     
     //loop forever
-    while(1);
+    while(1){ delay(100);}
 }

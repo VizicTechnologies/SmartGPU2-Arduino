@@ -57,7 +57,7 @@ void loop() { //main loop draw random colour, size and fill circles
       
       //draw the circle
       if(lcd.drawCircle(point.x,point.y,radius,colour,fill) != SG_OK){  //draw a circle
-        while(1);                    //loop forever if different than 'O'--OK
+        while(1){ delay(100);}       //loop forever if different than 'O'--OK
       }      
     }
 }

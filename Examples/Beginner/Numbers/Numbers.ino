@@ -44,24 +44,26 @@ void loop() { //main loop
   lcd.setTextSize(SG_FONT3); 
   lcd.setTextBackFill(SG_FILLED);
 
-  //print numbers
-  lcd.printNumber(0,   0, 514.65);   
-  lcd.printNumber(0,  25, 0.0254);   
-  lcd.printNumber(0,  50, 46235);   
-  lcd.printNumber(0,  75, -6354.85);   
-  lcd.printNumber(0, 100, -0.4158);     
-  lcd.printNumber(0, 125, 1234567890);     
-
-  //print int numbers
-  for(intNumber=1000; intNumber<=9000 ; intNumber++){ 
-    lcd.printNumber(0, 150, intNumber); 
-  }
+  while(1){
+    //print numbers
+    lcd.printNumber(0,   0, 514.65);   
+    lcd.printNumber(0,  25, 0.0254);   
+    lcd.printNumber(0,  50, 46235);   
+    lcd.printNumber(0,  75, -6354.85);   
+    lcd.printNumber(0, 100, -0.4158);     
+    lcd.printNumber(0, 125, 1234567890);     
   
-  //print float numbers
-  for(floatNumber=1000; floatNumber<=3000 ; floatNumber+= 0.1){ 
-    lcd.printNumber(0, 175, floatNumber); 
+    //print int numbers
+    for(intNumber=1000; intNumber<=9000 ; intNumber++){ 
+      lcd.printNumber(0, 150, intNumber); 
+    }
+    
+    //print float numbers
+    for(floatNumber=1000; floatNumber<=3000 ; floatNumber+= 0.1){ 
+      lcd.printNumber(0, 175, floatNumber); 
+    }
+    
+    delay(5000);
+    lcd.erase();  
   }
-  
-  delay(5000);
-  lcd.erase();  
 }

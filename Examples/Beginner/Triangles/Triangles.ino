@@ -59,7 +59,7 @@ void loop() { //main loop draw random colour and size triangles
       
     //draw the triangle
     if(lcd.drawTriangle(p1.x, p1.y, p2.x, p2.y, p3.x, p3.y, colour,fill) != SG_OK){ //draw random triangles
-      while(1);                    //loop forever if different than 'O'--OK        
+      while(1){ delay(100);}         //loop forever if different than 'O'--OK       
     }
   }
 }
