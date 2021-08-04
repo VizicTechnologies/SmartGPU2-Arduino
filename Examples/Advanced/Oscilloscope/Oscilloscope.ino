@@ -38,7 +38,7 @@ const float         voltsPerDivValues[NUMBEROFVOLTSVALUES]           = {0.1, 0.2
 const unsigned long millisecondsPerDivValues[NUMBEROFMILLISECVALUES] = {10, 50, 100, 250, 500, 1000};
 unsigned char       voltsPerDivPointer=3, millisecondsPerDivPointer=3; //default start values 1voltPerDiv and 250mSecPerDiv
 
-unsigned int sampleBuffer[450];                                //array to store ADC probe samples
+unsigned int sampleBuffer[470];                                //array to store ADC probe samples
 
 //Display variables
 SG_AXIS WIN_HORIZONTAL_START;
